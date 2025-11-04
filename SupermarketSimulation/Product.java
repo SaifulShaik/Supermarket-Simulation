@@ -8,12 +8,11 @@ import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
  */
 public abstract class Product extends Actor
 {
-    /**
-     * Act - do whatever the Product wants to do. This method is called whenever
-     * the 'Act' or 'Run' button gets pressed in the environment.
-     */
-    public void act()
-    {
-        // Add your action code here.
-    }
+    protected double price;
+    protected int stock;
+    
+    protected double getPrice() { return price; }
+    protected void applyDiscount(double percent) {}
+    protected int getStock() { return stock; }
+    protected void setStock(int amount) {}
 }

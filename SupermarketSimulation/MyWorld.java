@@ -11,10 +11,6 @@ public class MyWorld extends World
     public static final int worldSizeX = 1200;
     public static final int worldSizeY = 600;
     
-    /**
-     * Constructor for objects of class MyWorld.
-     * 
-     */
     public MyWorld()
     {    
         super(worldSizeX, worldSizeY, 1); 

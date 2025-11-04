@@ -16,7 +16,7 @@ public abstract class Customer extends SmoothMover
     private double movementSpeed; 
     private double timeInLine;
     private double queuePosition;
-    private int emotion; // for now
+    private int emotion; // 0: happy 1: neutral 2: angry 3: mad 4: raging
     
     public Customer() {}
     public void act() {}
