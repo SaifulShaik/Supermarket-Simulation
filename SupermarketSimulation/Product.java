@@ -10,9 +10,29 @@ public abstract class Product extends Actor
 {
     protected double price;
     protected int stock;
+    protected boolean isLocked;
     
-    protected double getPrice() { return price; }
-    protected void applyDiscount(double percent) {}
-    protected int getStock() { return stock; }
-    protected void setStock(int amount) {}
+    public Product() {
+        
+    }
+    
+    protected double getPrice() { 
+        return price; 
+    }
+    
+    protected void applyDiscount(double percent) {
+        price *= (1 - (percent / 100));
+    }
+    
+    protected int getStock() { 
+        return stock; 
+    }
+    
+    protected void setStock(int amount) {
+        stock = amount;
+    }
+    
+    protected void unlock() {
+        
+    }
 }
