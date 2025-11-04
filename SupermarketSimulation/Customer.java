@@ -12,13 +12,17 @@ public abstract class Customer extends SmoothMover
     private List<Product> shoppingList;
     private List<Product> cart;
     
-    private double budget; 
-    private double movementSpeed; 
-    private double timeInLine;
-    private double queuePosition;
-    private int emotion; // for now
+    protected double budget; 
+    protected double movementSpeed; 
+    protected double timeInLine;
+    protected double queuePosition;
+    protected int emotion; // for now
+    
+    private Store currentStore;
     
     public Customer() {}
+    
+    
     public void act() {}
     protected void chooseStore() {}
     protected void enterStore() {}
