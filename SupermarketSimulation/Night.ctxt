@@ -1,0 +1,12 @@
+#BlueJ class context
+comment0.target=Night
+comment0.text=\n\ This\ is\ the\ world\ wide\ effect\ that\ represents\ nighttime\n\ By\:\ Owen\n
+comment1.params=
+comment1.target=Night()
+comment2.params=
+comment2.target=void\ act()
+comment3.params=
+comment3.target=void\ drawimage()
+comment4.params=
+comment4.target=void\ drawStars()
+numComments=5
