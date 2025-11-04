@@ -1,4 +1,5 @@
 import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
+import java.util.List;
 
 /**
  * Write a description of class Customer here.
@@ -8,12 +9,24 @@ import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
  */
 public abstract class Customer extends SmoothMover
 {
-    /**
-     * Act - do whatever the Customer wants to do. This method is called whenever
-     * the 'Act' or 'Run' button gets pressed in the environment.
-     */
-    public void act()
-    {
-        // Add your action code here.
-    }
+    private List<Product> shoppingList;
+    private List<Product> cart;
+    
+    private double budget; 
+    private double movementSpeed; 
+    private double timeInLine;
+    private double queuePosition;
+    private int emotion; // for now
+    
+    public Customer() {}
+    public void act() {}
+    protected void chooseStore() {}
+    protected void enterStore() {}
+    protected void leaveStore() {}
+    protected void move() {}
+    protected void addItemToCart(Product item) {}
+    protected void removeItemFromCart(Product item) {}
+    protected List<Product> generateShoppingList() { return null; }
+    protected void checkout() {}
+    protected double calculatePriceOfCart() { return 0;}
 }
