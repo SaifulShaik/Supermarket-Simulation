@@ -1,11 +1,5 @@
 import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 
-/**
- * Write a description of class Product here.
- * 
- * @author (your name) 
- * @version (a version number or a date)
- */
 public abstract class Product extends Actor
 {
     protected double price;
@@ -13,6 +7,10 @@ public abstract class Product extends Actor
     protected boolean isLocked;
     
     public Product() {
+        
+    }
+    
+    public void act() {
         
     }
     

@@ -1,0 +1,19 @@
+#BlueJ class context
+comment0.target=Node
+comment1.params=x\ y\ previousNode\ distanceFromStart\ distanceToGoal
+comment1.target=Node(int,\ int,\ Node,\ int,\ int)
+comment2.params=
+comment2.target=int\ getTotalDistance()
+comment3.params=obj
+comment3.target=boolean\ equals(java.lang.Object)
+comment4.params=
+comment4.target=int\ getDistanceFromGoal()
+comment5.params=
+comment5.target=int\ getDistanceFromStart()
+comment6.params=
+comment6.target=Node\ getPreviousNode()
+comment7.params=
+comment7.target=int\ getX()
+comment8.params=
+comment8.target=int\ getY()
+numComments=9
