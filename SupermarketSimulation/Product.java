@@ -10,6 +10,10 @@ public abstract class Product extends Actor
         
     }
     
+    public void act() {
+        
+    }
+    
     protected double getPrice() { 
         return price; 
     }
