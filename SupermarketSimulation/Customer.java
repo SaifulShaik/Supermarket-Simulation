@@ -15,6 +15,7 @@ public abstract class Customer extends SuperSmoothMover
     
     protected int facing; // 0: top, 1: right, 2: down, 3: left
     protected double[][] targetLocation;
+    //protected double targetLocationoffset = UI.getHeight;
     protected double budget; 
     protected double movementSpeed; 
     protected double timeInLine;
