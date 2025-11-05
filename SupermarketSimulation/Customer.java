@@ -9,28 +9,48 @@ import java.util.List;
  */
 public abstract class Customer extends SuperSmoothMover
 {
-    private List<Product> shoppingList;
-    private List<Product> cart;
+    protected List<Product> shoppingList;
+    protected List<Product> cart;
     
     protected double budget; 
     protected double movementSpeed; 
     protected double timeInLine;
     protected double queuePosition;
+    protected boolean hasPaid;
     protected int emotion; // for now
     
     private Store currentStore;
     
     public Customer() {}
     
-    
     public void act() {}
     protected void chooseStore() {}
     protected void enterStore() {}
     protected void leaveStore() {}
     protected void move() {}
-    protected void addItemToCart(Product item) {}
-    protected void removeItemFromCart(Product item) {}
-    protected List<Product> generateShoppingList() { return null; }
+    
+    protected void addItemToCart(Product item) {
+        cart.add(item);
+    }
+    
+    protected void removeItemFromCart(Product item) {
+        cart.remove(item);
+    }
+    
+    protected List<Product> generateShoppingList() { 
+        return null; 
+    }
+    
     protected void checkout() {}
-    protected double calculatePriceOfCart() { return 0;}
+    protected void chooseCashier() {}
+    
+    protected double calculatePriceOfCart() { 
+        double totalCost = 0;
+        
+        for (Product p : cart) {
+            totalCost += p.getPrice();
+        }
+        
+        return totalCost;
+    }
 }

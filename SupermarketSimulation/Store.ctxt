@@ -1,4 +1,5 @@
 #BlueJ class context
 comment0.target=Store
-comment0.text=\r\n\ Write\ a\ description\ of\ class\ Store\ here.\r\n\ \r\n\ @author\ (your\ name)\ \r\n\ @version\ (a\ version\ number\ or\ a\ date)\r\n
-numComments=1
+comment1.params=
+comment1.target=Store()
+numComments=2
