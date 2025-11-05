@@ -76,7 +76,7 @@ public class LandingPage extends World
         titleLabel = new Label("SUPERMARKET SIMULATOR", 56);
         titleLabel.setLineColor(new Color(0, 0, 0, 0));
         titleLabel.setFillColor(new Color(255, 255, 255, titleOpacity));
-        subtitleLabel = new Label("BUILD. SELL. GROW.", 22);
+        subtitleLabel = new Label("BUILD. SAIFUL. WITH.", 22);
         subtitleLabel.setLineColor(new Color(0, 0, 0, 0));
         subtitleLabel.setFillColor(new Color(225, 225, 225, titleOpacity));
         addObject(titleLabel, 600, titleY);
