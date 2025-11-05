@@ -11,7 +11,10 @@ public abstract class Customer extends SuperSmoothMover
 {
     protected List<Product> shoppingList;
     protected List<Product> cart;
+    protected Product currentProductTarget;
     
+    protected int facing; // 0: top, 1: right, 2: down, 3: left
+    protected double[][] targetLocation;
     protected double budget; 
     protected double movementSpeed; 
     protected double timeInLine;
@@ -27,7 +30,17 @@ public abstract class Customer extends SuperSmoothMover
     protected void chooseStore() {}
     protected void enterStore() {}
     protected void leaveStore() {}
-    protected void move() {}
+    protected void move() {
+        
+    }
+    
+    protected void moveTowards(double[][] targetLocation) {
+        
+    }
+    
+    protected void turnTowards(int direction) {
+        
+    }
     
     protected void addItemToCart(Product item) {
         cart.add(item);
