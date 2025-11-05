@@ -7,7 +7,7 @@ import java.util.List;
  * @author (your name) 
  * @version (a version number or a date)
  */
-public abstract class Customer extends SmoothMover
+public abstract class Customer extends SuperSmoothMover
 {
     private List<Product> shoppingList;
     private List<Product> cart;

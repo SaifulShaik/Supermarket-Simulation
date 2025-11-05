@@ -1,6 +1,6 @@
 #BlueJ class context
 comment0.target=Customers
-comment0.text=\n<<<<<<<\ Updated\ upstream\n<<<<<<<<\ Updated\ upstream\:SupermarketSimulation/Cashier.java\n\ Write\ a\ description\ of\ class\ Cashier\ here.\n\=\=\=\=\=\=\=\n<<<<<<<<\ Updated\ upstream\:SupermarketSimulation/GlobalEvent.java\n\ Write\ a\ description\ of\ class\ GlobalEvent\ here.\n>>>>>>>\ Stashed\ changes\n\=\=\=\=\=\=\=\=\n\ Write\ a\ description\ of\ class\ Customers\ here.\n>>>>>>>>\ Stashed\ changes\:SupermarketSimulation/Customers.java\n\ \n\ @author\ (your\ name)\ \n\ @version\ (a\ version\ number\ or\ a\ date)\n
+comment0.text=\r\n\ \r\n\ @author\ (your\ name)\ \r\n\ @version\ (a\ version\ number\ or\ a\ date)\r\n
 comment1.params=
 comment1.target=Customers()
 comment2.params=
