@@ -2,4 +2,14 @@
 comment0.target=Store
 comment1.params=
 comment1.target=Store()
-numComments=2
+comment2.params=x\ y\ value
+comment2.target=void\ setBlockedCells(int,\ int,\ boolean)
+comment3.params=x\ y
+comment3.target=boolean\ isInBounds(int,\ int)
+comment4.params=x\ y
+comment4.target=boolean\ isBlocked(int,\ int)
+comment5.params=
+comment5.target=int\ getGridWidth()
+comment6.params=
+comment6.target=int\ getGridHeight()
+numComments=7
