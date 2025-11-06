@@ -22,11 +22,17 @@ public class SimulationWorld extends World
         Butcher butcher = new Butcher();
         addObject(butcher, getWidth()/2+ 480, getHeight()/2);
         
-        // add the Cashier
-        Cashier cashier1 = new Cashier();
-        addObject(cashier1, getWidth()/2 + 200, getHeight()/2);
-        Cashier cashier2 = new Cashier();
-        addObject(cashier2, getWidth()/2 + 300, getHeight()/2);
+        // add the Cashiers to store 1
+        addObject(new Cashier(), getWidth()/2 + 200, getHeight()/2);
+        addObject(new Cashier(), getWidth()/2 + 300, getHeight()/2);
+        
+        // add cashier to store 2
+        addObject(new Store2Cashier(), getWidth()/2-230, getHeight()/2+130);
+        addObject(new Store2Cashier(), getWidth()/2-330, getHeight()/2+130);
+        
+        // add fridge to store 2
+        //addObject(new Fridge(),60,170);
+        
     }
     public void act () 
     {
@@ -113,6 +119,7 @@ public class SimulationWorld extends World
         return (int)(v + Math.signum(v) * 0.5);
     }
 }
+
 
 
 

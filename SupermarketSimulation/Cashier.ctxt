@@ -1,7 +1,12 @@
 #BlueJ class context
 comment0.target=Cashier
+comment0.text=\n\ BasicCashier\n\ Basically\ an\ animated\ objects\ in\ the\ store.\n\ It\ used\ to\ images\ for\ animation\ effect\n\ By\ default\ is\ uses\ cashier/cashier1.png\ and\ cashier/cashier2.png\n\ The\ subclass\ can\ specify\ alternative\ by\ calling\ the\ public\ Cashier(String\ frame0,\ String\ frame1)\ constructor\\\n\ \n\ @author\:\ Owen\ Kung\n\ @version\:Nov\ 4,\ 2025\n
 comment1.params=
 comment1.target=Cashier()
-comment2.params=
-comment2.target=void\ act()
-numComments=3
+comment1.text=\n\ Use\ default\ images\ for\ cashier\ if\ not\ file\ name\ specified\n
+comment2.params=frame0\ frame1
+comment2.target=Cashier(java.lang.String,\ java.lang.String)
+comment2.text=\n\ Use\ specifiedfile\ for\ cashier\ images\n
+comment3.params=
+comment3.target=void\ act()
+numComments=4

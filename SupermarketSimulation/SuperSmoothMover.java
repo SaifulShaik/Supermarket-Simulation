@@ -32,7 +32,7 @@ import greenfoot.*;  // (World, Actor, GreenfootImage, and Greenfoot)
  * @author Neil Brown
  * 
  * @version 1.31.jc -- Modified by Jordan Cohen
- * @version Oct 2026 -- Modified by Owen
+ * @version Oct 2026 -- Modified by Owen Kung
  * -Added protected void showText(String text, int x, int y)
  * 
  */
@@ -325,7 +325,7 @@ public abstract class SuperSmoothMover extends Actor
      * Help to show status of an actor.
      * The text will be removed in a short time
      * @param String text: text to be displayed
-     * @param Color colr:color of text to display
+     * @param Color colror:color of text to display
      * @param int x: x coordinate to display text
      * @param int y: y coordinate to display text
      */
@@ -334,5 +334,6 @@ public abstract class SuperSmoothMover extends Actor
         getWorld().addObject(new FloatingText(text,color), x,y);
     }
 }
+
 
 

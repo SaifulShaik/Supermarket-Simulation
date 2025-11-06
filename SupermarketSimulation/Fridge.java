@@ -1,19 +1,22 @@
 import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
+import greenfoot.GreenfootImage;
 
 /**
  * Write a description of class Fridge here.
  * 
- * @author (your name) 
- * @version (a version number or a date)
+ * @author Owen Kung
+ * @version Nov 5, 2025
  */
 public class Fridge extends Furniture
 {
-    /**
-     * Act - do whatever the Fridge wants to do. This method is called whenever
-     * the 'Act' or 'Run' button gets pressed in the environment.
-     */
-    public void act()
+    private GreenfootImage image;
+    
+    public Fridge()
     {
-        // Add your action code here.
+        image=new GreenfootImage("furniture/fridge.png");
+        int width=image.getWidth()/5;
+        int height=image.getHeight()/5;
+        image.scale(width,height);
+        setImage(image);
     }
 }
