@@ -11,5 +11,5 @@ comment4.params=percent
 comment4.target=void\ applyDiscount(double)
 comment5.params=
 comment5.target=void\ unlock()
-comment5.text=\n\ \ \ protected\ abstract\ int\ getStock()\ {\ \n\ \ \ \ \ \ \ \ return\ stock;\ \n\ \ \ \ }\n\ \ \ \ \n\ \ \ \ protected\ void\ setStock(int\ amount)\ {\n\ \ \ \ \ \ \ \ stock\ \=\ amount;\n\ \ \ \ }\n
+comment5.text=\r\n\ \ \ protected\ abstract\ int\ getStock()\ {\ \r\n\ \ \ \ \ \ \ \ return\ stock;\ \r\n\ \ \ \ }\r\n\ \ \ \ \r\n\ \ \ \ protected\ void\ setStock(int\ amount)\ {\r\n\ \ \ \ \ \ \ \ stock\ \=\ amount;\r\n\ \ \ \ }\r\n
 numComments=6

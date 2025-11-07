@@ -1,5 +1,5 @@
 import greenfoot.*;
-/*
+/**
  * Cashies for store 2
  * Basically an animated objects in the store.
  * 

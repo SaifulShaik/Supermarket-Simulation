@@ -1,8 +1,10 @@
 #BlueJ class context
 comment0.target=Furniture
-comment0.text=\n\ \n
-comment1.params=
-comment1.target=Furniture()
+comment0.text=\r\n\ Furniture\ Class\r\n\ represents\ a\ piece\ of\ furniture\ (shelf,\ bin,\ etc.)\r\n\ \r\n\ @author\ Joe\ \r\n\ @version\ November\ 2025\r\n
+comment1.params=store\ x\ y
+comment1.target=Furniture(Store,\ int,\ int)
 comment2.params=
-comment2.target=void\ stock()
-numComments=3
+comment2.target=Furniture()
+comment3.params=
+comment3.target=void\ stock()
+numComments=4
