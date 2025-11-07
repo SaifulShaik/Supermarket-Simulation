@@ -1,5 +1,13 @@
 import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 
+/**
+ * Node system 
+ * represents one tile that is part of a path
+ * has a link to the previous nodes of the path
+ * 
+ * @author Joe Zhuo
+ * @version November 2025
+ */
 public class Node
 {
     private int x;

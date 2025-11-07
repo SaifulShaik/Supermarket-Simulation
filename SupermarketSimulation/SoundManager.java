@@ -1,8 +1,8 @@
 /**
- * Write a description of class SoundManager here.
+ * Class to store, manage, and play all sounds
  * 
- * @author (your name) 
- * @version (a version number or a date)
+ * @author Joe 
+ * @version November 2025
  */
 public class SoundManager  
 {

@@ -1,5 +1,6 @@
 #BlueJ class context
 comment0.target=Furniture
+comment0.text=\r\n\ Represents\ an\ object\ that\ takes\ up\ a\ tile\ of\ space\ in\ a\ store\r\n\ \r\n\ @author\ Joe\ \r\n\ @version\ November\ 2025\r\n
 comment1.params=
 comment1.target=Furniture()
 numComments=2

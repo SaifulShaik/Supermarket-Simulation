@@ -1,13 +1,13 @@
 #BlueJ class context
 comment0.target=SimulationWorld
-comment0.text=\n\ Write\ a\ description\ of\ class\ MyWorld\ here.\n\ \n\ @author\ Owen\ Kung\n\ @version\ Nov\ 4\ 2025\n
+comment0.text=\r\n\ Write\ a\ description\ of\ class\ MyWorld\ here.\r\n\ \r\n\ @author\ Owen\ Kung\r\n\ @version\ Nov\ 4\ 2025\r\n
 comment1.params=
 comment1.target=SimulationWorld()
 comment2.params=
 comment2.target=void\ act()
 comment3.params=actorsToSort\ world
 comment3.target=void\ zSort(java.util.ArrayList,\ greenfoot.World)
-comment3.text=\n\ Z-sort\ so\ actors\ with\ higher\ Y\ (lower\ on\ screen)\ render\ in\ front.\n\ Uses\ precise\ Y\ for\ SuperSmoothMover\ when\ available.\ Stable\ for\ ties.\n
+comment3.text=\r\n\ Z-sort\ so\ actors\ with\ higher\ Y\ (lower\ on\ screen)\ render\ in\ front.\r\n\ Uses\ precise\ Y\ for\ SuperSmoothMover\ when\ available.\ Stable\ for\ ties.\r\n
 comment4.params=v
 comment4.target=int\ roundAwayFromZero(double)
 comment4.text=Helper\:\ symmetric\ rounding\ that\ rounds\ halves\ away\ from\ zero.

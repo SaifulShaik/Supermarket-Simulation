@@ -1,6 +1,14 @@
 import greenfoot.*; 
 import java.util.*;
 
+/**
+ * Pathfinding system for customers
+ * Can be used in any way
+ * Has one main role: finds the shortest distance from point a to b inside a store
+ *
+ * @author Joe Zhuo
+ * @version November 2025
+ */
 public class Pathfinder
 {
     private Store store;
