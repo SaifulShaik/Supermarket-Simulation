@@ -16,6 +16,16 @@ public class Coke extends Product
         image = new GreenfootImage("product/pop/Pop 3.PNG");
         image.scale(image.getWidth()/2, image.getHeight()/2);
         setImage(image);
+    }
+    /**
+     * Act - do whatever the Coke wants to do. This method is called whenever
+     * the 'Act' or 'Run' button gets pressed in the environment.
+     */
+    public void act()
+    {
+        image = new GreenfootImage("product/pop/Pop 3.PNG");
+        image.scale(image.getWidth()/2, image.getHeight()/2);
+        setImage(image);
         
         //whenever a coke is added to a shelve,
         //increase the stock#
@@ -36,3 +46,5 @@ public class Coke extends Product
         stock=newStockCount;
     }
 }
+
+

@@ -21,15 +21,15 @@ public class Sprite extends Product
         //increase the stock#
         stock++;
     }
-    //Return total number of stock in the store
-    public int getStock()
-    {
-        return stock;
-    }
+
     //Return total number of stock in the store
     public void setStock(int newStockCount)
     {
         stock=newStockCount;
+    }
+    public int getStock()
+    {
+        return stock;
     }
     /*
      * total number of stock currently in the store as a static method
@@ -38,4 +38,7 @@ public class Sprite extends Product
     {
         return stock;
     }
+
 }
+
+

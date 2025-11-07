@@ -1,4 +1,5 @@
 import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
+
 import java.util.ArrayList;
 /*
  * 
@@ -49,4 +50,7 @@ public abstract class Furniture extends SuperSmoothMover
 
         return false; // none found
     }
+
 }
+
+

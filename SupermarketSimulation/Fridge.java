@@ -1,8 +1,12 @@
 import greenfoot.*;
 import java.util.ArrayList;
 
+
+
 public class Fridge extends Furniture {
     private GreenfootImage image;
+    //private final ArrayList<Actor> stockedItems = new ArrayList<>();
+
 
     // Customize layout depending on the fridge image
     private static final int COLS = 6;        // how many per row
@@ -12,12 +16,15 @@ public class Fridge extends Furniture {
     private static final int COL_GAP  = 10;   // horizontal gap
     private static final int ROW_GAP  = 25;   // vertical gap
     private static boolean stocked=false;
+  
+    private int addedToWorldCounter=0;
     public Fridge() {
         stockedItems = new ArrayList<>();
         image = new GreenfootImage("furniture/fridge.png");
         image.scale(image.getWidth()/5, image.getHeight()/5);//make it smaller
         setImage(image);
         stocked=false;
+
     }
     public void act()
     {
@@ -77,13 +84,6 @@ public class Fridge extends Furniture {
         stocked=true;
         
     }
-/*
-    protected void removedFromWorld(World w) {
-        for (Actor a : stockedItems) {
-            if (a.getWorld() != null) w.removeObject(a);
-        }
-        stockedItems.clear();
-    }
-*/
-
 }
+
+

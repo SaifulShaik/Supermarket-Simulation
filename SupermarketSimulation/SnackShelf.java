@@ -52,7 +52,7 @@ public class SnackShelf extends Furniture
         int topLeftX = getX() - fridgeW/2;
         int topLeftY = getY() - fridgeH/2;
 
-        // Place coke, sprite, water
+        
         for (int r = 0; r < ROWS; r++) {
             for (int c = 0; c < COLS; c++) {
                 Product item=null;

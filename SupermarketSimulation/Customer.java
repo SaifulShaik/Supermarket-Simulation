@@ -2,10 +2,10 @@ import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 import java.util.List;
 
 /**
- * Write a description of class Customer here.
+ * An object that represents a customer inside a store
  * 
- * @author (your name) 
- * @version (a version number or a date)
+ * @author Joe
+ * @version November 2025
  */
 public abstract class Customer extends SuperSmoothMover
 {

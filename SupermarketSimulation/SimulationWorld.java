@@ -38,7 +38,7 @@ public class SimulationWorld extends World
         Butcher butcher = new Butcher();
         addObject(butcher, getWidth()/2+ 380, getHeight()/2);
         
-         // add Lettuce Bin ub store 1
+        // add Lettuce Bin ub store 1
         addObject(new LettuceBin(),1010,460);
          // add Carrot Bin ub store 1
         addObject(new CarrotBin(),940,460);
@@ -50,15 +50,13 @@ public class SimulationWorld extends World
         addObject(new SteakWarmer(),1062,250);
         // add SteakHangers to store 1
         addObject(new RawBeefHangers(),920,175);
-        
+ 
         //set paint order for products and shelves to properly display
         setPaintOrder(
             Doritos.class, Lays.class, Ruffles.class,           // snacks (front)
             Coke.class, Water.class, Sprite.class, Fanta.class, // drinks (middle)
             Lettuce.class,Carrot.class,Apple.class,Orange.class,Steak.class,RawBeef.class,
-            SnackShelf.class, Fridge.class, 
-            LettuceBin.class, CarrotBin.class, AppleBin.class,OrangeBin.class, 
-            SteakWarmer.class,RawBeefHangers.class // furniture (back)
+            SnackShelf.class, Fridge.class, LettuceBin.class, CarrotBin.class, AppleBin.class,OrangeBin.class, SteakWarmer.class,RawBeefHangers.class           // furniture (back)
             );
         
     }

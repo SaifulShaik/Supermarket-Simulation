@@ -1,5 +1,15 @@
 import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 
+
+
+/**
+ * Product class
+ * represents a purchasable item inside a store
+ * 
+ * @author Joe
+ * @version November 2025
+ */
+
 public abstract class Product extends SuperSmoothMover
 {
     protected double price;
@@ -19,16 +29,13 @@ public abstract class Product extends SuperSmoothMover
         price *= (1 - (percent / 100));
     }
  
-    //subclass implement public static int getStock()and public static setStock()
-    //make stock a static variable to keep track total number of particular type of item available
-    //Owen Kung
-    
     protected abstract int getStock() ;
     
-    protected abstract void setStock(int amount) ;
-
+    protected abstract void setStock(int amount);
     
     protected void unlock() {
         
     }
 }
+
+

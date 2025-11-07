@@ -1,6 +1,12 @@
 import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 import java.util.List;
 
+/**
+ * Represents a store
+ * 
+ * @author Joe
+ * @version November 2025
+ */
 public class Store extends Actor
 {
     public final int width = 450;
@@ -13,6 +19,7 @@ public class Store extends Actor
     private List<Product> availableProducts;
     
     private boolean[][] blockedCells;
+    private boolean[][] entranceCells;
     private int gridWidth;
     private int gridHeight;
     
@@ -25,6 +32,12 @@ public class Store extends Actor
     public void setBlockedCells(int x, int y, boolean value) {
         if (isInBounds(x, y)) {
             blockedCells[x][y] = value;
+        }
+    }
+    
+    public void setEntranceCells(int x, int y, boolean value) {
+        if (isInBounds(x, y)) {
+            entranceCells[x][y] = value;
         }
     }
     

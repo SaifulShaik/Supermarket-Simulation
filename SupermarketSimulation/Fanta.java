@@ -21,7 +21,8 @@ public class Fanta extends Product
         //increase the stock#
         stock++;
     }
-    //Return total number of stock in the storec
+
+    //Return total number of stock in the store
     public int getStock()
     {
         return stock;
@@ -38,4 +39,7 @@ public class Fanta extends Product
     {
         return stock;
     }
+    
 }
+
+

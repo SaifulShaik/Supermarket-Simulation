@@ -22,7 +22,7 @@ public class Water extends Product
         stock++;
     }
      //Return total number of stock in the store
-    public int getStock()
+    public  int getStock()
     {
         return stock;
     }
@@ -39,3 +39,5 @@ public class Water extends Product
         return stock;
     }
 }
+
+

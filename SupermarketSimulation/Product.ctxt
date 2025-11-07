@@ -1,5 +1,6 @@
 #BlueJ class context
 comment0.target=Product
+comment0.text=\n\ Product\ class\n\ represents\ a\ purchasable\ item\ inside\ a\ store\n\ \n\ @author\ Joe\n\ @version\ November\ 2025\n
 comment1.params=
 comment1.target=Product()
 comment2.params=
