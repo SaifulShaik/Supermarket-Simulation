@@ -54,6 +54,7 @@ public class LandingPage extends World
         
         if (playButton != null && playButton.wasClicked())
         {
+            
             transitionToSimulation();
         }
         
@@ -158,7 +159,8 @@ public class LandingPage extends World
         // Play sound effect if available
         
         // Smooth transition
-        fadeOutAndTransition(new SimulationWorld());
+        fadeOutAndTransition(new Cutscene());
+        
     }
     
     private void transitionToSettings()
