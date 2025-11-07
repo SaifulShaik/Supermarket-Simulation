@@ -56,7 +56,9 @@ public class SimulationWorld extends World
             Doritos.class, Lays.class, Ruffles.class,           // snacks (front)
             Coke.class, Water.class, Sprite.class, Fanta.class, // drinks (middle)
             Lettuce.class,Carrot.class,Apple.class,Orange.class,Steak.class,RawBeef.class,
-            SnackShelf.class, Fridge.class, LettuceBin.class, CarrotBin.class, AppleBin.class,OrangeBin.class, SteakWarmer.class,RawBeefHangers.class           // furniture (back)
+            SnackShelf.class, Fridge.class, 
+            LettuceBin.class, CarrotBin.class, AppleBin.class,OrangeBin.class, 
+            SteakWarmer.class,RawBeefHangers.class // furniture (back)
             );
         
     }
