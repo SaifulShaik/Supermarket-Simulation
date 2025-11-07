@@ -1,5 +1,12 @@
 import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 
+/**
+ * Product class
+ * represents a purchasable item inside a store
+ * 
+ * @author Joe
+ * @version November 2025
+ */
 public abstract class Product extends Actor
 {
     protected double price;
