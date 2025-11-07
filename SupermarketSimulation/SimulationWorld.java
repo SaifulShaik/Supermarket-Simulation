@@ -31,7 +31,7 @@ public class SimulationWorld extends World
         addObject(new Store2Cashier(), getWidth()/2-330, getHeight()/2+130);
         
         // add fridge to store 2
-        //addObject(new Fridge(),60,170);
+        addObject(new Fridge(),75,225);
         
     }
     public void act () 
@@ -119,6 +119,8 @@ public class SimulationWorld extends World
         return (int)(v + Math.signum(v) * 0.5);
     }
 }
+
+
 
 
 

@@ -1,7 +1,10 @@
 #BlueJ class context
 comment0.target=Water
-comment0.text=\n\ Write\ a\ description\ of\ class\ Water\ here.\n\ \n\ @author\ (your\ name)\ \n\ @version\ (a\ version\ number\ or\ a\ date)\n
+comment0.text=\n\ Write\ a\ description\ of\ class\ Water\ here.\n\ \n\ @author\ Owen\ Kung\ \n\ @version\ Nov\ 6\ 2025\n
 comment1.params=
-comment1.target=void\ act()
-comment1.text=\n\ Act\ -\ do\ whatever\ the\ Water\ wants\ to\ do.\ This\ method\ is\ called\ whenever\n\ the\ 'Act'\ or\ 'Run'\ button\ gets\ pressed\ in\ the\ environment.\n
-numComments=2
+comment1.target=Water()
+comment2.params=
+comment2.target=int\ getStock()
+comment3.params=newStockCount
+comment3.target=void\ setStock(int)
+numComments=4

@@ -3,17 +3,34 @@ import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 /**
  * Write a description of class Water here.
  * 
- * @author (your name) 
- * @version (a version number or a date)
+ * @author Owen Kung 
+ * @version Nov 6 2025
  */
 public class Water extends Product
 {
-    /**
-     * Act - do whatever the Water wants to do. This method is called whenever
-     * the 'Act' or 'Run' button gets pressed in the environment.
-     */
-    public void act()
+    private GreenfootImage image;
+     private static int stock=0;//keep track of total stock ih the store
+    
+    public Water()
     {
-        // Add your action code here.
+        image = new GreenfootImage("product/Water.PNG");
+        image.scale(image.getWidth()/2, image.getHeight()/2);
+        setImage(image);
+        
+        //whenever a Water is added to a shelve,
+        //increase the stock#
+        stock++;
+    }
+     //Return total number of stock in the store
+    public static int getStock()
+    {
+        return stock;
+    }
+    //Return total number of stock in the store
+    public static void setStock(int newStockCount)
+    {
+        stock=newStockCount;
     }
 }
+
+

@@ -3,8 +3,8 @@ import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 /**
  * Write a description of class Bin here.
  * 
- * @author (your name) 
- * @version (a version number or a date)
+ * @author Owen Kung
+ * @version Nov 6 2025
  */
 public class Bin extends Furniture
 {
@@ -16,4 +16,10 @@ public class Bin extends Furniture
     {
         // Add your action code here.
     }
+    protected void stock()
+    {
+        
+    }
 }
+
+

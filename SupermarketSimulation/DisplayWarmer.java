@@ -1,10 +1,11 @@
 import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 
 /**
- * Write a description of class DisplayWarmer here.
+ * Display Warmer object in the store.  
+ * It stock up the display warmer and show what's taken away.
  * 
- * @author (your name) 
- * @version (a version number or a date)
+ * @author Owen Kung 
+ * @version Nov 6, 2025
  */
 public class DisplayWarmer extends Furniture
 {
@@ -16,4 +17,10 @@ public class DisplayWarmer extends Furniture
     {
         // Add your action code here.
     }
+    protected void stock()
+    {
+        
+    }
 }
+
+

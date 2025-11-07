@@ -3,11 +3,19 @@ import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 /**
  * Write a description of class Coke here.
  * 
- * @author (your name) 
- * @version (a version number or a date)
+ * @author Owen Kung 
+ * @version Nov 6 2025
  */
 public class Coke extends Product
 {
+    private GreenfootImage image;
+    
+    public Coke()
+    {
+        image = new GreenfootImage("product/pop/Pop 3.PNG");
+        image.scale(image.getWidth()/2, image.getHeight()/2);
+        setImage(image);
+    }
     /**
      * Act - do whatever the Coke wants to do. This method is called whenever
      * the 'Act' or 'Run' button gets pressed in the environment.
@@ -17,3 +25,5 @@ public class Coke extends Product
         // Add your action code here.
     }
 }
+
+
