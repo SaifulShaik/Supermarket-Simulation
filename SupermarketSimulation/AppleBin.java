@@ -2,22 +2,24 @@ import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 import java.util.ArrayList;
 
 /**
- * Write a description of class Bin here.
+ * Bin with Apples
+ * Has it's own stocking mechnism
  * 
  * @author Owen Kung
- * @version Nov 6 2025
+ * @version Nov 2025
  */
-public class AppleBin extends Furniture
+public class AppleBin extends DisplayUnit
 {
     private GreenfootImage image;
     
-    private static final int COLS = 10;        // how many per row
-    private static final int ROWS = 3;        // how many rows
-    private static final int LAYERS = 5;   // how many layers (higher = taller pile)
-    private static final int LEFT_PAD = 10;   // distance from fridge’s left edge
-    private static final int TOP_PAD  = 30;   // distance from fridge’s top
-    private static final int COL_GAP  = 5;   // horizontal gap
-    private static final int ROW_GAP  = 5;   // vertical gap
+    //Display parameters
+    private static final int COLS = 10;         // how many per row
+    private static final int ROWS = 3;          // how many rows
+    private static final int LAYERS = 5;        // how many layers (higher = taller pile)
+    private static final int LEFT_PAD = 10;     // distance from fridge’s left edge
+    private static final int TOP_PAD  = 30;     // distance from fridge’s top
+    private static final int COL_GAP  = 5;      // horizontal gap
+    private static final int ROW_GAP  = 5;      // vertical gap
     private static boolean stocked=false;
     
     public AppleBin() 

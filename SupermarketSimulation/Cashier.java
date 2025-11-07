@@ -1,5 +1,5 @@
 import greenfoot.*;
-/*
+/**
  * BasicCashier
  * Basically an animated objects in the store.
  * It used to images for animation effect
@@ -12,9 +12,10 @@ import greenfoot.*;
 public class Cashier extends SuperSmoothMover
 {
     private GreenfootImage[] frames;
-    private int frame = 0;   //frame index 
-    private int tick = 0;   //framee counter
-    private int delay = 50; // lower = faster animation
+    //animation parameters
+    private int frame = 0;      //frame index 
+    private int tick = 0;       //framee counter
+    private int delay = 50;     // lower = faster animation
 
     /*
      * Use default images for cashier if not file name specified

@@ -1,21 +1,20 @@
 import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
-
 import java.util.ArrayList;
 /*
  * 
  */
-public abstract class Furniture extends SuperSmoothMover
+public abstract class DisplayUnit extends SuperSmoothMover
 {
     protected ArrayList<Product> stockedItems;
     
-    public Furniture() {}
+    public DisplayUnit() {}
     protected abstract void stock();
     
-            /*
+    /*
      * Clear whatever is in the display shelves
      */
     protected void clear()
-    {  // Remove old items
+    {  //remove old items
         for (Product p : stockedItems) {
             if (p.getWorld() != null) {
                 p.setStock(0);//clean the stock count
@@ -23,7 +22,6 @@ public abstract class Furniture extends SuperSmoothMover
             }
         }
         stockedItems.clear();
-        
     } 
     /*
      * retrieve an item from display shelve

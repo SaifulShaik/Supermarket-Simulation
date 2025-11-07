@@ -1,5 +1,10 @@
 import greenfoot.*;
-
+/**
+ * Butch Animated Figure in the shop
+ * 
+ * @author Owen Kung
+ * @version Nov 4 2025
+ */
 public class Butcher extends SuperSmoothMover
 {
     private GreenfootImage[] frames;

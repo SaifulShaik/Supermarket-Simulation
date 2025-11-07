@@ -7,7 +7,7 @@ import java.util.ArrayList;
  * @author Owen Kung
  * @version Nov 6 2025
  */
-public class LettuceBin extends Furniture
+public class LettuceBin extends DisplayUnit
 {
     private GreenfootImage image;
     

@@ -3,12 +3,8 @@ import java.util.ArrayList;
 
 
 
-public class Fridge extends Furniture {
+public class Fridge extends DisplayUnit {
     private GreenfootImage image;
-    //private final ArrayList<Actor> stockedItems = new ArrayList<>();
-
-
-    // Customize layout depending on the fridge image
     private static final int COLS = 6;        // how many per row
     private static final int ROWS = 4;        // how many rows
     private static final int LEFT_PAD = 10;   // distance from fridge’s left edge

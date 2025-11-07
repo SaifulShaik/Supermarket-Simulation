@@ -8,7 +8,7 @@ import java.util.ArrayList;
  * @author Owen Kung 
  * @version Nov 6, 2025
  */
-public class RawBeefHangers extends Furniture
+public class RawBeefHangers extends DisplayUnit
 {
     private GreenfootImage image;
     

@@ -7,7 +7,7 @@ import java.util.ArrayList;
  * @author Owen Kung
  * @version Nov 6 2025
  */
-public class OrangeBin extends Furniture
+public class OrangeBin extends DisplayUnit
 {
     private GreenfootImage image;
     

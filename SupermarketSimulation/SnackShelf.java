@@ -7,7 +7,7 @@ import java.util.ArrayList;
  * @author Owen Kung
  * @version Nov 6, 2025
  */
-public class SnackShelf extends Furniture
+public class SnackShelf extends DisplayUnit
 {
     private GreenfootImage image;
     

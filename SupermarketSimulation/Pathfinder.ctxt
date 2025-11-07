@@ -1,5 +1,6 @@
 #BlueJ class context
 comment0.target=Pathfinder
+comment0.text=\n\ Pathfinding\ system\ for\ customers\n\ Can\ be\ used\ in\ any\ way\n\ Has\ one\ main\ role\:\ finds\ the\ shortest\ distance\ from\ point\ a\ to\ b\ inside\ a\ store\n\n\ @author\ Joe\ Zhuo\n\ @version\ November\ 2025\n
 comment1.params=store
 comment1.target=Pathfinder(Store)
 comment2.params=sx\ sy\ tx\ ty
