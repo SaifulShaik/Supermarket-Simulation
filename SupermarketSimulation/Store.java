@@ -1,5 +1,5 @@
 import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
-import java.util.List;
+import java.util.*;
 
 /**
  * Represents a store
@@ -9,35 +9,46 @@ import java.util.List;
  */
 public class Store extends Actor
 {
-    public final int width = 450;
-    public final int height = 500;
-    public final int cellSize = 50;
+    private int width;
+    private int height;
+    private int cellSize;
     
     public static final int maxCustomers = 8;
     private int currentCustomers;
     
     private List<Product> availableProducts;
     
-    private boolean[][] blockedCells;
-    private boolean[][] entranceCells;
+    private Node[][] nodes;
+    
     private int gridWidth;
     private int gridHeight;
     
-    public Store() {
+    public Store(int width, int height, int cellSize) {
+        this.width = width;
+        this.height = height;
+        this.cellSize = cellSize;
         gridWidth = width / cellSize;
         gridHeight = height / cellSize;
-        blockedCells = new boolean[gridWidth][gridHeight];
+        
+        nodes = new Node[gridWidth][gridHeight];
+        
+        for (int x = 0; x < gridWidth; x++) {
+            for (int y = 0; y < gridHeight; y++) {
+                nodes[x][y] = new Node(x, y, null, 0, 0, false, false);
+            }
+        }
+
     }
     
-    public void setBlockedCells(int x, int y, boolean value) {
+    public void setBlockedNode(int x, int y, boolean blocked) {
         if (isInBounds(x, y)) {
-            blockedCells[x][y] = value;
+            nodes[x][y].setBlocked(blocked);
         }
     }
-    
-    public void setEntranceCells(int x, int y, boolean value) {
+
+    public void setEntranceNode(int x, int y, boolean entrance) {
         if (isInBounds(x, y)) {
-            entranceCells[x][y] = value;
+            nodes[x][y].setEntrance(entrance);
         }
     }
     
@@ -46,7 +57,22 @@ public class Store extends Actor
     }
     
     public boolean isBlocked(int x, int y) {
-        return blockedCells[x][y] && isInBounds(x, y);
+        return isInBounds(x, y) && nodes[x][y].checkIsBlocked();
+    }
+    
+    public boolean isEntrance(int x, int y) {
+        return isInBounds(x, y) && nodes[x][y].checkIsEntrance();
+    }
+    
+    public List<Node> getEntranceNodes() {
+        List<Node> entrances = new ArrayList<>();
+        for (int x = 0; x < gridWidth; x++) {
+            for (int y = 0; y < gridHeight; y++) {
+                Node n = nodes[x][y];
+                if (n.checkIsEntrance()) entrances.add(n);
+            }
+        }
+        return entrances;
     }
     
     public int getGridWidth() { 
@@ -55,5 +81,25 @@ public class Store extends Actor
     
     public int getGridHeight() { 
         return gridHeight; 
+    }
+    
+    public Node getNode(int x, int y) {
+        if (!isInBounds(x, y)) {
+            return null;
+        }
+        return nodes[x][y];
+    }
+    
+    public double[][] getCellCenter(int x, int y) {
+        if (!isInBounds(x, y)) return null;
+    
+        double worldX = x * cellSize + cellSize / 2.0;
+        double worldY = y * cellSize + cellSize / 2.0;
+    
+        return new double[][] { { worldX, worldY } };
+    }
+    
+    public List<Product> getAvailableProducts() {
+        return availableProducts;
     }
 }
