@@ -50,7 +50,6 @@ public abstract class Customer extends SuperSmoothMover
     public void act() {
         if (currentStore == null) {
             chooseStore();
-            enterStore();
         }
         else if (currentNode == null) {
             moveToStore();
@@ -75,11 +74,7 @@ public abstract class Customer extends SuperSmoothMover
         if (!stores.isEmpty()) {
             currentStore = stores.get(0);
         }
-    }
-    
-     protected void enterStore() {
-        if (currentStore == null) return;
-
+        
         List<Node> entrances = currentStore.getEntranceNodes();
         if (!entrances.isEmpty()) {
             targetNode = entrances.get(Greenfoot.getRandomNumber(entrances.size()));
