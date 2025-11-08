@@ -39,6 +39,10 @@ public abstract class Product extends SuperSmoothMover
     public Node getNode() {
         return node;
     }
+    
+    public void setNode(Node node) {
+        this.node = node;
+    }
 }
 
 

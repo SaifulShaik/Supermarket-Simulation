@@ -31,6 +31,7 @@ public class Store extends Actor
         this.cellSize = cellSize;
         gridWidth = width / cellSize;
         gridHeight = height / cellSize;
+        availableProducts = new ArrayList<Product>();
         
         nodes = new Node[gridWidth][gridHeight];
         
@@ -51,18 +52,17 @@ public class Store extends Actor
             
             // entrance node
             nodes[23][21].setEntrance(true);
-        }
-    }
-    
-    public void setBlockedNode(int x, int y, boolean blocked) {
-        if (isInBounds(x, y)) {
-            nodes[x][y].setBlocked(blocked);
-        }
-    }
-
-    public void setEntranceNode(int x, int y, boolean entrance) {
-        if (isInBounds(x, y)) {
-            nodes[x][y].setEntrance(entrance);
+            
+            // add products
+            Coke coke = new Coke();
+            availableProducts.add(coke);
+            coke.setNode(nodes[3][13]);
+            /*availableProducts.add(new Doritos());
+            availableProducts.add(new Fanta());
+            availableProducts.add(new Water());
+            availableProducts.add(new Lays());
+            availableProducts.add(new Sprite());
+            availableProducts.add(new Ruffles());*/
         }
     }
     

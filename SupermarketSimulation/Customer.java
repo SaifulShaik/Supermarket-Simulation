@@ -14,6 +14,7 @@ public abstract class Customer extends SuperSmoothMover
     protected Product currentProductTarget;
     
     protected Node targetNode;
+    protected List<Node> currentPath;
     protected Node currentNode;
     
     private Pathfinder pathfinder;
@@ -30,7 +31,6 @@ public abstract class Customer extends SuperSmoothMover
     private Store currentStore;
     
     public Customer() {
-        shoppingList = generateShoppingList();
         cart = new ArrayList<>();
         budget = 20 + Greenfoot.getRandomNumber(81); //20 - 100 dollar budget
         movementSpeed = 1 + (Greenfoot.getRandomNumber(21) / 10); // 1-3 peed
@@ -39,7 +39,6 @@ public abstract class Customer extends SuperSmoothMover
     }
     
     public Customer(int budget, int speed) {
-        shoppingList = generateShoppingList();
         cart = new ArrayList<>();
         this.budget = budget;
         movementSpeed = speed;
@@ -59,11 +58,16 @@ public abstract class Customer extends SuperSmoothMover
             if (currentProductTarget == null) {
                 chooseNextProduct();
             }
-        } else if (!hasPaid) {
-            checkout();
-        } else {
-            leaveStore();
+        } 
+        else {
+            getWorld().removeObject(this);
         }
+        /*else if (!hasPaid) {
+            checkout();
+        } 
+        else {
+            leaveStore();
+        }*/
 
     }
     
@@ -74,6 +78,8 @@ public abstract class Customer extends SuperSmoothMover
         if (!stores.isEmpty()) {
             currentStore = stores.get(0);
         }
+        
+        shoppingList = generateShoppingList();
         
         List<Node> entrances = currentStore.getEntranceNodes();
         if (!entrances.isEmpty()) {
@@ -138,53 +144,48 @@ public abstract class Customer extends SuperSmoothMover
     }
     
     protected void moveTowards(Node targetNode) {
-        if (targetNode == null || currentNode == null || pathfinder == null) return;
-    
-        List<Node> path = pathfinder.findPath(currentNode.getX(), currentNode.getY(), targetNode.getX(), targetNode.getY());
-        
-        if (path.isEmpty()) return;
-    
-        Node nextNode = null;
-    
-        if (canAccessItem(currentProductTarget) && path.size() > 1) {
-            nextNode = path.get(path.size() - 2); 
-        } 
-        else if (path.size() > 1) {
-            nextNode = path.get(1); 
-        } 
-        else {
-            nextNode = path.get(0); 
+        if (targetNode == null || currentNode == null || pathfinder == null) {
+            return;
         }
     
-        if (nextNode == null) return;
-    
-        double[][] loc = currentStore.getCellCenter(nextNode.getX(), nextNode.getY());
+        if (currentPath == null || currentPath.isEmpty()) {
+            currentPath = pathfinder.findPath(currentNode.getX(), currentNode.getY(), targetNode.getX(), targetNode.getY());
+            
+            if (currentPath == null || currentPath.isEmpty()) return;
+        }
         
-        if (loc != null) {
-            double dx = loc[0][0] - getX();
-            double dy = loc[0][1] - getY();
-            double dist = Math.sqrt(dx*dx + dy*dy);
+        if (canAccessItem(currentProductTarget)) return;
+        
+        Node nextNode = currentPath.get(0);
     
-            if (dist <= movementSpeed) {
-                setLocation((int)loc[0][0], (int)loc[0][1]);
+        double[][] location = currentStore.getCellCenter(nextNode.getX(), nextNode.getY());
+        
+        if (location != null) {
+            double dx = location[0][0] - getX();
+            double dy = location[0][1] - getY();
+            
+            if (Math.hypot(dx, dy) < 1) {
+                currentPath.remove(0);
                 currentNode = nextNode;
-            } else {
-                double nx = getX() + dx / dist * movementSpeed;
-                double ny = getY() + dy / dist * movementSpeed;
-                setLocation((int)nx, (int)ny);
+                return;
             }
+            
+            double angle = Math.atan2(dy, dx);
+            
+            double newX = getX() + Math.cos(angle) * movementSpeed;
+            double newY = getY() + Math.sin(angle) * movementSpeed;
+    
+            setLocation(newX, newY);
         }
     }
     
-    protected void turnTowards(int direction) {
-        
-    }
+    // do proper turning later
+    protected void turnTowards(int direction) {}
     
     protected void chooseNextProduct() {
-        // call checkout when list is empty
         if (shoppingList == null || shoppingList.isEmpty()) {
             currentProductTarget = null;
-            return;
+            return; // call checkout when list is empty later
         }
         
         currentProductTarget = shoppingList.get(0);
