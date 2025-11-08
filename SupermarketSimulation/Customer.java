@@ -52,6 +52,9 @@ public abstract class Customer extends SuperSmoothMover
             chooseStore();
             enterStore();
         }
+        else if (currentNode == null) {
+            moveToStore();
+        }
         else if (!shoppingList.isEmpty()) {
             move();
             if (currentProductTarget == null) {
@@ -82,13 +85,6 @@ public abstract class Customer extends SuperSmoothMover
             targetNode = entrances.get(Greenfoot.getRandomNumber(entrances.size()));
         }
     
-        currentNode = getClosestNodeToCustomer();
-    
-        if (currentNode != null) {
-            double[][] loc = currentStore.getCellCenter(currentNode.getX(), currentNode.getY());
-            setLocation((int)loc[0][0], (int)loc[0][1]);
-        }
-    
         pathfinder = new Pathfinder(currentStore);
     }
     
@@ -99,8 +95,6 @@ public abstract class Customer extends SuperSmoothMover
     }
     
     protected void move() {
-        if (currentNode == null || currentStore == null) return;
-    
         if (currentProductTarget == null && !shoppingList.isEmpty()) {
             chooseNextProduct();
         }
@@ -114,6 +108,20 @@ public abstract class Customer extends SuperSmoothMover
                 currentProductTarget = null;
             }
         }
+    }
+    
+    protected void moveToStore() {
+        double dx = targetNode.getWorldX() - getX();
+        double dy = targetNode.getWorldY() - getY();
+        
+        if (dx < 1 && dy < 1) currentNode = targetNode;
+        
+        double angle = Math.atan2(dy, dx);
+        
+        double newX = getX() + Math.cos(angle) * movementSpeed;
+        double newY = getY() + Math.sin(angle) * movementSpeed;
+        
+        setLocation(newX, newY);
     }
     
     protected boolean canAccessItem(Product p) {
@@ -133,8 +141,6 @@ public abstract class Customer extends SuperSmoothMover
         }
         return false;                           
     }
-    
-    protected void moveToStore() {}
     
     protected void moveTowards(Node targetNode) {
         if (targetNode == null || currentNode == null || pathfinder == null) return;
@@ -233,27 +239,5 @@ public abstract class Customer extends SuperSmoothMover
         }
         
         return totalCost;
-    }
-    
-    protected Node getClosestNodeToCustomer() {
-        Node closest = null;
-        double minDist = Double.MAX_VALUE;
-    
-        for (int x = 0; x < currentStore.getGridWidth(); x++) {
-            for (int y = 0; y < currentStore.getGridHeight(); y++) {
-                Node n = currentStore.getNode(x, y);
-                
-                double dx = n.getWorldX() - getX();
-                double dy = n.getWorldY() - getY();
-                
-                double dist = dx*dx + dy*dy;
-                
-                if (dist < minDist) {
-                    minDist = dist;
-                    closest = n;
-                }
-            }
-        }
-        return closest;
     }
 }
