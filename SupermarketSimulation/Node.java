@@ -15,15 +15,20 @@ public class Node
     
     public Node previousNode;
     
-    public int distanceFromStart;
-    public int distanceToGoal;
+    private int distanceFromStart;
+    private int distanceToGoal;
     
-    public Node(int x, int y, Node previousNode, int distanceFromStart, int distanceToGoal) {
+    private boolean isBlocked;
+    private boolean isEntrance;
+    
+    public Node(int x, int y, Node previousNode, int distanceFromStart, int distanceToGoal, boolean isBlocked, boolean isEntrance) {
         this.x = x;
         this.y = y;
         this.previousNode = previousNode;
         this.distanceFromStart = distanceFromStart;
         this.distanceToGoal = distanceToGoal;
+        this.isBlocked = isBlocked;
+        this.isEntrance = isEntrance;
     }
     
     public int getTotalDistance() {
@@ -44,8 +49,16 @@ public class Node
         return distanceToGoal;
     }
     
+    public void setDistanceToGoal(int amount) {
+        distanceToGoal = amount;
+    }
+    
     public int getDistanceFromStart() {
         return distanceFromStart;
+    }
+    
+    public void setDistanceFromStart(int amount) {
+        distanceFromStart = amount;
     }
     
     public Node getPreviousNode() {
@@ -58,5 +71,29 @@ public class Node
     
     public int getY() {
         return y;
+    }
+    
+    public boolean checkIsBlocked() {
+        return isBlocked;
+    }
+    
+    public void setBlocked(boolean blocked) {
+        isBlocked = blocked;
+    }
+    
+    public boolean checkIsEntrance() {
+        return isEntrance;
+    }
+    
+    public void setEntrance(boolean entrance) {
+        isEntrance = entrance;
+    }
+    
+    public int getWorldX() {
+        return x * 20 + 20 / 2;
+    }
+    
+    public int getWorldY() {
+        return y * 20 + 20 / 2;
     }
 }
