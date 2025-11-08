@@ -6,7 +6,7 @@ import greenfoot.*;
  * This is particularly helpful to display the status of a player and create visual effects
  * 
  * @author: Owen Kung
- * @version: Oct 2025  //borrowed from vehicle simulation
+ * @version: Oct 2025  //reused from vehicle simulation
  */
 public class FloatingText extends Actor
 {
@@ -38,12 +38,14 @@ public class FloatingText extends Actor
         GreenfootImage img = new GreenfootImage(message, 20, color, new Color(0,0,0,0));//custom color, transparent bakground
         setImage(img);
     }
-
+    /*
+     * Determine how long the text will stay on the screen
+     */
     public void act() 
     {
         timer++;
-        getImage().setTransparency(255 - (timer * 8)); //fade out
-        if (timer > 30) {
+        getImage().setTransparency(255 - (timer * 4)); //fade out
+        if (timer > 60) {
             getWorld().removeObject(this);
         }
     }

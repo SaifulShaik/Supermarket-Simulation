@@ -2,23 +2,38 @@ import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 import java.util.ArrayList;
 
 /**
- * Write a description of class MyWorld here.
+ * Supermarket Simulation World
+ * 
  * 
  * @author Owen Kung
  * @version Nov 4 2025
  */
 public class SimulationWorld extends World
 {
-    //public static final int WORLD_WIDTH = 1048;
-    //public static final int WORLD_HEIGHT = 514;
     private static final GreenfootImage bg = new GreenfootImage("background.png");
+    
+    //Avaialble product names, global reference
+    public static String PRODUCT_COKE="Coke";
+    public static String PRODUCT_SPRITE="Sprite";
+    public static String PRODUCT_FANTA="Fanta";
+    public static String PRODUCT_WATER="Water";
+    public static String PRODUCT_DORITOS="Doritos";
+    public static String PRODUCT_LAYS="Lays";
+    public static String PRODUCT_RUFFLES="Ruffles";
+    public static String PRODUCT_STEAK="Steak";
+    public static String PRODUCT_RAW_BEEF="Raw Beef";
+    public static String PRODUCT_LETTUCE="Lettuce";
+    public static String PRODUCT_CARROT="Carrot";
+    public static String PRODUCT_APPLE="Apple";
+    public static String PRODUCT_ORANGE="Orange";
+    
+
     public SimulationWorld()
     { 
              
         super(bg.getWidth(), bg.getHeight(), 1);
         setBackground(bg); 
-        
-
+    
         
         // add the Cashiers to store 1
         addObject(new Cashier(), getWidth()/2 + 200, getHeight()/2);
@@ -28,10 +43,12 @@ public class SimulationWorld extends World
         addObject(new Store2Cashier(), getWidth()/2-230, getHeight()/2+130);
         addObject(new Store2Cashier(), getWidth()/2-330, getHeight()/2+130);
         
-        // add fridge to store 2
-        addObject(new Fridge(),75,225);
+        // add fridge one to store 2
+        addObject(new FridgeOne(),75,225);
+        // add fridge two to store 2
+        addObject(new FridgeTwo(),175,225);
         // add shelve next to fridge
-        addObject(new SnackShelf(),175,240);
+        addObject(new SnackShelf(),300,240);
         
         
         // add the butcher
@@ -56,9 +73,11 @@ public class SimulationWorld extends World
             Doritos.class, Lays.class, Ruffles.class,           // snacks (front)
             Coke.class, Water.class, Sprite.class, Fanta.class, // drinks (middle)
             Lettuce.class,Carrot.class,Apple.class,Orange.class,Steak.class,RawBeef.class,
-            SnackShelf.class, Fridge.class, LettuceBin.class, CarrotBin.class, AppleBin.class,OrangeBin.class, SteakWarmer.class,RawBeefHangers.class           // furniture (back)
+            //SnackShelf.class, FridgeOne.class, LettuceBin.class, CarrotBin.class, AppleBin.class,OrangeBin.class, SteakWarmer.class,RawBeefHangers.class           // furniture (back)
+            DisplayUnit.class
             );
         
+        addObject(new OwenTesting(),608,300);
     }
     public void act () 
     {

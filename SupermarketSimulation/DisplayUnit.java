@@ -26,8 +26,8 @@ public abstract class DisplayUnit extends SuperSmoothMover
     /*
      * retrieve an item from display shelve
      */
-    protected boolean retrieve(Class productClass) {
-        if (getWorld() == null) return false;
+    protected Product retrieve(Class productClass) {
+        if (getWorld() == null) return null;
 
         // Use Iterator to avoid ConcurrentModificationException
         for(Product p: stockedItems)
@@ -39,14 +39,15 @@ public abstract class DisplayUnit extends SuperSmoothMover
                 
                 //Remove from world and stockedItems list
                 getWorld().removeObject(p);
+                //p.getImage().setTransparency(0);
                 stockedItems.remove(p);
                 
-                return true;//only search the first found
+                return p;//only return the first found
                
             }
         }
 
-        return false; // none found
+        return null; // none found
     }
 
 }

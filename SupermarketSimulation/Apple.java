@@ -13,8 +13,9 @@ public class Apple extends Product
     
     public Apple()
     {
+        name=SimulationWorld.PRODUCT_APPLE;
         image = new GreenfootImage("product/Apple.PNG");
-        image.scale(image.getWidth()/3, image.getHeight()/3);
+        image.scale(image.getWidth()/2, image.getHeight()/2);
         //image.rotate(270);
         setImage(image);
         

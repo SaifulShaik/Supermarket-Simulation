@@ -14,7 +14,7 @@ public class Lettuce extends Product
     public Lettuce()
     {
         image = new GreenfootImage("product/Lettuce.PNG");
-        image.scale(image.getWidth()/3, image.getHeight()/3);
+        image.scale(image.getWidth()/2, image.getHeight()/2);
         setImage(image);
         
         //whenever a Sprite is added to a shelve,

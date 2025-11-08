@@ -13,6 +13,7 @@ public class Steak extends Product
     
     public Steak() 
     {
+        name=SimulationWorld.PRODUCT_STEAK;
         image = new GreenfootImage("product/Cooked Steak.PNG");
         image.scale(image.getWidth()/3, image.getHeight()/3);
         //image.rotate(270);

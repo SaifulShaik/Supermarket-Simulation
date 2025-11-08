@@ -13,6 +13,7 @@ public class Sprite extends Product
     
     public Sprite()
     {
+        name=SimulationWorld.PRODUCT_SPRITE;
         image = new GreenfootImage("product/pop/Pop 2.PNG");
         image.scale(image.getWidth()/2, image.getHeight()/2);
         setImage(image);

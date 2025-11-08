@@ -13,6 +13,7 @@ public class Carrot extends Product
     
     public Carrot()
     {
+        name=SimulationWorld.PRODUCT_CARROT;
         image = new GreenfootImage("product/carrot.PNG");
         image.scale(image.getWidth()/3, image.getHeight()/3);
         //image.rotate(270);

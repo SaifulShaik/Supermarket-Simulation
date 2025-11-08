@@ -14,12 +14,16 @@ public abstract class Product extends SuperSmoothMover
 {
     protected double price;
     protected boolean isLocked;
+    protected String name;
     
     public Product() 
     {
         
     }
-    
+    public String getName()
+    {
+        return name;
+    }
     protected double getPrice() { 
         return price; 
     }
