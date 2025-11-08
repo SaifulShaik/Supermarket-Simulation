@@ -1,19 +1,28 @@
 import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 
 /**
- * Write a description of class CustomerSpawner here.
+ * Spawns customers into the road 
  * 
- * @author (your name) 
- * @version (a version number or a date)
+ * @author Joe 
+ * @version November 2025
  */
 public class CustomerSpawner extends Actor
 {
-    /**
-     * Act - do whatever the CustomerSpawner wants to do. This method is called whenever
-     * the 'Act' or 'Run' button gets pressed in the environment.
-     */
-    public void act()
-    {
-        // Add your action code here.
+    private final static int spawnRate = 400;
+    
+    public void act() {
+        spawnCustomers();
+    }
+    
+    private void spawnCustomers() {
+        if (Greenfoot.getRandomNumber(spawnRate) == 0) {
+            int customerType = Greenfoot.getRandomNumber(1);
+            
+            switch (customerType) {
+                case 0:
+                    getWorld().addObject(new RegularShopper(), getWorld().getWidth()/2, 200);
+                    break;
+            }
+        }
     }
 }
