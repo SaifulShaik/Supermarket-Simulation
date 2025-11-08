@@ -14,11 +14,11 @@ public class SimulationWorld extends World
     private static final GreenfootImage bg = new GreenfootImage("background.png");
     public SimulationWorld()
     { 
-             
         super(bg.getWidth(), bg.getHeight(), 1);
         setBackground(bg); 
         
-
+        addObject(new Store(440, 260, 20), 260, 340);
+        addObject(new Store(360, 120, 20), getWidth() - 240, 360);
         
         // add the Cashiers to store 1
         addObject(new Cashier(), getWidth()/2 + 200, getHeight()/2);
@@ -32,7 +32,6 @@ public class SimulationWorld extends World
         addObject(new Fridge(),75,225);
         // add shelve next to fridge
         addObject(new SnackShelf(),175,240);
-        
         
         // add the butcher
         Butcher butcher = new Butcher();
