@@ -15,6 +15,8 @@ public abstract class Product extends SuperSmoothMover
     protected double price;
     protected boolean isLocked;
     
+    protected Node node;
+    
     public Product() 
     {
         
@@ -32,6 +34,10 @@ public abstract class Product extends SuperSmoothMover
     
     protected void unlock() {
         
+    }
+    
+    public Node getNode() {
+        return node;
     }
 }
 
