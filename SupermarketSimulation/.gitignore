@@ -1,2 +1,4 @@
-/.ctxt
-/.DS_Store
+*.ctxt
+*.DS_Store
+!project.greenfoot
+display_layout.dat

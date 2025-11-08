@@ -26,7 +26,12 @@ public class Pathfinder
         PriorityQueue<Node> nodesToExplore = new PriorityQueue<>(Comparator.comparingInt(Node::getTotalDistance));
         List<Node> exploredNodes = new ArrayList<>();
         
-        Node startingNode = new Node(sx, sy, null, 0, estimateDistance(sx, sy, tx, ty));
+        Node startingNode = store.getNode(sx, sy);
+        
+        startingNode.previousNode = null;
+        startingNode.setDistanceFromStart(0);
+        startingNode.setDistanceToGoal(estimateDistance(sx, sy, tx, ty));
+        
         nodesToExplore.add(startingNode);
         
         while (!nodesToExplore.isEmpty()) {
@@ -43,29 +48,30 @@ public class Pathfinder
                 int nx = currentNode.getX() + dir[0];
                 int ny = currentNode.getY() + dir[1];
                 
-                // cannot continue if the neighbouring node's location is not in the store or is blocked
-                if (!store.isInBounds(nx, ny) || store.isBlocked(nx, ny)) continue;
+                // cannot continue if the neighbouring node's location is not in the store
+                if (!store.isInBounds(nx, ny)) continue;
                 
                 // creates neighbouring node
-                Node neighbour = new Node(nx, ny, currentNode, currentNode.getDistanceFromStart() + 1, estimateDistance(nx, ny, tx, ty));
+                Node neighbour = store.getNode(nx, ny);
                 
-                // dont explore the node if it has been explored already
-                if (exploredNodes.contains(neighbour)) continue;
+                // dont explore the node if it has been explored already or is blocked or is an entrance
+                if (exploredNodes.contains(neighbour) || neighbour.checkIsBlocked() || neighbour.checkIsEntrance()) continue;
                 
                 boolean skip = false;
                 
+                int tentativeDist = currentNode.getDistanceFromStart() + 1;
+                
                 // skip this neighbouring node if a better/equal path already exists
-                for (Node n : nodesToExplore) {
-                    if (n.equals(neighbour) && n.getDistanceFromStart() <= neighbour.getDistanceFromStart()) {
-                        skip = true;
-                        break;
+                if (!nodesToExplore.contains(neighbour) || tentativeDist < neighbour.getDistanceFromStart()) {
+                    neighbour.previousNode = currentNode;
+                    neighbour.setDistanceFromStart(tentativeDist);
+                    neighbour.setDistanceToGoal(estimateDistance(nx, ny, tx, ty));
+                    
+                    if (!nodesToExplore.contains(neighbour)) {
+                        nodesToExplore.add(neighbour);
                     }
                 }
-                
-                // add neighbour if not skipped
-                if (!skip) {
-                    nodesToExplore.add(neighbour);
-                }
+
             }
         }
 

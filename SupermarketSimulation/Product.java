@@ -16,6 +16,8 @@ public abstract class Product extends SuperSmoothMover
     protected boolean isLocked;
     protected String name;
     
+    protected Node node;
+    
     public Product() 
     {
         
@@ -36,6 +38,14 @@ public abstract class Product extends SuperSmoothMover
     
     protected void unlock() {
         
+    }
+    
+    public Node getNode() {
+        return node;
+    }
+    
+    public void setNode(Node node) {
+        this.node = node;
     }
 }
 
