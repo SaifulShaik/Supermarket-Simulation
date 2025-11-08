@@ -17,8 +17,8 @@ public class SimulationWorld extends World
         super(bg.getWidth(), bg.getHeight(), 1);
         setBackground(bg); 
         
-        addObject(new Store(440, 260, 20), 260, 340);
-        addObject(new Store(360, 120, 20), getWidth() - 240, 360);
+        addObject(new Store(480, 480, 20, true), 480, 220); // x: 40 - 480 y: 220 - 480
+        addObject(new Store(360, 120, 20, false), getWidth() - 240, 360);
         
         // add the Cashiers to store 1
         addObject(new Cashier(), getWidth()/2 + 200, getHeight()/2);

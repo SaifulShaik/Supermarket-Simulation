@@ -23,7 +23,9 @@ public class Store extends Actor
     private int gridWidth;
     private int gridHeight;
     
-    public Store(int width, int height, int cellSize) {
+    private boolean isLeftStore;
+    
+    public Store(int width, int height, int cellSize, boolean isLeftStore) {
         this.width = width;
         this.height = height;
         this.cellSize = cellSize;
@@ -37,7 +39,19 @@ public class Store extends Actor
                 nodes[x][y] = new Node(x, y, null, 0, 0, false, false);
             }
         }
-
+        
+        if (isLeftStore) {
+            // block nodes that aren't in the store (deals with offset for the store frame)
+            for (int x = 0; x < gridWidth; x++) {
+                for (int y = 0; y < gridHeight; y++) {
+                    if (x < 11) nodes[x][y].setBlocked(true); 
+                    if (y < 1) nodes[x][y].setBlocked(true);
+                }
+            }
+            
+            // entrance node
+            nodes[23][21].setEntrance(true);
+        }
     }
     
     public void setBlockedNode(int x, int y, boolean blocked) {
