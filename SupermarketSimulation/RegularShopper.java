@@ -10,5 +10,6 @@ public class RegularShopper extends Customer
 {
     public RegularShopper() {
         super(100, 2);
+        setImage("maleShopper/left3.png");
     }
 }
