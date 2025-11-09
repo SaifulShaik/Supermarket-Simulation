@@ -30,7 +30,8 @@ public class Store extends Actor
     private int worldY;
     
     // Grid visualization
-    private boolean showGrid = true; // Set to false to hide grid
+    private boolean showGrid = false; // World grid is now drawn by SimulationWorld
+    private boolean showStoreInfo = true; // Show store boundaries and special cells
     
     public Store(int width, int height, int cellSize, boolean isLeftStore) {
         this.width = width;
@@ -120,59 +121,13 @@ public class Store extends Actor
     }
     
     /**
-     * Create the store image with visible grid
+     * Create the store image - completely invisible
      */
     private void createStoreImage() {
         GreenfootImage img = new GreenfootImage(width, height);
         
-        // Fill with semi-transparent background
-        img.setColor(new Color(255, 255, 255));
-        img.setTransparency(50);
-        img.fill();
-        
-        if (showGrid) {
-            // First, mark blocked nodes with a darker color
-            img.setColor(new Color(150, 150, 150));
-            img.setTransparency(100);
-            for (int x = 0; x < gridWidth; x++) {
-                for (int y = 0; y < gridHeight; y++) {
-                    if (nodes[x][y].checkIsBlocked()) {
-                        img.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
-                    }
-                }
-            }
-            
-            // Draw grid lines
-            img.setColor(new Color(0, 0, 0));
-            img.setTransparency(80);
-            
-            // Vertical lines
-            for (int x = 0; x <= width; x += cellSize) {
-                img.drawLine(x, 0, x, height);
-            }
-            
-            // Horizontal lines
-            for (int y = 0; y <= height; y += cellSize) {
-                img.drawLine(0, y, width, y);
-            }
-            
-            // Highlight entrance nodes
-            img.setColor(new Color(0, 255, 0));
-            img.setTransparency(150);
-            for (int x = 0; x < gridWidth; x++) {
-                for (int y = 0; y < gridHeight; y++) {
-                    if (nodes[x][y].checkIsEntrance()) {
-                        img.fillRect(x * cellSize + 2, y * cellSize + 2, cellSize - 4, cellSize - 4);
-                    }
-                }
-            }
-            
-            // Draw thicker border
-            img.setColor(Color.BLACK);
-            img.setTransparency(255);
-            img.drawRect(0, 0, width - 1, height - 1);
-            img.drawRect(1, 1, width - 3, height - 3);
-        }
+        // Clear the image to make it completely transparent
+        img.clear();
         
         setImage(img);
     }
