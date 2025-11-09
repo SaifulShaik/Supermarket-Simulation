@@ -1,0 +1,13 @@
+#BlueJ class context
+comment0.target=Sprite
+comment0.text=\n\ The\ Sprite\ drinks\ in\ the\ store\n\ \n\ @author\ Owen\ Kung\ \n\ @version\ Nov\ 6\ 2025\n
+comment1.params=
+comment1.target=Sprite()
+comment2.params=newStockCount
+comment2.target=void\ setStock(int)
+comment3.params=
+comment3.target=int\ getStock()
+comment4.params=
+comment4.target=int\ getCurrentStock()
+comment4.text=\n\ total\ number\ of\ stock\ currently\ in\ the\ store\ as\ a\ static\ method\n
+numComments=5

@@ -1,38 +1,51 @@
 import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 
 /**
- * Write a description of class Product here.
+ * Product class
+ * represents a purchasable item inside a store
  * 
- * @author (your name) 
- * @version (a version number or a date)
+ * @author Owen Kung
+ * @version Nov 2025
  */
-public abstract class Product extends Actor
+
+public abstract class Product extends SuperSmoothMover
 {
     protected double price;
-    protected int stock;
     protected boolean isLocked;
+    protected String name;
     
-    public Product() {
-        
+    protected Node node;
+    
+    public Product() 
+    {
+        // Set default price (can be overridden by subclasses)
+        price = 2.0 + (Greenfoot.getRandomNumber(6)); // $2 - $7
     }
-    
-    protected double getPrice() { 
+    public String getName()
+    {
+        return name;
+    }
+    public double getPrice() { 
         return price; 
     }
-    
     protected void applyDiscount(double percent) {
         price *= (1 - (percent / 100));
     }
-    
-    protected int getStock() { 
-        return stock; 
-    }
-    
-    protected void setStock(int amount) {
-        stock = amount;
-    }
+ 
+    protected abstract int getStock() ;    
+    protected abstract void setStock(int amount);
     
     protected void unlock() {
         
     }
+    
+    public Node getNode() {
+        return node;
+    }
+    
+    public void setNode(Node node) {
+        this.node = node;
+    }
 }
+
+
