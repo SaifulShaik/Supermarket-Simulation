@@ -1,5 +1,4 @@
 import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
-
 /**
  * Write a description of class Cutscene here.
  * 
@@ -8,7 +7,6 @@ import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
  */
 public class Cutscene extends World
 {
-
     /**
      * Constructor for objects of class Cutscene.
      * 
@@ -21,8 +19,8 @@ public class Cutscene extends World
         drawBackground();
     }
     
-    private void transitionToSimulation(){
-        fadeOutAndTransition(new SimulationWorld());
+    public void transitionToSimulation(){
+        fadeOutAndTransition(new CutsceneP2());
     }
     
     private void fadeOutAndTransition(World nextWorld)
