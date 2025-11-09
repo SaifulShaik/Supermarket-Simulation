@@ -5,7 +5,7 @@ import java.util.*;
  * Handles saving and loading display unit layout data.
  * Stores type, x, y position for each display unit.
  * 
- * @author AI Assistant
+ * @author Saiful Shaik
  * @version Nov 8, 2025
  */
 public class DisplayUnitData implements Serializable {

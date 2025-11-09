@@ -1,6 +1,6 @@
 #BlueJ class context
 comment0.target=CustomerSpawner
-comment0.text=\r\n\ Spawns\ customers\ into\ the\ road\ \r\n\ \r\n\ @author\ Joe\ \r\n\ @version\ November\ 2025\r\n
+comment0.text=\n\ Spawns\ customers\ into\ the\ road\ \n\ \n\ @author\ Joe\ \n\ @version\ November\ 2025\n
 comment1.params=
 comment1.target=void\ act()
 comment2.params=
