@@ -20,7 +20,7 @@ public class Cutscene extends World
     }
     
     public void transitionToSimulation(){
-        fadeOutAndTransition(new CutsceneP2());
+        fadeOutAndTransition(new Cutscene2());
     }
     
     private void fadeOutAndTransition(World nextWorld)
