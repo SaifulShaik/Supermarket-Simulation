@@ -14,10 +14,20 @@ public class SettingWorld extends World
 {
     private static final GreenfootImage bg = new GreenfootImage("background.png");
     
+    // Cashier positions (hardcoded from SimulationWorld) - areas where display units cannot be placed
+    private static class CashierZone {
+        int x, y, width, height;
+        CashierZone(int x, int y, int w, int h) {
+            this.x = x; this.y = y; this.width = w; this.height = h;
+        }
+    }
+    
+    private List<CashierZone> cashierZones;
+    
     // Available display unit types
     private static final String[] DISPLAY_UNIT_TYPES = {
         "Fridge", "SnackShelf", "LettuceBin", "CarrotBin", 
-        "AppleBin", "OrangeBin", "SteakWarmer", "RawBeefHangers"
+        "AppleBin", "OrangeBin", "SteakWarmer"
     };
     
     // UI Components
@@ -47,11 +57,37 @@ public class SettingWorld extends World
         super(bg.getWidth(), bg.getHeight(), 1); 
         setBackground(bg);
         
+        // Disable stocking in editor mode
+        DisplayUnit.setEnableStocking(false);
+        
+        // Define cashier zones (approximate positions based on SimulationWorld)
+        setupCashierZones();
+        
         // Store original layout for reverting
         originalLayout = DisplayUnitData.loadLayout();
         
         setupUI();
         loadExistingLayout();
+    }
+    
+    /**
+     * Define restricted areas where cashiers are located
+     */
+    private void setupCashierZones() {
+        cashierZones = new ArrayList<>();
+        int centerX = getWidth() / 2;
+        int centerY = getHeight() / 2;
+        
+        // Store 1 cashiers (2 cashiers at x+200 and x+300, y is center)
+        // Covering area from x+175 to x+325, centered at y
+        cashierZones.add(new CashierZone(centerX + 250, centerY, 150, 60));
+        
+        // Store 2 cashiers (2 cashiers at x-230 and x-330, y+130)
+        // Covering area from x-355 to x-205, at y+130
+        cashierZones.add(new CashierZone(centerX - 280, centerY + 130, 150, 60));
+        
+        // Butcher area (at x+380, y is center)
+        cashierZones.add(new CashierZone(centerX + 380, centerY, 80, 80));
     }
     
     /**
@@ -80,6 +116,27 @@ public class SettingWorld extends World
         
         instructionLabel = new Label("Click to place. Drag to move. Right-click to delete.", 18);
         addObject(instructionLabel, getWidth() / 2, getHeight() - 30);
+        
+        // Add visual indicators for cashier zones
+        showCashierZones();
+    }
+    
+    /**
+     * Display semi-transparent overlays to show cashier zones
+     */
+    private void showCashierZones() {
+        // Add actual cashier objects so you can see exactly where they are
+        // add the Cashiers to store 1
+        addObject(new Cashier(), getWidth()/2 + 200, getHeight()/2);
+        addObject(new Cashier(), getWidth()/2 + 300, getHeight()/2);
+        
+        // add cashier to store 2
+        addObject(new Store2Cashier(), getWidth()/2-230, getHeight()/2+130);
+        addObject(new Store2Cashier(), getWidth()/2-330, getHeight()/2+130);
+        
+        // add the butcher
+        Butcher butcher = new Butcher();
+        addObject(butcher, getWidth()/2+ 380, getHeight()/2);
     }
     
     /**
@@ -121,16 +178,20 @@ public class SettingWorld extends World
             if (result == ConfirmationDialog.DialogResult.YES) {
                 // User wants to save before exiting
                 saveLayout();
-                Greenfoot.setWorld(new SimulationWorld());
+                cleanupAndExit();
             } else if (result == ConfirmationDialog.DialogResult.NO) {
                 // User wants to exit without saving - revert changes
                 revertToOriginal();
-                Greenfoot.setWorld(new SimulationWorld());
+                cleanupAndExit();
             } else if (result == ConfirmationDialog.DialogResult.OK) {
-                // Just close the notification
+                // Just close the notification - reset activeDialog so user can continue
+                activeDialog = null;
             }
             
-            activeDialog = null;
+            // Reset dialog for save/back flow
+            if (result == ConfirmationDialog.DialogResult.YES || result == ConfirmationDialog.DialogResult.NO) {
+                activeDialog = null;
+            }
         }
     }
     
@@ -183,15 +244,20 @@ public class SettingWorld extends World
      * Place a new display unit at the specified location
      */
     private void placeNewUnit(int x, int y) {
+        if (gridMode) {
+            x = (x / GRID_SIZE) * GRID_SIZE;
+            y = (y / GRID_SIZE) * GRID_SIZE;
+        }
+        
+        // Check if placement would overlap with cashier zones - silently block without popup
+        if (isOnCashier(x, y, 50)) {
+            return; // Don't place, just return silently
+        }
+        
         try {
             String typeName = DISPLAY_UNIT_TYPES[currentUnitIndex];
             Class<?> clazz = Class.forName(typeName);
             DisplayUnit unit = (DisplayUnit) clazz.getDeclaredConstructor().newInstance();
-            
-            if (gridMode) {
-                x = (x / GRID_SIZE) * GRID_SIZE;
-                y = (y / GRID_SIZE) * GRID_SIZE;
-            }
             
             addObject(unit, x, y);
             placedUnits.add(unit);
@@ -201,6 +267,26 @@ public class SettingWorld extends World
                  NoSuchMethodException | java.lang.reflect.InvocationTargetException e) {
             System.err.println("Error placing unit: " + e.getMessage());
         }
+    }
+    
+    /**
+     * Check if a position overlaps with any cashier zone
+     */
+    private boolean isOnCashier(int x, int y, int radius) {
+        for (CashierZone zone : cashierZones) {
+            // Check if the circle (x,y,radius) intersects with the rectangle zone
+            int closestX = Math.max(zone.x - zone.width/2, Math.min(x, zone.x + zone.width/2));
+            int closestY = Math.max(zone.y - zone.height/2, Math.min(y, zone.y + zone.height/2));
+            
+            int distanceX = x - closestX;
+            int distanceY = y - closestY;
+            int distanceSquared = distanceX * distanceX + distanceY * distanceY;
+            
+            if (distanceSquared < (radius * radius)) {
+                return true;
+            }
+        }
+        return false;
     }
     
     /**
@@ -226,8 +312,12 @@ public class SettingWorld extends World
                     newY = (newY / GRID_SIZE) * GRID_SIZE;
                 }
                 
-                draggedUnit.setLocation(newX, newY);
-                hasUnsavedChanges = true;
+                // Check if new position would overlap with cashier - silently block movement
+                if (!isOnCashier(newX, newY, 50)) {
+                    draggedUnit.setLocation(newX, newY);
+                    hasUnsavedChanges = true;
+                }
+                // If on cashier, just don't move it - no popup
             }
         }
         
@@ -276,9 +366,22 @@ public class SettingWorld extends World
                 addObject(activeDialog, getWidth() / 2, getHeight() / 2);
             } else {
                 // No unsaved changes, go back directly
-                Greenfoot.setWorld(new SimulationWorld());
+                cleanupAndExit();
             }
         }
+    }
+    
+    /**
+     * Cleanup display units before exiting to prevent stocking issues
+     */
+    private void cleanupAndExit() {
+        // Remove all placed display units to prevent them from stocking when enableStocking is set to true
+        for (DisplayUnit unit : new ArrayList<>(placedUnits)) {
+            removeObject(unit);
+        }
+        placedUnits.clear();
+        
+        Greenfoot.setWorld(new SimulationWorld());
     }
     
     /**

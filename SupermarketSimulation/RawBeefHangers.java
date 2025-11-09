@@ -16,16 +16,15 @@ public class RawBeefHangers extends DisplayUnit
     private static final int ROWS = 1;        // how many rows
     private static final int LEFT_PAD = 20;   // distance from fridge’s left edge
     private static final int TOP_PAD  = 45;   // distance from fridge’s top
-    private static final int COL_GAP  = 40;   // horizontal gap
-    private static final int ROW_GAP  = 30;   // vertical gap
-    private static boolean stocked=false;
+    private static final int COL_GAP  = 5;      // horizontal gap
+    private static final int ROW_GAP  = 5;      // vertical gap
+    private boolean stocked=false;  // Instance variable, not static
     
     public RawBeefHangers() 
     {
-        stockedItems = new ArrayList<>();
-        image = new GreenfootImage("furniture/displayWarmer.png");
-        image.scale(image.getWidth()/4, image.getHeight()/5);//make it smaller
-        image.setTransparency(0);
+        stockedItems= new ArrayList<>();
+        image = new GreenfootImage("furniture/steakWarmer.png");
+        image.scale(image.getWidth()/4, image.getHeight()/4);//make it smaller
         setImage(image);
         stocked=false;
     }
@@ -35,7 +34,10 @@ public class RawBeefHangers extends DisplayUnit
      */
     public void act()
     {
-       stock();
+        // Only stock if stocking is enabled (not in editor mode)
+        if (isStockingEnabled()) {
+            stock();
+        }
     }
     protected void stock() {
         if (getWorld()== null) return;

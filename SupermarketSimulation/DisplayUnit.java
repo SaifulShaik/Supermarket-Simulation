@@ -7,8 +7,25 @@ public abstract class DisplayUnit extends SuperSmoothMover
 {
     protected ArrayList<Product> stockedItems;
     
+    // Flag to control whether display units should stock items (false in editor, true in simulation)
+    private static boolean enableStocking = true;
+    
     public DisplayUnit() {}
     protected abstract void stock();
+    
+    /**
+     * Set whether display units should stock items
+     */
+    public static void setEnableStocking(boolean enabled) {
+        enableStocking = enabled;
+    }
+    
+    /**
+     * Check if stocking is enabled
+     */
+    protected boolean isStockingEnabled() {
+        return enableStocking;
+    }
     
     /*
      * Clear whatever is in the display shelves

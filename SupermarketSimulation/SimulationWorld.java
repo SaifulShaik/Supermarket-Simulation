@@ -1,39 +1,28 @@
 import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)  
 import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Supermarket Simulation World
+ * Write a description of class MyWorld here.
  * 
- * 
- * @author Owen Kung
- * @version Nov 4 2025
+ * @author Saiful Shaik, Owen Kung
+ * @version Modified: Nov, 8, 2025
  */
 public class SimulationWorld extends World
 {
+    //public static final int WORLD_WIDTH = 1048;
+    //public static final int WORLD_HEIGHT = 514;
     private static final GreenfootImage bg = new GreenfootImage("background.png");
-    
-    //Avaialble product names, global reference
-    public static String PRODUCT_COKE="Coke";
-    public static String PRODUCT_SPRITE="Sprite";
-    public static String PRODUCT_FANTA="Fanta";
-    public static String PRODUCT_WATER="Water";
-    public static String PRODUCT_DORITOS="Doritos";
-    public static String PRODUCT_LAYS="Lays";
-    public static String PRODUCT_RUFFLES="Ruffles";
-    public static String PRODUCT_STEAK="Steak";
-    public static String PRODUCT_RAW_BEEF="Raw Beef";
-    public static String PRODUCT_LETTUCE="Lettuce";
-    public static String PRODUCT_CARROT="Carrot";
-    public static String PRODUCT_APPLE="Apple";
-    public static String PRODUCT_ORANGE="Orange";
-    
-
     public SimulationWorld()
     { 
-             
         super(bg.getWidth(), bg.getHeight(), 1);
         setBackground(bg); 
-    
+        
+        // Enable stocking in simulation mode
+        DisplayUnit.setEnableStocking(true);
+        
+        addObject(new Store(480, 480, 20, true), 480, 220); // x: 40 - 480 y: 220 - 480
+        addObject(new Store(360, 120, 20, false), getWidth() - 240, 360);
         
         // add the Cashiers to store 1
         addObject(new Cashier(), getWidth()/2 + 200, getHeight()/2);
@@ -43,42 +32,66 @@ public class SimulationWorld extends World
         addObject(new Store2Cashier(), getWidth()/2-230, getHeight()/2+130);
         addObject(new Store2Cashier(), getWidth()/2-330, getHeight()/2+130);
         
-        // add fridge one to store 2
-        addObject(new FridgeOne(),75,225);
-        // add fridge two to store 2
-        addObject(new FridgeTwo(),175,225);
-        // add shelve next to fridge
-        addObject(new SnackShelf(),300,240);
-        
-        
         // add the butcher
         Butcher butcher = new Butcher();
         addObject(butcher, getWidth()/2+ 380, getHeight()/2);
         
-        // add Lettuce Bin ub store 1
-        addObject(new LettuceBin(),1010,460);
-         // add Carrot Bin ub store 1
-        addObject(new CarrotBin(),940,460);
-        // add Apple Bin ub store 1
-        addObject(new AppleBin(),870,460);
-        // add Orange Bin ub store 1
-        addObject(new OrangeBin(),800,460);
-        // add SteakWarmer to store 1
-        addObject(new SteakWarmer(),1062,250);
-        // add SteakHangers to store 1
-        addObject(new RawBeefHangers(),920,175);
- 
+        // Load display units from saved layout, or use default if no saved layout exists
+        loadDisplayUnits();
+        
         //set paint order for products and shelves to properly display
         setPaintOrder(
             Doritos.class, Lays.class, Ruffles.class,           // snacks (front)
             Coke.class, Water.class, Sprite.class, Fanta.class, // drinks (middle)
             Lettuce.class,Carrot.class,Apple.class,Orange.class,Steak.class,RawBeef.class,
-            //SnackShelf.class, FridgeOne.class, LettuceBin.class, CarrotBin.class, AppleBin.class,OrangeBin.class, SteakWarmer.class,RawBeefHangers.class           // furniture (back)
-            DisplayUnit.class
+            SnackShelf.class, Fridge.class, LettuceBin.class, CarrotBin.class, AppleBin.class,OrangeBin.class, SteakWarmer.class,RawBeefHangers.class           // furniture (back)
             );
         
-        addObject(new OwenTesting(),608,300);
     }
+    
+    /**
+     * Load display units from saved layout or create default layout
+     */
+    private void loadDisplayUnits() {
+        List<DisplayUnitData> savedLayout = DisplayUnitData.loadLayout();
+        
+        if (!savedLayout.isEmpty()) {
+            // Load from saved file
+            for (DisplayUnitData data : savedLayout) {
+                DisplayUnit unit = data.createDisplayUnit();
+                if (unit != null) {
+                    addObject(unit, data.getX(), data.getY());
+                }
+            }
+        } else {
+            // Use default layout if no saved layout exists
+            createDefaultLayout();
+        }
+    }
+    
+    /**
+     * Create the default display unit layout (original hardcoded positions)
+     */
+    private void createDefaultLayout() {
+        // add fridge to store 2
+        addObject(new Fridge(),75,225);
+        // add shelve next to fridge
+        addObject(new SnackShelf(),175,240);
+        
+        // add Lettuce Bin in store 1
+        addObject(new LettuceBin(),1010,460);
+        // add Carrot Bin in store 1
+        addObject(new CarrotBin(),940,460);
+        // add Apple Bin in store 1
+        addObject(new AppleBin(),870,460);
+        // add Orange Bin in store 1
+        addObject(new OrangeBin(),800,460);
+        // add SteakWarmer to store 1
+        addObject(new SteakWarmer(),1062,250);
+        // add SteakHangers to store 1
+        addObject(new RawBeefHangers(),920,175);
+    }
+    
     public void act () 
     {
         //use zSort
