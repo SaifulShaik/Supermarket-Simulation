@@ -67,6 +67,7 @@ public class SimulationWorld extends World
         
         //set paint order for products and shelves to properly display
         setPaintOrder(
+            Customer.class,                                      // customers (very front)
             Doritos.class, Lays.class, Ruffles.class,           // snacks (front)
             Coke.class, Water.class, Sprite.class, Fanta.class, // drinks (middle)
             Lettuce.class,Carrot.class,Apple.class,Orange.class,Steak.class,RawBeef.class,

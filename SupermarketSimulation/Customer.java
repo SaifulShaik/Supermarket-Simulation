@@ -39,6 +39,11 @@ public abstract class Customer extends SuperSmoothMover
     private double targetY;
     private static final int MOVE_SPEED = 2; // pixels per frame
     
+    // Collecting animation
+    private boolean isCollecting = false;
+    private int collectingTimer = 0;
+    private static final int COLLECTING_DELAY = 30; // frames to pause when collecting
+    
     public Customer() {
         cart = new ArrayList<>();
         budget = 20 + Greenfoot.getRandomNumber(81); //20 - 100 dollar budget
@@ -56,32 +61,48 @@ public abstract class Customer extends SuperSmoothMover
     }
     
     public void act() {
+        // If currently collecting an item, wait
+        if (isCollecting) {
+            collectingTimer--;
+            if (collectingTimer <= 0) {
+                isCollecting = false;
+                // Choose next product after collecting delay
+                if (!shoppingList.isEmpty()) {
+                    chooseNextProduct();
+                }
+            }
+            return; // Don't move while collecting
+        }
+        
         if (currentStore == null) {
             chooseStore();
-        }
-        else if (currentNode == null) {
-            // Moving to store entrance
-            moveToStore();
+            // After choosing a store, teleport to entrance
+            if (currentStore != null && targetNode != null) {
+                double[][] entrancePos = currentStore.getCellCenter(targetNode.getX(), targetNode.getY());
+                if (entrancePos != null) {
+                    setLocation(entrancePos[0][0], entrancePos[0][1]);
+                    currentNode = targetNode;
+                    targetNode = null;
+                    System.out.println("Customer entered store at (" + getX() + ", " + getY() + ")");
+                }
+            }
         }
         else if (!shoppingList.isEmpty()) {
             // Inside store, shopping
             if (currentProductTarget == null) {
                 chooseNextProduct();
             }
-            move();
+            
+            // Simple movement - just move directly to the product
+            if (currentProductTarget != null) {
+                moveToProduct();
+            }
         } 
         else {
             // Shopping complete
             System.out.println("Customer finished shopping with " + cart.size() + " items!");
             getWorld().removeObject(this);
         }
-        /*else if (!hasPaid) {
-            checkout();
-        } 
-        else {
-            leaveStore();
-        }*/
-
     }
     
     protected void chooseStore() {
@@ -154,31 +175,150 @@ public abstract class Customer extends SuperSmoothMover
         getWorld().removeObject(this);
     }
     
-    protected void move() {
-        // Check if we can collect current product
-        if (currentProductTarget != null && canAccessItem(currentProductTarget)) {
-            System.out.println("Collecting: " + currentProductTarget.getName());
-            addItemToCart(currentProductTarget);
-            currentProductTarget = null;
-            targetNode = null;
-            currentPath = null;
+    /**
+     * Simple direct movement to product - no pathfinding
+     */
+    protected void moveToProduct() {
+        if (currentProductTarget == null) return;
+        
+        // Find the actual DisplayUnit for this product in the world
+        List<Actor> allActors = getWorld().getObjects(null);
+        Actor targetUnit = null;
+        
+        for (Actor actor : allActors) {
+            String actorClass = actor.getClass().getSimpleName();
+            String productName = currentProductTarget.getName();
             
-            // Choose next product if list not empty
-            if (!shoppingList.isEmpty()) {
-                chooseNextProduct();
+            // Match product to its display unit
+            if ((productName.equals("Coke") || productName.equals("Sprite") || 
+                 productName.equals("Fanta") || productName.equals("Water")) && actorClass.equals("Fridge")) {
+                targetUnit = actor;
+                break;
             }
+            if ((productName.equals("Doritos") || productName.equals("Lays") || 
+                 productName.equals("Ruffles")) && actorClass.equals("SnackShelf")) {
+                targetUnit = actor;
+                break;
+            }
+            if (productName.equals("Apple") && actorClass.equals("AppleBin")) {
+                targetUnit = actor;
+                break;
+            }
+            if (productName.equals("Orange") && actorClass.equals("OrangeBin")) {
+                targetUnit = actor;
+                break;
+            }
+            if (productName.equals("Carrot") && actorClass.equals("CarrotBin")) {
+                targetUnit = actor;
+                break;
+            }
+            if (productName.equals("Lettuce") && actorClass.equals("LettuceBin")) {
+                targetUnit = actor;
+                break;
+            }
+            if (productName.equals("Steak") && actorClass.equals("SteakWarmer")) {
+                targetUnit = actor;
+                break;
+            }
+        }
+        
+        if (targetUnit == null) {
+            System.out.println("ERROR: Could not find DisplayUnit for " + currentProductTarget.getName());
             return;
         }
         
-        // If no current target, choose next product
-        if (currentProductTarget == null && !shoppingList.isEmpty()) {
-            chooseNextProduct();
+        int targetX = targetUnit.getX();
+        int targetY = targetUnit.getY();
+        
+        int dx = targetX - (int)getX();
+        int dy = targetY - (int)getY();
+        double distance = Math.sqrt(dx * dx + dy * dy);
+        
+        // If we're close enough, collect the item
+        if (distance < 50) {
+            System.out.println("Reached " + currentProductTarget.getName() + "!");
+            
+            // Remove one item from the display unit visually
+            if (targetUnit instanceof DisplayUnit) {
+                DisplayUnit displayUnit = (DisplayUnit) targetUnit;
+                
+                // Find the product class and retrieve one item
+                try {
+                    Class<?> productClass = currentProductTarget.getClass();
+                    displayUnit.retrieve(productClass);
+                    System.out.println("Removed 1 " + currentProductTarget.getName() + " from shelf");
+                } catch (Exception e) {
+                    System.out.println("Could not remove item from display");
+                }
+            }
+            
+            // Add to cart and start collecting animation
+            addItemToCart(currentProductTarget);
+            currentProductTarget = null;
+            
+            // Start collecting pause
+            isCollecting = true;
+            collectingTimer = COLLECTING_DELAY;
+            
+            return;
         }
+        
+        // Calculate movement direction and new position
+        double angle = Math.atan2(dy, dx);
+        double moveX = Math.cos(angle) * MOVE_SPEED;
+        double moveY = Math.sin(angle) * MOVE_SPEED;
+        
+        // Calculate new position
+        double newX = getX() + moveX;
+        double newY = getY() + moveY;
+        
+        // Check if new position would collide with DisplayUnit
+        if (!wouldCollideWithDisplayUnit(newX, newY)) {
+            // Safe to move
+            setLocation(newX, newY);
+        } else {
+            // Try moving only horizontally
+            if (!wouldCollideWithDisplayUnit(getX() + moveX, getY())) {
+                setLocation(getX() + moveX, getY());
+            }
+            // Try moving only vertically
+            else if (!wouldCollideWithDisplayUnit(getX(), getY() + moveY)) {
+                setLocation(getX(), getY() + moveY);
+            }
+            // Otherwise don't move (blocked)
+        }
+        
+        // Keep customer upright
+        setRotation(0);
+    }
     
-        // Move towards current product target
-        if (currentProductTarget != null && targetNode != null) {
-            moveTowards(targetNode);
-        }
+    /**
+     * Check if moving to a position would collide with a DisplayUnit
+     */
+    private boolean wouldCollideWithDisplayUnit(double x, double y) {
+        // Temporarily move to check collision
+        double oldX = getX();
+        double oldY = getY();
+        setLocation(x, y);
+        
+        // Check for collision with DisplayUnits
+        List<DisplayUnit> displayUnits = getIntersectingObjects(DisplayUnit.class);
+        boolean collision = !displayUnits.isEmpty();
+        
+        // Move back to original position
+        setLocation(oldX, oldY);
+        
+        return collision;
+    }
+    
+    /**
+     * Turn to face a specific point
+     */
+    private void turnTowards(double x, double y) {
+        double dx = x - getX();
+        double dy = y - getY();
+        double angle = Math.atan2(dy, dx);
+        setRotation((int)Math.toDegrees(angle));
     }
     
     protected void moveToStore() {
@@ -250,6 +390,7 @@ public abstract class Customer extends SuperSmoothMover
         if (Math.abs(dx) < MOVE_SPEED && Math.abs(dy) < MOVE_SPEED) {
             setLocation(targetX, targetY);
             isMoving = false;
+            // Note: currentNode is updated in moveTowards(), not here
             return;
         }
         
@@ -298,6 +439,7 @@ public abstract class Customer extends SuperSmoothMover
     
     protected void moveTowards(Node targetNode) {
         if (targetNode == null || currentNode == null || pathfinder == null) {
+            System.out.println("DEBUG: moveTowards failed - targetNode=" + (targetNode != null) + ", currentNode=" + (currentNode != null) + ", pathfinder=" + (pathfinder != null));
             return;
         }
         
@@ -309,17 +451,21 @@ public abstract class Customer extends SuperSmoothMover
     
         // Generate path if we don't have one
         if (currentPath == null || currentPath.isEmpty()) {
+            System.out.println("Finding path from (" + currentNode.getX() + ", " + currentNode.getY() + ") to (" + targetNode.getX() + ", " + targetNode.getY() + ")");
             currentPath = pathfinder.findPath(currentNode.getX(), currentNode.getY(), targetNode.getX(), targetNode.getY());
             
             if (currentPath == null || currentPath.isEmpty()) {
-                System.out.println("No path found from (" + currentNode.getX() + ", " + currentNode.getY() + ") to (" + targetNode.getX() + ", " + targetNode.getY() + ")");
+                System.out.println("ERROR: No path found from (" + currentNode.getX() + ", " + currentNode.getY() + ") to (" + targetNode.getX() + ", " + targetNode.getY() + ")");
+                System.out.println("  Current node blocked: " + currentNode.checkIsBlocked());
+                System.out.println("  Target node blocked: " + targetNode.checkIsBlocked());
                 return;
             }
+            System.out.println("Path found with " + currentPath.size() + " nodes");
         }
         
         // Check if we can access the product
         if (canAccessItem(currentProductTarget)) {
-            System.out.println("Can access product, collecting it");
+            System.out.println("Can access product from current position, collecting it");
             return;
         }
         
@@ -354,6 +500,8 @@ public abstract class Customer extends SuperSmoothMover
             }
             
             isMoving = true;
+        } else {
+            System.out.println("ERROR: Could not get cell center for node (" + nextNode.getX() + ", " + nextNode.getY() + ")");
         }
     }
     
@@ -363,9 +511,7 @@ public abstract class Customer extends SuperSmoothMover
     protected void chooseNextProduct() {
         if (shoppingList == null || shoppingList.isEmpty()) {
             currentProductTarget = null;
-            targetNode = null;
-            currentPath = null;
-            System.out.println("Shopping complete! All items collected.");
+            System.out.println("Shopping list empty!");
             return;
         }
         
@@ -378,10 +524,12 @@ public abstract class Customer extends SuperSmoothMover
             return;
         }
         
-        targetNode = currentProductTarget.getNode();
-        currentPath = null; // Clear old path to force new pathfinding
+        Node productNode = currentProductTarget.getNode();
+        double[][] productPos = currentStore.getCellCenter(productNode.getX(), productNode.getY());
         
-        System.out.println("New target: " + currentProductTarget.getName() + " at node (" + targetNode.getX() + ", " + targetNode.getY() + ")");
+        System.out.println("Next target: " + currentProductTarget.getName() + 
+                         " at node (" + productNode.getX() + ", " + productNode.getY() + ")" +
+                         " world pos: (" + (int)productPos[0][0] + ", " + (int)productPos[0][1] + ")");
     }
     
     protected void addItemToCart(Product item) {
