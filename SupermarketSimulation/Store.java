@@ -138,6 +138,61 @@ public class Store extends Actor
         // Store position is center, calculate top-left corner
         worldX = getX() - width / 2;
         worldY = getY() - height / 2;
+        
+        // Find actual DisplayUnit positions and update product nodes
+        updateProductLocations();
+    }
+    
+    /**
+     * Update product node positions based on actual DisplayUnit world positions
+     */
+    private void updateProductLocations() {
+        World world = getWorld();
+        if (world == null) return;
+        
+        for (Product product : availableProducts) {
+            // Find the DisplayUnit for this product in the world
+            List<DisplayUnit> units = world.getObjects(DisplayUnit.class);
+            for (DisplayUnit unit : units) {
+                // Check if this display unit contains our product type
+                if (unitHasProduct(unit, product)) {
+                    // Convert world position to grid coordinates
+                    int gridX = (unit.getX() - worldX) / cellSize;
+                    int gridY = (unit.getY() - worldY) / cellSize;
+                    
+                    if (isInBounds(gridX, gridY)) {
+                        product.setNode(nodes[gridX][gridY]);
+                        System.out.println("Set " + product.getName() + " to actual position: node(" + gridX + ", " + gridY + ") world(" + unit.getX() + ", " + unit.getY() + ")");
+                    }
+                    break;
+                }
+            }
+        }
+    }
+    
+    /**
+     * Check if a DisplayUnit contains a specific product type
+     */
+    private boolean unitHasProduct(DisplayUnit unit, Product product) {
+        String productName = product.getName();
+        String unitClass = unit.getClass().getSimpleName();
+        
+        // Map product names to display unit types
+        if (productName.equals("Coke") || productName.equals("Sprite") || 
+            productName.equals("Fanta") || productName.equals("Water")) {
+            return unitClass.equals("Fridge");
+        }
+        if (productName.equals("Doritos") || productName.equals("Lays") || productName.equals("Ruffles")) {
+            return unitClass.equals("SnackShelf");
+        }
+        if (productName.equals("Apple")) return unitClass.equals("AppleBin");
+        if (productName.equals("Orange")) return unitClass.equals("OrangeBin");
+        if (productName.equals("Carrot")) return unitClass.equals("CarrotBin");
+        if (productName.equals("Lettuce")) return unitClass.equals("LettuceBin");
+        if (productName.equals("Steak")) return unitClass.equals("SteakWarmer");
+        if (productName.equals("Raw Beef")) return unitClass.equals("RawBeefHangers");
+        
+        return false;
     }
     
     public boolean isInBounds(int x, int y) {
@@ -186,6 +241,21 @@ public class Store extends Actor
         double cellWorldY = worldY + (y * cellSize) + (cellSize / 2.0);
     
         return new double[][] { { cellWorldX, cellWorldY } };
+    }
+    
+    /**
+     * Convert world coordinates to grid cell coordinates
+     * Returns null if the position is outside this store
+     */
+    public Node getNodeAtWorldPosition(double worldPosX, double worldPosY) {
+        // Convert world position to grid coordinates
+        int gridX = (int)((worldPosX - worldX) / cellSize);
+        int gridY = (int)((worldPosY - worldY) / cellSize);
+        
+        if (isInBounds(gridX, gridY)) {
+            return nodes[gridX][gridY];
+        }
+        return null;
     }
     
     public int getCellSize() {
