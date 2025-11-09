@@ -1,0 +1,27 @@
+#BlueJ class context
+comment0.target=OwenTesting
+comment1.params=
+comment1.target=OwenTesting()
+comment10.params=displayClass
+comment10.target=DisplayUnit\ getDisplayUnit(java.lang.Class)
+comment10.text=\n\ Get\ the\ requested\ DisplayUnit\ with\ class\ type\n
+comment2.params=
+comment2.target=void\ act()
+comment3.params=
+comment3.target=void\ avoidObstacles()
+comment4.params=
+comment4.target=void\ moveToNextItem()
+comment5.params=x\ y
+comment5.target=boolean\ near(int,\ int)
+comment6.params=productName
+comment6.target=void\ setItemXY(java.lang.String)
+comment6.text=\n\ set\ the\ x\ \ y\ value\ where\ the\ itme\ can\ be\ found\n
+comment7.params=productName
+comment7.target=void\ retrieveItem(java.lang.String)
+comment7.text=\n\ Retrieve\ the\ product\ by\ giving\ product\ name\n\ Add\ the\ product\ to\ the\ basket\ \ -\ can\ later\ be\ used\ for\ checking\ out.\n
+comment8.params=
+comment8.target=void\ goToExit()
+comment9.params=
+comment9.target=void\ leave()
+comment9.text=\n\ After\ exit\ the\ store,\ leave\ the\ shopping\ mall\n
+numComments=11
