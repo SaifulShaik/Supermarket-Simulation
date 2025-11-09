@@ -8,8 +8,10 @@ import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
  */
 public class RegularShopper extends Customer
 {
+    GreenfootImage shopper = new GreenfootImage("maleShopper/left3.png");
     public RegularShopper() {
         super(100, 2);
-        setImage("maleShopper/left3.png");
+        shopper.scale(shopper.getWidth() / 8, shopper.getHeight() / 8);
+        setImage(shopper);
     }
 }
