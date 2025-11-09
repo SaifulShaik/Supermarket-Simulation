@@ -43,7 +43,7 @@ public class CutscenePerson extends Actor
         
         // Walk to the right
         if (isWalking) {
-            setLocation(getX() + 2, getY()); // Move right by 2 pixels
+            setLocation(getX() + 4, getY()); // Move right by 2 pixels
             
             // Check if reached rightmost edge and trigger world transition
             if (getX() >= getWorld().getWidth() - 50) {
