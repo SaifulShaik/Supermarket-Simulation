@@ -12,6 +12,22 @@ public class SimulationWorld extends World
 {
     //public static final int WORLD_WIDTH = 1048;
     //public static final int WORLD_HEIGHT = 514;
+    
+    // Product name constants
+    public static final String PRODUCT_APPLE = "Apple";
+    public static final String PRODUCT_ORANGE = "Orange";
+    public static final String PRODUCT_CARROT = "Carrot";
+    public static final String PRODUCT_LETTUCE = "Lettuce";
+    public static final String PRODUCT_COKE = "Coke";
+    public static final String PRODUCT_SPRITE = "Sprite";
+    public static final String PRODUCT_FANTA = "Fanta";
+    public static final String PRODUCT_WATER = "Water";
+    public static final String PRODUCT_DORITOS = "Doritos";
+    public static final String PRODUCT_LAYS = "Lays";
+    public static final String PRODUCT_RUFFLES = "Ruffles";
+    public static final String PRODUCT_STEAK = "Steak";
+    public static final String PRODUCT_RAWBEEF = "Raw Beef";
+    
     private static final GreenfootImage bg = new GreenfootImage("background.png");
     public SimulationWorld()
     { 

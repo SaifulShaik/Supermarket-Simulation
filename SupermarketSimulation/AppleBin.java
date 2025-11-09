@@ -74,10 +74,5 @@ public class AppleBin extends DisplayUnit
         
         stocked=true;
     }
-    public boolean retrieve()
-    {
-        return retrieve(Apple.class);
-        
-    }  
 
 }

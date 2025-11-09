@@ -84,34 +84,4 @@ public class SnackShelf extends DisplayUnit
         stocked=true;
         
     }
-    /*
-     * retrieve an item from fridge
-     */
-    public boolean retrieve(Class productClass) {
-        if (getWorld() == null) return false;
-
-        // Use Iterator to avoid ConcurrentModificationException
-        for(Product p: stockedItems)
-        {
-            if(productClass.isInstance(p))
-            {
-                //rest the stock ount
-                p.setStock(p.getStock()-1);
-                
-                //Remove from world and stockedItems list
-                getWorld().removeObject(p);
-                stockedItems.remove(p);
-                
-                return true;//only search the first found
-               
-            }
-        }
-
-        return false; // none found
-    }
-    public boolean retrieve()
-    {
-        return retrieve(SnackShelf.class);
-        
-    }
 }

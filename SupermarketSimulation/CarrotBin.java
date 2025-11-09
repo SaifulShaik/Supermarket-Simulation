@@ -71,11 +71,6 @@ public class CarrotBin extends DisplayUnit
         }
         
         stocked=true;
-    }
-    public boolean retrieve()
-    {
-        return retrieve(Carrot.class);
-        
     }  
 
 }

@@ -71,11 +71,6 @@ public class LettuceBin extends DisplayUnit
         }
         
         stocked=true;
-    }
-    public boolean retrieve()
-    {
-        return retrieve(Lettuce.class);
-        
     }  
 
 }

@@ -71,11 +71,6 @@ public class OrangeBin extends DisplayUnit
         }
         
         stocked=true;
-    }
-    public boolean retrieve()
-    {
-        return retrieve(Lettuce.class);
-        
     }  
 
 }
