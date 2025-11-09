@@ -35,6 +35,7 @@ public class SimulationWorld extends World
         setBackground(bg); 
         
         addObject(new CustomerSpawner(), 0, 0);
+        addObject(new StoreUI(), getWidth()/2, 50);
         
         // Enable stocking in simulation mode
         DisplayUnit.setEnableStocking(true);

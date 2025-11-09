@@ -46,7 +46,7 @@ public class StoreUI extends Actor
         return -1;
     }
     
-    public void createDisplay() {
+    public void createDisplay(World w) {
         storeOneProfitLabel = new Label("Profit: $" + String.format("%.2f", storeOneEarnings), 30);
         storeOneProfitLabel.setLineColor(Color.WHITE);
         storeOneProfitLabel.setFillColor(new Color(0, 0, 0, 128));
@@ -55,8 +55,13 @@ public class StoreUI extends Actor
         storeTwoProfitLabel.setLineColor(Color.WHITE);
         storeTwoProfitLabel.setFillColor(new Color(0, 0, 0, 128));
         
-        getWorld().addObject(storeOneProfitLabel, getWorld().getWidth() - 200, getY());
-        getWorld().addObject(storeTwoProfitLabel, getWorld().getWidth() / 2 - 200, getY());
+        w.addObject(storeOneProfitLabel, w.getWidth() / 2 - 200, getY());
+        w.addObject(storeTwoProfitLabel, w.getWidth() / 2 + 250, getY());
+    }
+    
+    @Override
+    protected void addedToWorld(World world) {
+        createDisplay(world);
     }
     
     private void updateDisplay() {
