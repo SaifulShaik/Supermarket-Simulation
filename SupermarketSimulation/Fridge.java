@@ -11,9 +11,10 @@ public class Fridge extends DisplayUnit {
     private static final int TOP_PAD  = 12;   // distance from fridge’s top
     private static final int COL_GAP  = 10;   // horizontal gap
     private static final int ROW_GAP  = 25;   // vertical gap
-    private static boolean stocked=false;
+    private boolean stocked=false;  // Instance variable, not static
   
     private int addedToWorldCounter=0;
+    
     public Fridge() {
         stockedItems = new ArrayList<>();
         image = new GreenfootImage("furniture/fridge.png");
@@ -24,7 +25,10 @@ public class Fridge extends DisplayUnit {
     }
     public void act()
     {
-        stock();      
+        // Only stock if stocking is enabled (not in editor mode)
+        if (isStockingEnabled()) {
+            stock();
+        }
         //showText("coke counter"+Coke.getCurrentStock(),Color.RED, 200,300);
         //showText("sprite counter"+Sprite.getCurrentStock(),Color.RED, 200,350);
         //showText("water counter"+Water.getCurrentStock(),Color.RED, 200,400);

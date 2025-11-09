@@ -16,14 +16,14 @@ public class SteakWarmer extends DisplayUnit
     private static final int ROWS = 2;        // how many rows
     private static final int LEFT_PAD = 20;   // distance from fridge’s left edge
     private static final int TOP_PAD  = 65;   // distance from fridge’s top
-    private static final int COL_GAP  = 20;   // horizontal gap
-    private static final int ROW_GAP  = 30;   // vertical gap
-    private static boolean stocked=false;
+    private static final int COL_GAP  = 5;      // horizontal gap
+    private static final int ROW_GAP  = 5;      // vertical gap
+    private boolean stocked=false;  // Instance variable, not static
     
     public SteakWarmer() 
     {
-        stockedItems = new ArrayList<>();
-        image = new GreenfootImage("furniture/displayWarmer.png");
+        stockedItems= new ArrayList<>();
+        image = new GreenfootImage("furniture/steakWarmer.png");
         image.scale(image.getWidth()/4, image.getHeight()/4);//make it smaller
         setImage(image);
         stocked=false;
@@ -34,7 +34,10 @@ public class SteakWarmer extends DisplayUnit
      */
     public void act()
     {
-       stock();
+        // Only stock if stocking is enabled (not in editor mode)
+        if (isStockingEnabled()) {
+            stock();
+        }
     }
     protected void stock() {
         if (getWorld()== null) return;

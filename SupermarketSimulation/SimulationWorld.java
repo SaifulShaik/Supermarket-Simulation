@@ -18,6 +18,9 @@ public class SimulationWorld extends World
         super(bg.getWidth(), bg.getHeight(), 1);
         setBackground(bg); 
         
+        // Enable stocking in simulation mode
+        DisplayUnit.setEnableStocking(true);
+        
         addObject(new Store(480, 480, 20, true), 480, 220); // x: 40 - 480 y: 220 - 480
         addObject(new Store(360, 120, 20, false), getWidth() - 240, 360);
         

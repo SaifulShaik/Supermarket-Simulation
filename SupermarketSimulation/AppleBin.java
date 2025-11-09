@@ -20,7 +20,7 @@ public class AppleBin extends DisplayUnit
     private static final int TOP_PAD  = 30;     // distance from fridge’s top
     private static final int COL_GAP  = 5;      // horizontal gap
     private static final int ROW_GAP  = 5;      // vertical gap
-    private static boolean stocked=false;
+    private boolean stocked=false;  // Instance variable, not static
     
     public AppleBin() 
     {
@@ -32,7 +32,10 @@ public class AppleBin extends DisplayUnit
     }
     public void act()
     {
-       stock();
+        // Only stock if stocking is enabled (not in editor mode)
+        if (isStockingEnabled()) {
+            stock();
+        }
     }
     protected void stock() {
         if (getWorld()== null) return;

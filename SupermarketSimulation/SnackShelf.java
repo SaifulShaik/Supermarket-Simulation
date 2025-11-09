@@ -17,8 +17,7 @@ public class SnackShelf extends DisplayUnit
     private static final int TOP_PAD  = 12;   // distance from fridge’s top
     private static final int COL_GAP  = 10;   // horizontal gap
     private static final int ROW_GAP  = 25;   // vertical gap
-    private static boolean stocked=false;
-    
+    private boolean stocked=false;  // Instance variable, not static
     
     public SnackShelf() 
     {
@@ -34,8 +33,10 @@ public class SnackShelf extends DisplayUnit
      */
     public void act()
     {
-        // Add your action code here.
-        stock();
+        // Only stock if stocking is enabled (not in editor mode)
+        if (isStockingEnabled()) {
+            stock();
+        }
     }
 
 
