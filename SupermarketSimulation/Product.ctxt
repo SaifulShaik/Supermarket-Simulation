@@ -3,6 +3,8 @@ comment0.target=Product
 comment0.text=\r\n\ Product\ class\r\n\ represents\ a\ purchasable\ item\ inside\ a\ store\r\n\ \r\n\ @author\ Owen\ Kung\r\n\ @version\ Nov\ 2025\r\n
 comment1.params=
 comment1.target=Product()
+comment10.params=
+comment10.target=Node\ getNode()
 comment2.params=
 comment2.target=java.lang.String\ getName()
 comment3.params=
@@ -10,6 +12,7 @@ comment3.target=double\ getPrice()
 comment4.params=percent
 comment4.target=void\ applyDiscount(double)
 comment5.params=
+<<<<<<< HEAD
 comment5.target=int\ getStock()
 comment6.params=amount
 comment6.target=void\ setStock(int)
@@ -20,3 +23,15 @@ comment8.target=Node\ getNode()
 comment9.params=node
 comment9.target=void\ setNode(Node)
 numComments=10
+=======
+comment5.target=java.lang.String\ toString()
+comment6.params=
+comment6.target=int\ getStock()
+comment7.params=amount
+comment7.target=void\ setStock(int)
+comment8.params=
+comment8.target=void\ unlock()
+comment9.params=node
+comment9.target=void\ setNode(Node)
+numComments=11
+>>>>>>> Owen-K

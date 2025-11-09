@@ -12,8 +12,8 @@ public abstract class Product extends SuperSmoothMover
 {
     protected double price;
     protected boolean isLocked;
+    protected boolean isDiscounted=false;
     protected String name;
-    
     protected Node node;
     
     public Product() 
@@ -30,8 +30,21 @@ public abstract class Product extends SuperSmoothMover
     }
     protected void applyDiscount(double percent) {
         price *= (1 - (percent / 100));
+        isDiscounted=true;
     }
- 
+    public String toString()
+    {
+        String result=name+":" ;
+        if(isDiscounted)
+        {
+            result=result+".  Discounted to-$"+price;
+        }
+        else
+        {
+            result=result+ " Price -$" + price;
+        }
+        return result;
+    }
     protected abstract int getStock() ;    
     protected abstract void setStock(int amount);
     
@@ -39,12 +52,15 @@ public abstract class Product extends SuperSmoothMover
         
     }
     
-    public Node getNode() {
-        return node;
+    public void setNode(Node node)
+    {   
+        this.node=node;
+        
     }
-    
-    public void setNode(Node node) {
-        this.node = node;
+    public Node getNode()
+    {   
+        return node;
+        
     }
 }
 

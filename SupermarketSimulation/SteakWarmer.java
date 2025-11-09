@@ -2,15 +2,15 @@ import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 import java.util.ArrayList;
 
 /**
- * Display Warmer object in the store.  
- * It stock up the display warmer and show what's taken away.
+ * Write a description of class Bin here.
  * 
- * @author Owen Kung 
- * @version Nov 6, 2025
+ * @author Owen Kung
+ * @version Nov 6 2025
  */
-public class SteakWarmer extends DisplayUnit
+public class SteakWarmer extends MultiRowUnit
 {
     private GreenfootImage image;
+<<<<<<< HEAD
     
     private static final int COLS = 3;        // how many per row
     private static final int ROWS = 2;        // how many rows
@@ -22,18 +22,30 @@ public class SteakWarmer extends DisplayUnit
     
     public SteakWarmer() 
     {
+=======
+
+    
+    public SteakWarmer() 
+    {
+            
+        COLS = 3;        // how many per row
+        ROWS = 2;        // how many rows
+        LEFT_PAD = 20;    // distance from fridge’s left edge
+        TOP_PAD  = 65;   // distance from fridge’s top
+        COL_GAP  = 20;   // horizontal gap
+        ROW_GAP  = 30;   // vertical gap
+        stocked=false;
+        
+>>>>>>> Owen-K
         stockedItems= new ArrayList<>();
         image = new GreenfootImage("furniture/displayWarmer.png");
         image.scale(image.getWidth()/4, image.getHeight()/4);//make it smaller
         setImage(image);
         stocked=false;
     }
-    /**
-     * Act - do whatever the DisplayWarmer wants to do. This method is called whenever
-     * the 'Act' or 'Run' button gets pressed in the environment.
-     */
-    public void act()
+    public Product retrieve()
     {
+<<<<<<< HEAD
         // Only stock if stocking is enabled (not in editor mode)
         if (isStockingEnabled()) {
             stock();
@@ -62,9 +74,23 @@ public class SteakWarmer extends DisplayUnit
 
                 getWorld().addObject(item, itemX, itemY);
                 stockedItems.add(item);
+=======
+        return retrieve(Steak.class);
+    }  
+    protected Product stockItemsByRow(int rowNum)
+    {
+            if(rowNum==0)
+            {
+                return new Steak();
+>>>>>>> Owen-K
             }
-        }
-        stocked=true;
-        
+            else if(rowNum==1)
+            {
+                return new DrumStick();
+            }
+
+     
+            return null;
     }
+
 }

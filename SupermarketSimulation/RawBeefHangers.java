@@ -12,8 +12,9 @@ public class RawBeefHangers extends DisplayUnit
 {
     private GreenfootImage image;
     
-    private static final int COLS = 3;        // how many per row
+    private static final int COLS = 4;        // how many per row
     private static final int ROWS = 1;        // how many rows
+<<<<<<< HEAD
     private static final int LEFT_PAD = 20;   // distance from fridge’s left edge
     private static final int TOP_PAD  = 45;   // distance from fridge’s top
     private static final int COL_GAP  = 5;      // horizontal gap
@@ -25,6 +26,20 @@ public class RawBeefHangers extends DisplayUnit
         stockedItems= new ArrayList<>();
         image = new GreenfootImage("furniture/steakWarmer.png");
         image.scale(image.getWidth()/4, image.getHeight()/4);//make it smaller
+=======
+    private static final int LEFT_PAD = -5;   // distance from fridge’s left edge
+    private static final int TOP_PAD  = 25;   // distance from fridge’s top
+    private static final int COL_GAP  = 35;   // horizontal gap
+    private static final int ROW_GAP  = 30;   // vertical gap
+    private static boolean stocked=false;
+    
+    public RawBeefHangers() 
+    {
+        stockedItems = new ArrayList<>();
+        //image = new GreenfootImage("furniture/displayWarmer.png");
+        image = new GreenfootImage("furniture/hangers.jpeg");
+        image.scale(image.getWidth()/5, image.getHeight()/5);//make it smaller
+>>>>>>> Owen-K
         setImage(image);
         stocked=false;
     }

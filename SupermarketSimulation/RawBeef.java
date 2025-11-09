@@ -3,8 +3,8 @@ import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 /**
  * Write a description of class Lettuce here.
  * 
- * @author (your name) 
- * @version (a version number or a date)
+ * @author Owen Kung
+ * @version Nov 2025
  */
 public class RawBeef extends Product
 {
@@ -13,10 +13,18 @@ public class RawBeef extends Product
     
     public RawBeef() 
     {
+<<<<<<< HEAD
         name=SimulationWorld.PRODUCT_RAWBEEF;
         image = new GreenfootImage("product/Raw Steak.PNG");
         image.scale(image.getWidth()/2, image.getHeight()/2);
         image.rotate(90);
+=======
+        price=6.75;
+        name=SimulationWorld.PRODUCT_RAW_BEEF;
+        image = new GreenfootImage("product/Raw Steak.png");
+        image.scale(image.getWidth()/4, image.getHeight()/4);
+        //image.rotate(90);
+>>>>>>> Owen-K
         setImage(image);
         
         //whenever a Sprite is added to a shelve,

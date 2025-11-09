@@ -4,6 +4,7 @@ comment0.text=\n\ Represents\ a\ store\n\ \n\ @author\ Joe\n\ @version\ November
 comment1.params=width\ height\ cellSize\ isLeftStore
 comment1.target=Store(int,\ int,\ int,\ boolean)
 comment10.params=
+<<<<<<< HEAD
 comment10.target=int\ getGridWidth()
 comment11.params=
 comment11.target=int\ getGridHeight()
@@ -42,3 +43,23 @@ comment8.target=boolean\ isEntrance(int,\ int)
 comment9.params=
 comment9.target=java.util.List\ getEntranceNodes()
 numComments=19
+=======
+comment10.target=java.util.List\ getAvailableProducts()
+comment2.params=x\ y
+comment2.target=boolean\ isInBounds(int,\ int)
+comment3.params=x\ y
+comment3.target=boolean\ isBlocked(int,\ int)
+comment4.params=x\ y
+comment4.target=boolean\ isEntrance(int,\ int)
+comment5.params=
+comment5.target=java.util.List\ getEntranceNodes()
+comment6.params=
+comment6.target=int\ getGridWidth()
+comment7.params=
+comment7.target=int\ getGridHeight()
+comment8.params=x\ y
+comment8.target=Node\ getNode(int,\ int)
+comment9.params=x\ y
+comment9.target=double[][]\ getCellCenter(int,\ int)
+numComments=11
+>>>>>>> Owen-K

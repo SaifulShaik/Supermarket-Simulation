@@ -9,17 +9,19 @@ import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 public class Water extends Product
 {
     private GreenfootImage image;
-     private static int stock=0;//keep track of total stock ih the store
+    private static int stock=0;//keep track of total stock ih the store
     
     public Water()
     {
+<<<<<<< HEAD
+=======
+        price=2.5;
+>>>>>>> Owen-K
         name=SimulationWorld.PRODUCT_WATER;
         image = new GreenfootImage("product/Water.PNG");
         image.scale(image.getWidth()/2, image.getHeight()/2);
         setImage(image);
         
-        //whenever a Water is added to a shelve,
-        //increase the stock#
         stock++;
     }
      //Return total number of stock in the store

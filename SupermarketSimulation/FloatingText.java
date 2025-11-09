@@ -49,7 +49,7 @@ public class FloatingText extends Actor
         if (timer % 6 == 0) setLocation(getX(), getY() + 1); // move slightly up
         
         if (timer > 60) {
-            getWorld().removeObject(this);
+             getWorld().removeObject(this);
         }
     }
 }

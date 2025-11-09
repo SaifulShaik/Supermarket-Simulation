@@ -33,6 +33,32 @@ public class SimulationWorld extends World
     public static final int GRID_START_Y = 100;  // Grid starts at y=100
     
     private static final GreenfootImage bg = new GreenfootImage("background.png");
+<<<<<<< HEAD
+=======
+    
+    //Avaialble product names, global reference
+    public static String PRODUCT_COKE="Coke";
+    public static String PRODUCT_SPRITE="Sprite";
+    public static String PRODUCT_FANTA="Fanta";
+    public static String PRODUCT_WATER="Water";
+    public static String PRODUCT_DORITOS="Doritos";
+    public static String PRODUCT_LAYS="Lays";
+    public static String PRODUCT_RUFFLES="Ruffles";
+    public static String PRODUCT_XING_RAMEN="Xing Ramen Cup Noodle";
+    public static String PRODUCT_NISSIN="Nissin Cup Noodle";
+    public static String PRODUCT_JIN_RAMEN="Jin Ramen Cup Noodle";
+    public static String PRODUCT_STEAK="Steak";
+    public static String PRODUCT_RAW_BEEF="Raw Beef";
+    public static String PRODUCT_DRUM_STICK="Roastd Drum Stick";
+    public static String PRODUCT_LETTUCE="Lettuce";
+    public static String PRODUCT_CARROT="Carrot";
+    public static String PRODUCT_APPLE="Apple";
+    public static String PRODUCT_ORANGE="Orange";
+    public static String PRODUCT_CANDY="Candy";
+    
+    //Paramters for spawning truck
+    private int truckDelay;
+>>>>>>> Owen-K
     public SimulationWorld()
     { 
         super(bg.getWidth(), bg.getHeight(), 1);
@@ -58,9 +84,24 @@ public class SimulationWorld extends World
         addObject(new Store2Cashier(), getWidth()/2-230, getHeight()/2+130);
         addObject(new Store2Cashier(), getWidth()/2-330, getHeight()/2+130);
         
+<<<<<<< HEAD
+=======
+        // add fridge one to store 2
+        addObject(new FridgeOne(),65,225);
+        // add fridge two to store 2
+        addObject(new FridgeTwo(),135,225);
+        // add shelve next to fridge
+        addObject(new SnackShelf(),230,240);
+        // add shelve next to fridge
+        addObject(new CupNoodleShelf(),335,240);
+        // add CandyBin to store 1
+        addObject(new CandyBin(),60,400);
+        
+        
+>>>>>>> Owen-K
         // add the butcher
         Butcher butcher = new Butcher();
-        addObject(butcher, getWidth()/2+ 380, getHeight()/2);
+        addObject(butcher, 975, 260);
         
         // Load display units from saved layout, or use default if no saved layout exists
         loadDisplayUnits();
@@ -113,17 +154,46 @@ public class SimulationWorld extends World
         addObject(new AppleBin(),870,460);
         // add Orange Bin in store 1
         addObject(new OrangeBin(),800,460);
-        // add SteakWarmer to store 1
-        addObject(new SteakWarmer(),1062,250);
         // add SteakHangers to store 1
+<<<<<<< HEAD
         addObject(new RawBeefHangers(),920,175);
+=======
+        addObject(new RawBeefHangers(),935,147);
+        // add SteakWarmer to store 1
+        addObject(new SteakWarmer(),1060,260);
+ 
+        //set paint order for products and shelves to properly display
+        setPaintOrder(
+            FloatingText.class,
+            Doritos.class, Lays.class, Ruffles.class,           // snacks 
+            Coke.class, Water.class, Sprite.class, Fanta.class, // drinks 
+            Lettuce.class,Carrot.class,Apple.class,Orange.class,Steak.class,RawBeef.class,DrumStick.class,
+            XingRamen.class,Nissin.class,JinRamen.class,  //cup noodles
+            Candy.class,
+            //SnackShelf.class, FridgeOne.class, LettuceBin.class, CarrotBin.class, AppleBin.class,OrangeBin.class, SteakWarmer.class,RawBeefHangers.class           // furniture (back)
+            DisplayUnit.class
+            );
+        
+addObject(new OwenTesting(),608,300);
+>>>>>>> Owen-K
     }
     
     public void act () 
     {
         //use zSort
         zSort ((ArrayList<Actor>)(getObjects(Actor.class)), this);
+        
+        spawnRestockingTruck();
     } 
+    private void spawnRestockingTruck()
+    {
+        truckDelay++;
+        if(truckDelay>=420)
+        {
+            addObject(new RestockingTruck(),600,200);
+            truckDelay=0;
+        }
+    }
     /**
      * Z-sort so actors with higher Y (lower on screen) render in front.
      * Uses precise Y for SuperSmoothMover when available. Stable for ties.
