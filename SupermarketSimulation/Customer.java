@@ -54,10 +54,10 @@ public abstract class Customer extends SuperSmoothMover
             moveToStore();
         }
         else if (!shoppingList.isEmpty()) {
-            move();
             if (currentProductTarget == null) {
                 chooseNextProduct();
             }
+            move();
         } 
         else {
             getWorld().removeObject(this);
@@ -115,7 +115,12 @@ public abstract class Customer extends SuperSmoothMover
         double dx = targetNode.getWorldX() - getX();
         double dy = targetNode.getWorldY() - getY();
         
-        if (dx < 1 && dy < 1) currentNode = targetNode;
+        if (dx < 1 && dy < 1) {
+            currentNode = targetNode;
+            
+            currentPath = null;
+            targetNode = null;
+        }
         
         double angle = Math.atan2(dy, dx);
         

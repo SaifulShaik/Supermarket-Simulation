@@ -34,6 +34,8 @@ public class SimulationWorld extends World
         super(bg.getWidth(), bg.getHeight(), 1);
         setBackground(bg); 
         
+        addObject(new CustomerSpawner(), 0, 0);
+        
         // Enable stocking in simulation mode
         DisplayUnit.setEnableStocking(true);
         
