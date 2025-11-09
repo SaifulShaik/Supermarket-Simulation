@@ -1,4 +1,6 @@
 import greenfoot.*;
+import java.util.*;
+
 /**
  * BasicCashier
  * Basically an animated objects in the store.
@@ -6,8 +8,8 @@ import greenfoot.*;
  * By default is uses cashier/cashier1.png and cashier/cashier2.png
  * The subclass can specify alternative by calling the public Cashier(String frame0, String frame1) constructor\
  * 
- * @author: Owen Kung
- * @version:Nov 4, 2025
+ * @author Joe Zhuo and Owen Kung
+ * @version Nov 4, 2025
  */
 public class Cashier extends SuperSmoothMover
 {
@@ -16,6 +18,14 @@ public class Cashier extends SuperSmoothMover
     private int frame = 0;      //frame index 
     private int tick = 0;       //framee counter
     private int delay = 50;     // lower = faster animation
+    
+    private Queue<Customer> queue;
+    private Customer currentCustomer;
+    
+    private double totalEarnings;
+    
+    private int timer;
+    private int serviceSpeed; // acts required per product service
 
     /*
      * Use default images for cashier if not file name specified
@@ -29,7 +39,11 @@ public class Cashier extends SuperSmoothMover
 
         frames=new GreenfootImage[]{frame0, frame1};
         setImage(frames[0]);
+        
+        queue = new LinkedList<>();
+        serviceSpeed = 180;
     }
+    
     /*
      * Use specifiedfile for cashier images
      */
@@ -42,7 +56,11 @@ public class Cashier extends SuperSmoothMover
 
         frames=new GreenfootImage[]{frame0Image, frame1Image};
         setImage(frames[0]);
+        
+        queue = new LinkedList<>();
+        serviceSpeed = 180;
     }
+    
     public void act() 
     {
         // advance frame every `delay` ticks
@@ -52,6 +70,44 @@ public class Cashier extends SuperSmoothMover
             frame = (frame + 1) % frames.length;
             setImage(frames[frame]);
         }
+        
+        if (currentCustomer != null) {
+            processCurrentCustomer();
+        } 
+        else if (!queue.isEmpty()) {
+            startNextCustomer();
+        }
+    }
+    
+    private void startNextCustomer() {
+        currentCustomer = queue.poll();
+        timer = serviceSpeed;
+    }
+    
+    private void processCurrentCustomer() {
+        if (currentCustomer == null) return;
+        
+        timer--;
+        
+        if (timer <= 0) {
+            totalEarnings = currentCustomer.calculatePriceOfCart();
+            showEarnings();
+            currentCustomer.leaveStore();
+            currentCustomer = null;
+        }
+    }
+    
+    public void addCustomerToQueue(Customer c) {
+        queue.add(c);
+    }
+    
+    public void showEarnings() {
+        if (getWorld() == null) return;
+        
+        int offsetX = Greenfoot.getRandomNumber(40) - 20;
+        int offsetY = Greenfoot.getRandomNumber(40) - 20;
+        
+        getWorld().addObject(new FloatingText("$: " + totalEarnings, Color.GREEN), getX() + offsetX, getY() + offsetY);
     }
 }
 

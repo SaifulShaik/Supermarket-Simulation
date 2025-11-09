@@ -5,7 +5,7 @@ import greenfoot.*;
  * 
  * This is particularly helpful to display the status of a player and create visual effects
  * 
- * @author: Owen Kung
+ * @author: Owen Kung (edited by Joe)
  * @version: Oct 2025  //reused from vehicle simulation
  */
 public class FloatingText extends Actor
@@ -45,6 +45,9 @@ public class FloatingText extends Actor
     {
         timer++;
         getImage().setTransparency(255 - (timer * 4)); //fade out
+        
+        if (timer % 6 == 0) setLocation(getX(), getY() + 1); // move slightly up
+        
         if (timer > 60) {
             getWorld().removeObject(this);
         }

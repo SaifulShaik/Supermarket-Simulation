@@ -1,6 +1,6 @@
 #BlueJ class context
 comment0.target=SettingWorld
-comment0.text=\r\n\ SettingsWorld\ -\ An\ editor\ for\ placing\ and\ arranging\ display\ units.\r\n\ Users\ can\ scroll\ through\ available\ display\ units,\ place\ them\ in\ free\ or\ grid\ mode,\r\n\ save\ layouts,\ and\ navigate\ back\ with\ unsaved\ changes\ confirmation.\r\n\ \r\n\ @author\ AI\ Assistant\r\n\ @version\ Nov\ 8,\ 2025\r\n
+comment0.text=\r\n\ SettingsWorld\ -\ An\ editor\ for\ placing\ and\ arranging\ display\ units.\r\n\ Users\ can\ scroll\ through\ available\ display\ units,\ place\ them\ in\ free\ or\ grid\ mode,\r\n\ save\ layouts,\ and\ navigate\ back\ with\ unsaved\ changes\ confirmation.\r\n\ \r\n\ @author\ Saiful\ Shaik\r\n\ @version\ Nov\ 8,\ 2025\r\n
 comment1.params=
 comment1.target=SettingWorld()
 comment1.text=\r\n\ Constructor\ for\ objects\ of\ class\ SettingWorld.\r\n
