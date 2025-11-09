@@ -4,7 +4,7 @@ import greenfoot.*;
  * Visual marker to show where cashiers are located in the SettingsWorld editor.
  * Displays a semi-transparent red box with "CASHIER" text.
  * 
- * @author AI Assistant
+ * @author Saiful Shaik
  * @version Nov 8, 2025
  */
 public class CashierMarker extends Actor {

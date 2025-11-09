@@ -7,7 +7,7 @@ import java.io.IOException;
  * Users can scroll through available display units, place them in free or grid mode,
  * save layouts, and navigate back with unsaved changes confirmation.
  * 
- * @author AI Assistant
+ * @author Saiful Shaik
  * @version Nov 8, 2025
  */
 public class SettingWorld extends World

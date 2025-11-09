@@ -1,6 +1,6 @@
 #BlueJ class context
 comment0.target=Button
-comment0.text=\n\ Write\ a\ description\ of\ class\ MyWorld\ here.\n\ \n\ @author\ (your\ name)\ \n\ @version\ (a\ version\ number\ or\ a\ date)\n
+comment0.text=\n\ Write\ a\ description\ of\ class\ MyWorld\ here.\n\ \n\ @author\ Saiful\ Shaik\n\ @version\ \n
 comment1.params=text\ width\ height
 comment1.target=Button(java.lang.String,\ int,\ int)
 comment10.params=
