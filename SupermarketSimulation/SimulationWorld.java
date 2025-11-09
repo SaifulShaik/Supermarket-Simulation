@@ -28,11 +28,18 @@ public class SimulationWorld extends World
     public static final String PRODUCT_STEAK = "Steak";
     public static final String PRODUCT_RAWBEEF = "Raw Beef";
     
+    // Grid settings
+    public static final int GRID_CELL_SIZE = 20; // pixels per cell
+    public static final int GRID_START_Y = 100;  // Grid starts at y=100
+    
     private static final GreenfootImage bg = new GreenfootImage("background.png");
     public SimulationWorld()
     { 
         super(bg.getWidth(), bg.getHeight(), 1);
         setBackground(bg); 
+        
+        // Draw world-wide grid overlay
+        drawWorldGrid();
         
         addObject(new CustomerSpawner(), 0, 0);
         addObject(new StoreUI(), getWidth()/2, 50);
@@ -195,8 +202,36 @@ public class SimulationWorld extends World
     {
         return (int)(v + Math.signum(v) * 0.5);
     }
+    
+    /**
+     * Draw a world-wide grid overlay covering the entire screen below y=100
+     */
+    private void drawWorldGrid() {
+        GreenfootImage bg = getBackground();
+        
+        // Save current color
+        Color gridColor = new Color(0, 0, 0);
+        bg.setColor(gridColor);
+        bg.setTransparency(40); // Semi-transparent so background shows through
+        
+        int worldWidth = getWidth();
+        int worldHeight = getHeight();
+        
+        // Draw vertical grid lines
+        for (int x = 0; x <= worldWidth; x += GRID_CELL_SIZE) {
+            bg.drawLine(x, GRID_START_Y, x, worldHeight);
+        }
+        
+        // Draw horizontal grid lines
+        for (int y = GRID_START_Y; y <= worldHeight; y += GRID_CELL_SIZE) {
+            bg.drawLine(0, y, worldWidth, y);
+        }
+        
+        // Draw a thicker line at y=100 to mark the grid boundary
+        bg.setColor(new Color(0, 0, 0));
+        bg.setTransparency(150);
+        for (int i = 0; i < 3; i++) {
+            bg.drawLine(0, GRID_START_Y + i, worldWidth, GRID_START_Y + i);
+        }
+    }
 }
-
-
-
-
