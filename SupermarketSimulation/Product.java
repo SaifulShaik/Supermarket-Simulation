@@ -18,13 +18,14 @@ public abstract class Product extends SuperSmoothMover
     
     public Product() 
     {
-        
+        // Set default price (can be overridden by subclasses)
+        price = 2.0 + (Greenfoot.getRandomNumber(6)); // $2 - $7
     }
     public String getName()
     {
         return name;
     }
-    protected double getPrice() { 
+    public double getPrice() { 
         return price; 
     }
     protected void applyDiscount(double percent) {
