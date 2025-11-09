@@ -57,7 +57,7 @@ public class Cashier extends SuperSmoothMover
         frames=new GreenfootImage[]{frame0Image, frame1Image};
         setImage(frames[0]);
         
-        queue = new LinkedList<>();
+        queue = new LinkedList<Customer>();
         serviceSpeed = 180;
     }
     
@@ -98,7 +98,7 @@ public class Cashier extends SuperSmoothMover
     }
     
     public void addCustomerToQueue(Customer c) {
-        queue.add(c);
+        queue.offer(c);
     }
     
     public void showEarnings() {

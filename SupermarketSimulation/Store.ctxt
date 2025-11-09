@@ -1,6 +1,6 @@
 #BlueJ class context
 comment0.target=Store
-comment0.text=\r\n\ Represents\ a\ store\r\n\ \r\n\ @author\ Joe\r\n\ @version\ November\ 2025\r\n
+comment0.text=\n\ Represents\ a\ store\n\ \n\ @author\ Joe\n\ @version\ November\ 2025\n
 comment1.params=width\ height\ cellSize\ isLeftStore
 comment1.target=Store(int,\ int,\ int,\ boolean)
 comment10.params=
