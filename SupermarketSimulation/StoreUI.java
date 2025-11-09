@@ -19,10 +19,6 @@ public class StoreUI extends Actor
         storeTwoEarnings = 0;
     }
     
-    public void act() {
-        updateDisplay();
-    }
-    
     public void addEarnings(double amount, int store) {
         switch (store) {
             case 1:
