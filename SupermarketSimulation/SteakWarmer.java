@@ -13,12 +13,13 @@ public class SteakWarmer extends MultiRowUnit
     
     private static final int COLS = 3;        // how many per row
     private static final int ROWS = 2;        // how many rows
-    private static final int LEFT_PAD = 20;   // distance from fridge's left edge
-    private static final int TOP_PAD  = 65;   // distance from fridge's top
+    private static final int LEFT_PAD = 20;   // distance from fridge’s left edge
+    private static final int TOP_PAD  = 65;   // distance from fridge’s top
     private static final int COL_GAP  = 5;      // horizontal gap
     private static final int ROW_GAP  = 5;      // vertical gap
+    private boolean stocked=false;  // Instance variable, not static
     
-    public SteakWarmer()
+    public SteakWarmer() 
     {
         stockedItems= new ArrayList<>();
         image = new GreenfootImage("furniture/displayWarmer.png");
@@ -26,6 +27,7 @@ public class SteakWarmer extends MultiRowUnit
         setImage(image);
         stocked=false;
     }
+    protected Product stockItemsByRow(int a) { return null; }
     
     protected void stock() {
         if (getWorld()== null) return;
@@ -56,9 +58,4 @@ public class SteakWarmer extends MultiRowUnit
         stocked = true;
     }
     
-    @Override
-    protected Product stockItemsByRow(int rowNum) {
-        // All rows stock Steak items
-        return new Steak();
-    }
 }

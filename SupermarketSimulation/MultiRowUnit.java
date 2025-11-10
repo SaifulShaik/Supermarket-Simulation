@@ -24,7 +24,7 @@ public abstract class MultiRowUnit extends DisplayUnit {
         
         //clear old itemes first
         clear();
-//showText("stocking",Color.RED,getX(),getY());
+        //showText("stocking",Color.RED,getX(),getY());
         //Fining top left corner of the display unit
         int fridgeW = getImage().getWidth();
         int fridgeH = getImage().getHeight();

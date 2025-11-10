@@ -49,6 +49,9 @@ public class SettingWorld extends World
     private ConfirmationDialog activeDialog = null;
     private List<DisplayUnitData> originalLayout = new ArrayList<>();
     
+    private LinkedList<Node> pathNodes = new LinkedList<>();
+    private LinkedList<Node> nodeMarkers = new LinkedList<>();
+    
     /**
      * Constructor for objects of class SettingWorld.
      */
@@ -424,5 +427,20 @@ public class SettingWorld extends World
         // Check if click is on any button or label area
         return y < 80 || y > getHeight() - 80;
     }
+    /*
+    private void createNode(int gridX, int gridY, boolean isBlocked, boolean isEntrance) {
+        Node previous = pathNodes.isEmpty() ? null : pathNodes.getLast();
+        Node node = new Node(gridX, gridY, previous, 0, 0, isBlocked, isEntrance);
+    
+        pathNodes.add(node);
+    
+        NodeMarker marker = new NodeMarker(node);
+        addObject(marker, node.getWorldX(), node.getWorldY());
+        nodeMarkers.add(marker);
+    
+        // Make sure markers are always drawn in front of display units and background
+        setPaintOrder(NodeMarker.class, DisplayUnit.class, Cashier.class);
+    }
+    */
 }
 
