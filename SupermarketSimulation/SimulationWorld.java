@@ -28,17 +28,15 @@ public class SimulationWorld extends World
     public static final String PRODUCT_STEAK = "Steak";
     public static final String PRODUCT_RAWBEEF = "Raw Beef";
     public static final String PRODUCT_CANDY = "Candy";
-    public static final String PRODUCT_DRUM_STICK = "Drum Stick";
-    public static final String PRODUCT_JIN_RAMEN = "Jin Ramen";
-    public static final String PRODUCT_NISSIN = "Nissin";
+    public static final String PRODUCT_DRUM_STICK = "Drumstick";
     public static final String PRODUCT_XING_RAMEN = "Xing Ramen";
+    public static final String PRODUCT_JIN_RAMEN = "Jin Ramen";
+    public static final String PRODUCT_NISSIN = "Raw Beef";
+    
     
     // Grid settings
     public static final int GRID_CELL_SIZE = 20; // pixels per cell
     public static final int GRID_START_Y = 100;  // Grid starts at y=100
-    
-    // Truck spawning
-    private int truckDelay = 0;
     
     private static final GreenfootImage bg = new GreenfootImage("background.png");
     public SimulationWorld()
@@ -130,8 +128,9 @@ public class SimulationWorld extends World
         //use zSort
         zSort ((ArrayList<Actor>)(getObjects(Actor.class)), this);
         
-        spawnRestockingTruck();
+        //spawnRestockingTruck();
     } 
+    /*
     private void spawnRestockingTruck()
     {
         truckDelay++;
@@ -141,6 +140,7 @@ public class SimulationWorld extends World
             truckDelay=0;
         }
     }
+    */
     /**
      * Z-sort so actors with higher Y (lower on screen) render in front.
      * Uses precise Y for SuperSmoothMover when available. Stable for ties.
