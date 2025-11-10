@@ -1,20 +1,20 @@
 #BlueJ class context
 comment0.target=DisplayUnit
-comment0.text=\n\ \n
+comment0.text=\r\n\ \r\n
 comment1.params=
 comment1.target=DisplayUnit()
 comment2.params=
 comment2.target=void\ stock()
 comment3.params=enabled
 comment3.target=void\ setEnableStocking(boolean)
-comment3.text=\n\ Set\ whether\ display\ units\ should\ stock\ items\n
+comment3.text=\r\n\ Set\ whether\ display\ units\ should\ stock\ items\r\n
 comment4.params=
 comment4.target=boolean\ isStockingEnabled()
-comment4.text=\n\ Check\ if\ stocking\ is\ enabled\n
+comment4.text=\r\n\ Check\ if\ stocking\ is\ enabled\r\n
 comment5.params=
 comment5.target=void\ clear()
-comment5.text=\n\ Clear\ whatever\ is\ in\ the\ display\ shelves\n
+comment5.text=\r\n\ Clear\ whatever\ is\ in\ the\ display\ shelves\r\n
 comment6.params=productClass
 comment6.target=Product\ retrieve(java.lang.Class)
-comment6.text=\n\ retrieve\ an\ item\ from\ display\ shelve\n
+comment6.text=\r\n\ retrieve\ an\ item\ from\ display\ shelve\r\n
 numComments=7

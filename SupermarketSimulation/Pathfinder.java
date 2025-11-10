@@ -66,10 +66,7 @@ public class Pathfinder
                     neighbour.previousNode = currentNode;
                     neighbour.setDistanceFromStart(tentativeDist);
                     neighbour.setDistanceToGoal(estimateDistance(nx, ny, tx, ty));
-                    
-                    if (!nodesToExplore.contains(neighbour)) {
-                        nodesToExplore.add(neighbour);
-                    }
+                    nodesToExplore.add(neighbour);
                 }
 
             }

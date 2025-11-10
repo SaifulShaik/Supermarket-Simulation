@@ -44,7 +44,7 @@ public abstract class CustomerOld extends SuperSmoothMover
     private int collectingTimer = 0;
     private static final int COLLECTING_DELAY = 30; // frames to pause when collecting
     
-    public Customer() {
+    public CustomerOld() {
         cart = new ArrayList<>();
         budget = 20 + Greenfoot.getRandomNumber(81); //20 - 100 dollar budget
         movementSpeed = MOVE_SPEED;
@@ -52,7 +52,7 @@ public abstract class CustomerOld extends SuperSmoothMover
         currentStore = null;
     }
     
-    public Customer(int budget, int speed) {
+    public CustomerOld(int budget, int speed) {
         cart = new ArrayList<>();
         this.budget = budget;
         movementSpeed = MOVE_SPEED;

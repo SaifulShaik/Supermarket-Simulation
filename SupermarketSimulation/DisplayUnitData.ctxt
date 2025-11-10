@@ -1,6 +1,6 @@
 #BlueJ class context
 comment0.target=DisplayUnitData
-comment0.text=\n\ Handles\ saving\ and\ loading\ display\ unit\ layout\ data.\n\ Stores\ type,\ x,\ y\ position\ for\ each\ display\ unit.\n\ \n\ @author\ Saiful\ Shaik\n\ @version\ Nov\ 8,\ 2025\n
+comment0.text=\r\n\ Handles\ saving\ and\ loading\ display\ unit\ layout\ data.\r\n\ Stores\ type,\ x,\ y\ position\ for\ each\ display\ unit.\r\n\ \r\n\ @author\ Saiful\ Shaik\r\n\ @version\ Nov\ 8,\ 2025\r\n
 comment1.params=type\ x\ y
 comment1.target=DisplayUnitData(java.lang.String,\ int,\ int)
 comment2.params=
@@ -11,14 +11,14 @@ comment4.params=
 comment4.target=int\ getY()
 comment5.params=units
 comment5.target=void\ saveLayout(java.util.List)
-comment5.text=\n\ Save\ a\ list\ of\ display\ unit\ data\ to\ file\n
+comment5.text=\r\n\ Save\ a\ list\ of\ display\ unit\ data\ to\ file\r\n
 comment6.params=
 comment6.target=java.util.List\ loadLayout()
-comment6.text=\n\ Load\ display\ unit\ data\ from\ file\n
+comment6.text=\r\n\ Load\ display\ unit\ data\ from\ file\r\n
 comment7.params=
 comment7.target=boolean\ hasSavedLayout()
-comment7.text=\n\ Check\ if\ a\ saved\ layout\ exists\n
+comment7.text=\r\n\ Check\ if\ a\ saved\ layout\ exists\r\n
 comment8.params=
 comment8.target=DisplayUnit\ createDisplayUnit()
-comment8.text=\n\ Create\ a\ DisplayUnit\ instance\ from\ this\ data\n
+comment8.text=\r\n\ Create\ a\ DisplayUnit\ instance\ from\ this\ data\r\n
 numComments=9
