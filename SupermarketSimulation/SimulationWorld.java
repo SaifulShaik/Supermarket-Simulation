@@ -70,16 +70,31 @@ public class SimulationWorld extends World
         
         // Load display units from saved layout, or use default if no saved layout exists
         loadDisplayUnits();
+    // Add visual markers for each display unit so nodes in front of units are visible
+    addNodeMarkersForDisplayUnits();
         
         //set paint order for products and shelves to properly display
         setPaintOrder(
             Customer.class,                                      // customers (very front)
+            NodeMarker.class,                                    // node markers (above display units)
             Doritos.class, Lays.class, Ruffles.class,           // snacks (front)
             Coke.class, Water.class, Sprite.class, Fanta.class, // drinks (middle)
             Lettuce.class,Carrot.class,Apple.class,Orange.class,Steak.class,RawBeef.class,
             SnackShelf.class, Fridge.class, LettuceBin.class, CarrotBin.class, AppleBin.class,OrangeBin.class, SteakWarmer.class,RawBeefHangers.class           // furniture (back)
             );
         
+    }
+
+    /** Add a NodeMarker that follows each DisplayUnit so nodes in front of
+     * display units are visible while the simulation runs.
+     */
+    private void addNodeMarkersForDisplayUnits() {
+        java.util.List<DisplayUnit> units = getObjects(DisplayUnit.class);
+        for (DisplayUnit unit : units) {
+            // create a marker that follows the unit; position it initially on the unit
+            NodeMarker marker = new NodeMarker(unit);
+            addObject(marker, unit.getX(), unit.getY() - 8);
+        }
     }
     
     /**
