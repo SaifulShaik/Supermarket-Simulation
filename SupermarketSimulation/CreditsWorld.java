@@ -35,27 +35,19 @@ public class CreditsWorld extends World
 
     private void prepare()
     {
-        GreenfootImage bg = getBackground();
-        bg.setColor(new Color(200, 200, 200)); // Light grey
-        bg.fill();
-        
-        // Title - white with no outline
-        titleLabel = new Label("CREDITS", 48);
-        titleLabel.setLineColor(new Color(0, 0, 0, 0)); 
-        titleLabel.setFillColor(Color.WHITE);
-        addObject(titleLabel, 600, 80);
+        setBackground(new GreenfootImage("Credits Background.PNG"));
         
         // Version info
         versionLabel = new Label("Version 1.0.0", 20);
         versionLabel.setLineColor(new Color(0, 0, 0, 0));
         versionLabel.setFillColor(new Color(100, 100, 100));
-        addObject(versionLabel, 600, 140);
+        addObject(versionLabel, 600, 180);
         
         // Team header
         teamLabel = new Label("DEVELOPMENT TEAM", 28);
         teamLabel.setLineColor(new Color(0, 0, 0, 0));
         teamLabel.setFillColor(new Color(80, 80, 80));
-        addObject(teamLabel, 600, 220);
+        addObject(teamLabel, 600, 240);
         
         // Developers header
         developersLabel = new Label("Developed by:", 22);
