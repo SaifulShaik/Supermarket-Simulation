@@ -7,7 +7,7 @@ import greenfoot.*;
  */
 public class NodeMarker extends Actor {
     private DisplayUnit targetUnit;
-    private int yOffset = -8; // draw slightly above the unit center
+    private int yOffset = 50; // draw slightly above the unit center
 
     public NodeMarker(DisplayUnit unit) {
         this.targetUnit = unit;

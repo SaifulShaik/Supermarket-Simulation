@@ -157,7 +157,7 @@ public class LandingPage extends World
         // Play sound effect if available
         
         // Smooth transition
-        fadeOutAndTransition(new Cutscene());
+        fadeOutAndTransition(new SimulationWorld());
         
     }
     
