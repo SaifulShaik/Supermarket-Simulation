@@ -13,10 +13,6 @@ public class Lettuce extends Product
     
     public Lettuce()
     {
-<<<<<<< HEAD
-=======
-        price=2.5;
->>>>>>> Owen-K
         name=SimulationWorld.PRODUCT_LETTUCE;
         image = new GreenfootImage("product/Lettuce.PNG");
         image.scale(image.getWidth()/2, image.getHeight()/2);

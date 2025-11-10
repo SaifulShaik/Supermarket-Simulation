@@ -13,10 +13,6 @@ public class Water extends Product
     
     public Water()
     {
-<<<<<<< HEAD
-=======
-        price=2.5;
->>>>>>> Owen-K
         name=SimulationWorld.PRODUCT_WATER;
         image = new GreenfootImage("product/Water.PNG");
         image.scale(image.getWidth()/2, image.getHeight()/2);

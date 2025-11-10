@@ -6,6 +6,7 @@ import java.util.ArrayList;
 public abstract class DisplayUnit extends SuperSmoothMover
 {
     protected ArrayList<Product> stockedItems;
+    protected boolean stocked = false;  // Track if this unit has been stocked
     
     // Flag to control whether display units should stock items (false in editor, true in simulation)
     private static boolean enableStocking = true;

@@ -1,14 +1,12 @@
 #BlueJ class context
 comment0.target=Bin
-comment0.text=\n\ Write\ a\ description\ of\ class\ Bin\ here.\n\ \n\ @author\ Owen\ Kung\n\ @version\ Nov\ 6\ 2025\n
+comment0.text=\n\ \n\ \n\ @author\ Owen\ Kung\n\ @version\ Nov\ 6\ 2025\n
 comment1.params=
 comment1.target=Bin()
 comment2.params=
-comment2.target=void\ act()
+comment2.target=void\ stock()
 comment3.params=
-comment3.target=void\ stock()
+comment3.target=Product\ itemToFill()
 comment4.params=
-comment4.target=Product\ itemToFill()
-comment5.params=
-comment5.target=Product\ retrieve()
-numComments=6
+comment4.target=Product\ retrieve()
+numComments=5

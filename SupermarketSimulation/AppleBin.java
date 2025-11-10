@@ -16,13 +16,12 @@ public class AppleBin extends DisplayUnit
     private static final int COLS = 10;         // how many per row
     private static final int ROWS = 3;          // how many rows
     private static final int LAYERS = 5;        // how many layers (higher = taller pile)
-    private static final int LEFT_PAD = 10;     // distance from fridge’s left edge
-    private static final int TOP_PAD  = 30;     // distance from fridge’s top
+    private static final int LEFT_PAD = 10;     // distance from fridge's left edge
+    private static final int TOP_PAD  = 30;     // distance from fridge's top
     private static final int COL_GAP  = 5;      // horizontal gap
     private static final int ROW_GAP  = 5;      // vertical gap
-    private boolean stocked=false;  // Instance variable, not static
     
-    public AppleBin() 
+    public AppleBin()
     {
         stockedItems= new ArrayList<>();
         image = new GreenfootImage("furniture/bin/woodenbin.png");
