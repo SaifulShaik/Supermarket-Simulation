@@ -33,6 +33,8 @@ public abstract class Customer extends SuperSmoothMover
     private boolean isCollecting = false;
     private int collectingTimer = 0;
     private double targetX, targetY;
+    private boolean isExiting = false;
+    private boolean hasExited = false;
 
     // ====== Customer stats ======
     protected double budget;
@@ -40,9 +42,8 @@ public abstract class Customer extends SuperSmoothMover
     protected boolean hasPaid;
     protected int emotion;
 
-    // ====== Constructor ======
     public Customer() {
-        budget = 20 + Greenfoot.getRandomNumber(81);
+        budget = 20 + Greenfoot.getRandomNumber(81); // 20 to 100 dollar budget
         movementSpeed = 2;
     }
 
@@ -51,7 +52,9 @@ public abstract class Customer extends SuperSmoothMover
         this.movementSpeed = speed;
     }
 
-    // ====== Main loop ======
+    /**
+     * Main Loop
+     */
     public void act() {
         if (isCollecting) {
             handleCollecting();
@@ -65,9 +68,15 @@ public abstract class Customer extends SuperSmoothMover
 
         if (currentStore == null) return;
 
-        if (shoppingList.isEmpty()) {
+        if (shoppingList.isEmpty() && !isExiting) {
             System.out.println("Customer finished shopping with " + cart.size() + " items!");
             leaveStore();
+            return;
+        }
+        
+        // Continue moving toward the exit if leaving
+        if (isExiting) {
+            moveAlongExitPath();
             return;
         }
 
@@ -78,9 +87,12 @@ public abstract class Customer extends SuperSmoothMover
         moveAlongPath();
     }
 
-    // ====== STORE SELECTION ======
+    /**
+     * Choose Store and enter it
+     */
     protected void chooseStoreAndEnter() {
         List<Store> stores = getWorld().getObjects(Store.class);
+        
         if (stores.isEmpty()) {
             System.out.println("ERROR: No stores found!");
             getWorld().removeObject(this);
@@ -127,11 +139,14 @@ public abstract class Customer extends SuperSmoothMover
         System.out.println("Customer entered store at node (" + entrance.getX() + ", " + entrance.getY() + ")");
     }
 
-    // ====== PATH-BASED MOVEMENT ======
+    /**
+     * Path based movement
+     */
     protected void moveAlongPath() {
         if (currentProductTarget == null || currentStore == null || pathfinder == null) return;
 
         Node productNode = currentProductTarget.getNode();
+        
         if (productNode == null) {
             System.out.println("ERROR: Product node is null, skipping item.");
             shoppingList.remove(currentProductTarget);
@@ -147,8 +162,7 @@ public abstract class Customer extends SuperSmoothMover
 
         // If no path or we reached the end of it, find a new one
         if (currentPath == null || currentPath.isEmpty()) {
-            currentPath = pathfinder.findPath(currentNode.getX(), currentNode.getY(),
-                                              productNode.getX(), productNode.getY());
+            currentPath = pathfinder.findPath(currentNode.getX(), currentNode.getY(), productNode.getX(), productNode.getY());
 
             if (currentPath == null || currentPath.isEmpty()) {
                 System.out.println("No path found to product, removing it.");
@@ -188,12 +202,16 @@ public abstract class Customer extends SuperSmoothMover
         }
 
         double angle = Math.atan2(dy, dx);
+        
         double moveX = Math.cos(angle) * movementSpeed;
         double moveY = Math.sin(angle) * movementSpeed;
+        
         setLocation(getX() + moveX, getY() + moveY);
     }
 
-    // ====== COLLECTING / SHOPPING ======
+    /**
+     * Collecting items
+     */
     protected boolean canAccessItem(Product p) {
         if (p == null || currentNode == null) return false;
         Node productNode = p.getNode();
@@ -259,7 +277,36 @@ public abstract class Customer extends SuperSmoothMover
 
     // ====== STORE EXIT ======
     protected void leaveStore() {
-        getWorld().removeObject(this);
+        if (isExiting) return;
+        
+        if (currentStore == null || pathfinder == null) {
+            getWorld().removeObject(this);
+            return;
+        }
+    
+        isExiting = true;
+        System.out.println("Customer finished shopping — heading to exit.");
+    
+        int exitX = currentStore.getGridWidth() / 2 + 3;
+        int exitY = currentStore.getGridHeight() - 1; 
+        if (!currentStore.isInBounds(exitX, exitY)) {
+            System.out.println("Exit position out of bounds!");
+            getWorld().removeObject(this);
+            return;
+        }
+    
+        currentPath = pathfinder.findPath(
+            currentNode.getX(), currentNode.getY(),
+            exitX, exitY
+        );
+    
+        if (currentPath == null || currentPath.isEmpty()) {
+            System.out.println("No path to exit found — removing customer.");
+            getWorld().removeObject(this);
+            return;
+        }
+    
+        System.out.println("Exit path found with " + currentPath.size() + " nodes.");
     }
 
     // ====== SHOPPING LIST CREATION ======
@@ -283,7 +330,48 @@ public abstract class Customer extends SuperSmoothMover
         return list;
     }
     
+    protected void moveAlongExitPath() {
+        if (currentPath == null || currentPath.isEmpty()) {
+            if (!hasExited) {
+                System.out.println("Customer reached exit — leaving store!");
+                hasExited = true;
+                getWorld().removeObject(this);
+            }
+            return;
+        }
+    
+        if (!isMoving) {
+            nextNode = currentPath.get(0);
+            double[][] targetCenter = currentStore.getCellCenter(nextNode.getX(), nextNode.getY());
+            targetX = targetCenter[0][0];
+            targetY = targetCenter[0][1];
+            isMoving = true;
+        }
+    
+        double dx = targetX - getX();
+        double dy = targetY - getY();
+    
+        if (Math.abs(dx) < movementSpeed && Math.abs(dy) < movementSpeed) {
+            setLocation(targetX, targetY);
+            currentNode = nextNode;
+            currentPath.remove(0);
+            isMoving = false;
+            return;
+        }
+    
+        double angle = Math.atan2(dy, dx);
+        double moveX = Math.cos(angle) * movementSpeed;
+        double moveY = Math.sin(angle) * movementSpeed;
+        setLocation(getX() + moveX, getY() + moveY);
+    }
+    
     public double calculatePriceOfCart() {
-        return 0;
+        double total = 0;
+        
+        for (Product p : cart) {
+            total += p.getPrice();
+        }
+        
+        return total;
     }
 }

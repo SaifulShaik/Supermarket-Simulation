@@ -110,5 +110,3 @@ public class Cashier extends SuperSmoothMover
         getWorld().addObject(new FloatingText("$: " + totalEarnings, Color.GREEN), getX() + offsetX, getY() + offsetY);
     }
 }
-
-
