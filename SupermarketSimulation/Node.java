@@ -45,6 +45,12 @@ public class Node
         return this.x == other.x && this.y == other.y;
     }
     
+    @Override
+    public int hashCode() {
+        // Combine x and y coordinates for unique hash
+        return 31 * x + y;
+    }
+    
     public int getDistanceFromGoal() {
         return distanceToGoal;
     }

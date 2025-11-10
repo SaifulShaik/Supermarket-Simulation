@@ -32,6 +32,7 @@ public abstract class Customer extends SuperSmoothMover
     protected int emotion; // handle this later
     
     private Store currentStore;
+    private boolean storeChosen = false; // Flag to prevent re-choosing store
     
     // Grid-based movement variables
     private boolean isMoving = false;
@@ -50,6 +51,7 @@ public abstract class Customer extends SuperSmoothMover
         movementSpeed = MOVE_SPEED;
         emotion = 0;
         currentStore = null;
+        storeChosen = false;
     }
     
     public Customer(int budget, int speed) {
@@ -58,6 +60,7 @@ public abstract class Customer extends SuperSmoothMover
         movementSpeed = MOVE_SPEED;
         emotion = 0;
         currentStore = null;
+        storeChosen = false;
     }
     
     public void act() {
@@ -74,8 +77,11 @@ public abstract class Customer extends SuperSmoothMover
             return; // Don't move while collecting
         }
         
-        if (currentStore == null) {
+        // Choose store only once when first spawned
+        if (!storeChosen) {
             chooseStore();
+            storeChosen = true; // Mark as chosen to prevent re-choosing
+            
             // After choosing a store, teleport to entrance
             if (currentStore != null && targetNode != null) {
                 double[][] entrancePos = currentStore.getCellCenter(targetNode.getX(), targetNode.getY());
@@ -85,9 +91,19 @@ public abstract class Customer extends SuperSmoothMover
                     targetNode = null;
                     System.out.println("Customer entered store at (" + getX() + ", " + getY() + ")");
                 }
+            } else {
+                System.out.println("ERROR: Failed to choose store or entrance!");
+                getWorld().removeObject(this);
+                return;
             }
         }
-        else if (!shoppingList.isEmpty()) {
+        
+        // Only proceed if store was chosen successfully
+        if (currentStore == null) {
+            return; // Wait for next frame
+        }
+        
+        if (!shoppingList.isEmpty()) {
             // Inside store, shopping
             if (currentProductTarget == null) {
                 chooseNextProduct();
@@ -182,48 +198,65 @@ public abstract class Customer extends SuperSmoothMover
         if (currentProductTarget == null) return;
         
         // Find the actual DisplayUnit for this product in the world
-        List<Actor> allActors = getWorld().getObjects(null);
-        Actor targetUnit = null;
+        // Must be in the same store area as the customer
+        List<DisplayUnit> allDisplayUnits = getWorld().getObjects(DisplayUnit.class);
+        DisplayUnit targetUnit = null;
         
-        for (Actor actor : allActors) {
-            String actorClass = actor.getClass().getSimpleName();
-            String productName = currentProductTarget.getName();
+        String productName = currentProductTarget.getName();
+        
+        // Find the closest matching DisplayUnit (should be in our store)
+        double closestDistance = Double.MAX_VALUE;
+        
+        for (DisplayUnit unit : allDisplayUnits) {
+            String unitClass = unit.getClass().getSimpleName();
+            boolean matches = false;
             
-            // Match product to its display unit
+            // Match product to its display unit type
             if ((productName.equals("Coke") || productName.equals("Sprite") || 
-                 productName.equals("Fanta") || productName.equals("Water")) && actorClass.equals("Fridge")) {
-                targetUnit = actor;
-                break;
+                 productName.equals("Fanta") || productName.equals("Water")) && unitClass.equals("Fridge")) {
+                matches = true;
             }
-            if ((productName.equals("Doritos") || productName.equals("Lays") || 
-                 productName.equals("Ruffles")) && actorClass.equals("SnackShelf")) {
-                targetUnit = actor;
-                break;
+            else if ((productName.equals("Doritos") || productName.equals("Lays") || 
+                 productName.equals("Ruffles")) && unitClass.equals("SnackShelf")) {
+                matches = true;
             }
-            if (productName.equals("Apple") && actorClass.equals("AppleBin")) {
-                targetUnit = actor;
-                break;
+            else if (productName.equals("Apple") && unitClass.equals("AppleBin")) {
+                matches = true;
             }
-            if (productName.equals("Orange") && actorClass.equals("OrangeBin")) {
-                targetUnit = actor;
-                break;
+            else if (productName.equals("Orange") && unitClass.equals("OrangeBin")) {
+                matches = true;
             }
-            if (productName.equals("Carrot") && actorClass.equals("CarrotBin")) {
-                targetUnit = actor;
-                break;
+            else if (productName.equals("Carrot") && unitClass.equals("CarrotBin")) {
+                matches = true;
             }
-            if (productName.equals("Lettuce") && actorClass.equals("LettuceBin")) {
-                targetUnit = actor;
-                break;
+            else if (productName.equals("Lettuce") && unitClass.equals("LettuceBin")) {
+                matches = true;
             }
-            if (productName.equals("Steak") && actorClass.equals("SteakWarmer")) {
-                targetUnit = actor;
-                break;
+            else if (productName.equals("Steak") && unitClass.equals("SteakWarmer")) {
+                matches = true;
+            }
+            else if (productName.equals("Raw Beef") && unitClass.equals("RawBeefHangers")) {
+                matches = true;
+            }
+            
+            // If it matches, check if it's closer than previous matches
+            if (matches) {
+                double dx = unit.getX() - getX();
+                double dy = unit.getY() - getY();
+                double distance = Math.sqrt(dx * dx + dy * dy);
+                
+                if (distance < closestDistance) {
+                    closestDistance = distance;
+                    targetUnit = unit;
+                }
             }
         }
         
         if (targetUnit == null) {
             System.out.println("ERROR: Could not find DisplayUnit for " + currentProductTarget.getName());
+            // Remove this product and try the next one
+            shoppingList.remove(currentProductTarget);
+            currentProductTarget = null;
             return;
         }
         

@@ -54,10 +54,10 @@ public class Pathfinder
                 // creates neighbouring node
                 Node neighbour = store.getNode(nx, ny);
                 
-                // dont explore the node if it has been explored already or is blocked or is an entrance
-                if (exploredNodes.contains(neighbour) || neighbour.checkIsBlocked() || neighbour.checkIsEntrance()) continue;
-                
-                boolean skip = false;
+                // Don't explore blocked nodes, but DO allow entrance nodes for pathfinding
+                if (neighbour == null || exploredNodes.contains(neighbour) || neighbour.checkIsBlocked()) {
+                    continue;
+                }
                 
                 int tentativeDist = currentNode.getDistanceFromStart() + 1;
                 
@@ -82,11 +82,17 @@ public class Pathfinder
         List<Node> path = new ArrayList<>();
         
         Node current = targetNode;
-        while (current != null) {
+        while (current != null && current.getPreviousNode() != null) {
             path.add(current);
             current = current.getPreviousNode();
         }
         Collections.reverse(path);
+        
+        // Remove the first node (starting position) if it exists
+        if (!path.isEmpty() && path.get(0).getPreviousNode() == null) {
+            path.remove(0);
+        }
+        
         return path;
     }
     
