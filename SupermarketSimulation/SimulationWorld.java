@@ -70,8 +70,16 @@ public class SimulationWorld extends World
         
         // Load display units from saved layout, or use default if no saved layout exists
         loadDisplayUnits();
-    // Add visual markers for each display unit so nodes in front of units are visible
-    addNodeMarkersForDisplayUnits();
+
+        // After display units are created and added to the world, refresh
+        // all stores so they map product nodes from the actual display unit
+        // positions (instead of relying on hard-coded positions).
+        for (Store s : getObjects(Store.class)) {
+            s.updateProductLocations();
+        }
+
+        // Add visual markers for each display unit so nodes in front of units are visible
+        addNodeMarkersForDisplayUnits();
         
         //set paint order for products and shelves to properly display
         setPaintOrder(

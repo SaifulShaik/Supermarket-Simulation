@@ -140,13 +140,21 @@ public class Store extends Actor
         worldY = getY() - height / 2;
         
         // Find actual DisplayUnit positions and update product nodes
+        // Note: display units may be added after the store (loaded later),
+        // so this initial call may be a no-op; we also expose a public
+        // refresh method so the world can force a re-scan after units are loaded.
         updateProductLocations();
     }
     
     /**
      * Update product node positions based on actual DisplayUnit world positions
      */
-    private void updateProductLocations() {
+    /**
+     * Re-scan display units in the world and update product node positions
+     * to match the actual display unit locations. Public so the world can
+     * call it after loading display units from saved layout.
+     */
+    public void updateProductLocations() {
         World world = getWorld();
         if (world == null) return;
         
