@@ -5,6 +5,8 @@ public class Store {
     private List<Product> availableProducts;
     
     private Node[] nodes;
+    
+    private boolean nodesVisible = true;
 
 }
 
