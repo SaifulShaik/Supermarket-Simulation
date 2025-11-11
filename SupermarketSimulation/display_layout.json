@@ -1,37 +1,137 @@
 [
   {
-    "displayUnitType": "Fridge",
-    "x": 75,
-    "y": 225
+    "displayUnitType": "SnackShelf",
+    "x": 160,
+    "y": 400
   },
   {
-    "displayUnitType": "SnackShelf",
-    "x": 175,
+    "displayUnitType": "Fridge",
+    "x": 60,
+    "y": 380
+  },
+  {
+    "displayUnitType": "Fridge",
+    "x": 60,
+    "y": 200
+  },
+  {
+    "displayUnitType": "Fridge",
+    "x": 120,
+    "y": 220
+  },
+  {
+    "displayUnitType": "Fridge",
+    "x": 160,
+    "y": 220
+  },
+  {
+    "displayUnitType": "Fridge",
+    "x": 220,
+    "y": 220
+  },
+  {
+    "displayUnitType": "Fridge",
+    "x": 300,
+    "y": 220
+  },
+  {
+    "displayUnitType": "Fridge",
+    "x": 260,
+    "y": 300
+  },
+  {
+    "displayUnitType": "Fridge",
+    "x": 180,
+    "y": 300
+  },
+  {
+    "displayUnitType": "Fridge",
+    "x": 80,
+    "y": 300
+  },
+  {
+    "displayUnitType": "Fridge",
+    "x": 120,
+    "y": 300
+  },
+  {
+    "displayUnitType": "Fridge",
+    "x": 500,
+    "y": 160
+  },
+  {
+    "displayUnitType": "Fridge",
+    "x": 460,
+    "y": 220
+  },
+  {
+    "displayUnitType": "Fridge",
+    "x": 460,
+    "y": 280
+  },
+  {
+    "displayUnitType": "Fridge",
+    "x": 440,
+    "y": 360
+  },
+  {
+    "displayUnitType": "Fridge",
+    "x": 480,
+    "y": 420
+  },
+  {
+    "displayUnitType": "Fridge",
+    "x": 540,
+    "y": 400
+  },
+  {
+    "displayUnitType": "Fridge",
+    "x": 600,
+    "y": 340
+  },
+  {
+    "displayUnitType": "Fridge",
+    "x": 560,
+    "y": 260
+  },
+  {
+    "displayUnitType": "Fridge",
+    "x": 500,
     "y": 240
   },
   {
-    "displayUnitType": "LettuceBin",
-    "x": 1010,
-    "y": 460
-  },
-  {
-    "displayUnitType": "CarrotBin",
-    "x": 940,
-    "y": 460
-  },
-  {
-    "displayUnitType": "AppleBin",
-    "x": 870,
-    "y": 460
-  },
-  {
-    "displayUnitType": "OrangeBin",
-    "x": 800,
-    "y": 460
+    "displayUnitType": "Fridge",
+    "x": 560,
+    "y": 100
   },
   {
     "displayUnitType": "Fridge",
-    "x": 280,
-    "y": 220
+    "x": 700,
+    "y": 100
+  },
+  {
+    "displayUnitType": "Fridge",
+    "x": 740,
+    "y": 120
+  },
+  {
+    "displayUnitType": "Fridge",
+    "x": 780,
+    "y": 120
+  },
+  {
+    "displayUnitType": "Fridge",
+    "x": 820,
+    "y": 140
+  },
+  {
+    "displayUnitType": "Fridge",
+    "x": 720,
+    "y": 340
+  },
+  {
+    "displayUnitType": "Fridge",
+    "x": 680,
+    "y": 400
   }
 ]

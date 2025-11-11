@@ -10,8 +10,8 @@ import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
  */
 public class Node
 {
-    private int x;
-    private int y;
+    private int worldX;
+    private int worldY;
     
     public Node previousNode;
     
@@ -20,10 +20,11 @@ public class Node
     
     private boolean isBlocked;
     private boolean isEntrance;
+    private boolean hasCustomer;
     
-    public Node(int x, int y, Node previousNode, int distanceFromStart, int distanceToGoal, boolean isBlocked, boolean isEntrance) {
-        this.x = x;
-        this.y = y;
+    public Node(int x, int y, Node previousNode, int distanceFromStart, int distanceToGoal, boolean isBlocked, boolean isEntrance, boolean hasCustomer) {
+        worldX = x;
+        worldY = y;
         this.previousNode = previousNode;
         this.distanceFromStart = distanceFromStart;
         this.distanceToGoal = distanceToGoal;
@@ -31,24 +32,19 @@ public class Node
         this.isEntrance = isEntrance;
     }
     
+    public Node(int x, int y) {
+        worldX = x;
+        worldY = y;
+        previousNode = null;
+        distanceFromStart = 0;
+        distanceToGoal = 0;
+        isBlocked = false;
+        isEntrance = false;
+        hasCustomer = false;
+    }
+    
     public int getTotalDistance() {
         return distanceFromStart + distanceToGoal;
-    }
-    
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        
-        if (!(obj instanceof Node)) return false;
-        
-        Node other = (Node) obj;
-        return this.x == other.x && this.y == other.y;
-    }
-    
-    @Override
-    public int hashCode() {
-        // Combine x and y coordinates for unique hash
-        return 31 * x + y;
     }
     
     public int getDistanceFromGoal() {
@@ -72,11 +68,11 @@ public class Node
     }
     
     public int getX() {
-        return x;
+        return worldX;
     }
     
     public int getY() {
-        return y;
+        return worldY;
     }
     
     public boolean checkIsBlocked() {
@@ -95,11 +91,7 @@ public class Node
         isEntrance = entrance;
     }
     
-    public int getWorldX() {
-        return x * 20 + 20 / 2;
-    }
-    
-    public int getWorldY() {
-        return y * 20 + 20 / 2;
+    public boolean checkHasCustomer() {
+        return hasCustomer;
     }
 }

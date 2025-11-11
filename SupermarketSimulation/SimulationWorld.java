@@ -33,7 +33,6 @@ public class SimulationWorld extends World
     public static final String PRODUCT_JIN_RAMEN = "Jin Ramen";
     public static final String PRODUCT_NISSIN = "Raw Beef";
     
-    
     // Grid settings
     public static final int GRID_CELL_SIZE = 20; // pixels per cell
     public static final int GRID_START_Y = 100;  // Grid starts at y=100
