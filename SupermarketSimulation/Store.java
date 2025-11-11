@@ -129,6 +129,9 @@ public class Store extends Actor
         // Get all display units in the world
         List<DisplayUnit> units = world.getObjects(DisplayUnit.class);
         
+        System.out.println("Store.updateProductLocations: Found " + units.size() + " DisplayUnits in world");
+        System.out.println("Store.updateProductLocations: Updating " + availableProducts.size() + " products");
+        
         // For each product in our available products list, find the matching DisplayUnit
         // and assign the product's node to be the DisplayUnit's customer node
         for (Product product : availableProducts) {
@@ -138,9 +141,13 @@ public class Store extends Actor
                 Node unitNode = matchingUnit.getCustomerNode();
                 if (unitNode != null) {
                     product.setNode(unitNode);
-                    System.out.println("Set " + product.getName() + " to DisplayUnit node at grid(" + 
+                    System.out.println("✓ Set " + product.getName() + " to DisplayUnit node at grid(" + 
                                      unitNode.getX() + ", " + unitNode.getY() + ")");
+                } else {
+                    System.out.println("✗ WARNING: " + product.getName() + " found matching DisplayUnit but it has no customerNode!");
                 }
+            } else {
+                System.out.println("✗ WARNING: Could not find DisplayUnit for product: " + product.getName());
             }
         }
     }
@@ -167,27 +174,43 @@ public class Store extends Actor
         else if (productName.equals("Steak")) targetUnitType = "SteakWarmer";
         else if (productName.equals("Raw Beef")) targetUnitType = "RawBeefHangers";
         
-        if (targetUnitType == null) return null;
+        if (targetUnitType == null) {
+            System.out.println("  No target unit type for product: " + productName);
+            return null;
+        }
+        
+        System.out.println("  Looking for " + targetUnitType + " for product " + productName);
         
         // Find the closest matching unit in this store's area
         DisplayUnit closest = null;
         double minDistance = Double.MAX_VALUE;
+        int matchCount = 0;
         
         for (DisplayUnit unit : units) {
-            if (unit.getClass().getSimpleName().equals(targetUnitType)) {
-                // Check if this unit is in our store's bounds
-                Node unitNode = getNodeAtWorldPosition(unit.getX(), unit.getY());
-                if (unitNode != null) {
-                    // Calculate distance from store center
-                    double dx = unit.getX() - (worldX + width/2);
-                    double dy = unit.getY() - (worldY + height/2);
-                    double dist = Math.sqrt(dx*dx + dy*dy);
-                    if (dist < minDistance) {
-                        minDistance = dist;
-                        closest = unit;
-                    }
+            String unitType = unit.getClass().getSimpleName();
+            if (unitType.equals(targetUnitType)) {
+                matchCount++;
+                System.out.println("    Found matching " + unitType + " at (" + unit.getX() + ", " + unit.getY() + ")");
+                
+                // Calculate distance from store center to find the closest unit
+                // (Don't require units to be in store grid - they can be anywhere)
+                double dx = unit.getX() - (worldX + width/2);
+                double dy = unit.getY() - (worldY + height/2);
+                double dist = Math.sqrt(dx*dx + dy*dy);
+                
+                System.out.println("      Distance from store center: " + (int)dist + " pixels");
+                
+                if (dist < minDistance) {
+                    minDistance = dist;
+                    closest = unit;
                 }
             }
+        }
+        
+        if (matchCount == 0) {
+            System.out.println("    ✗ No units of type " + targetUnitType + " found in world");
+        } else if (closest != null) {
+            System.out.println("    ✓ Selected closest " + targetUnitType + " at distance " + (int)minDistance);
         }
         
         return closest;

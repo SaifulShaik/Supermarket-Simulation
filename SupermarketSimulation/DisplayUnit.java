@@ -109,22 +109,36 @@ public abstract class DisplayUnit extends SuperSmoothMover
             }
         }
         
-        if (closestStore == null) return;
+        if (closestStore == null) {
+            System.out.println("WARNING: DisplayUnit at (" + getX() + ", " + getY() + ") could not find a parent Store");
+            return;
+        }
         
         parentStore = closestStore;
         
-        // Convert world position to grid node
+        // Try to get a node from the store's grid at this position
         Node node = parentStore.getNodeAtWorldPosition(getX(), getY());
+        
         if (node != null) {
+            // Great! DisplayUnit is on the store's grid
             customerNode = node;
+            System.out.println("DisplayUnit " + getClass().getSimpleName() + " at (" + getX() + ", " + getY() + 
+                             ") assigned to existing grid node (" + node.getX() + ", " + node.getY() + ")");
+        } else {
+            // DisplayUnit is outside the store grid - create a virtual node at this position
+            // Convert world coordinates to grid coordinates
+            int cellSize = parentStore.getCellSize();
+            int storeX = parentStore.getStoreWorldX();
+            int storeY = parentStore.getStoreWorldY();
+            
+            int gridX = (getX() - storeX) / cellSize;
+            int gridY = (getY() - storeY) / cellSize;
+            
+            // Create a new node at this virtual position (not blocked, not entrance)
+            customerNode = new Node(gridX, gridY, null, 0, 0, false, false);
+            System.out.println("DisplayUnit " + getClass().getSimpleName() + " at (" + getX() + ", " + getY() + 
+                             ") created virtual node at grid(" + gridX + ", " + gridY + ")");
         }
-    }
-    
-    @Override
-    protected void addedToWorld(World world) {
-        super.addedToWorld(world);
-        // Compute the customer node when added to world
-        updateCustomerNode();
     }
 
 }

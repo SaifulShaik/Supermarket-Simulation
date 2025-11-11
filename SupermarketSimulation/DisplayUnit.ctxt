@@ -23,6 +23,4 @@ comment7.text=\n\ Compute\ and\ return\ the\ node\ where\ customers\ should\ sta
 comment8.params=
 comment8.target=void\ updateCustomerNode()
 comment8.text=\n\ Recompute\ the\ customer\ node\ based\ on\ current\ world\ position.\n\ Should\ be\ called\ when\ the\ DisplayUnit\ is\ added\ to\ world\ or\ moved.\n
-comment9.params=world
-comment9.target=void\ addedToWorld(greenfoot.World)
-numComments=10
+numComments=9

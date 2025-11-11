@@ -71,6 +71,12 @@ public class SimulationWorld extends World
         // Load display units from saved layout, or use default if no saved layout exists
         loadDisplayUnits();
 
+        // After display units are created and added to the world, update each DisplayUnit's
+        // customer node based on its world position
+        for (DisplayUnit unit : getObjects(DisplayUnit.class)) {
+            unit.updateCustomerNode();
+        }
+
         // After display units are created and added to the world, refresh
         // all stores so they map product nodes from the actual display unit
         // positions (instead of relying on hard-coded positions).
