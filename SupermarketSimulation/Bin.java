@@ -2,7 +2,18 @@ import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 import java.util.ArrayList;
 
 /**
+ * Parent class for bin type of display units
  * 
+ * It mainly definee how items in a bin can be stacked
+ * 
+ * The subclass can set the following values in the contructor. 
+ * COLS
+ * ROWS
+ * LAYERS
+ * LEFT_PAD
+ * TOP_PAD
+ * COL_GAP
+ * ROW_GAP
  * 
  * @author Owen Kung
  * @version Nov 6 2025
@@ -28,9 +39,13 @@ public abstract class Bin extends DisplayUnit
         setImage(image);
         stocked=false;
     }
+    /**
+     * The subclass must rewrite this, so the parent class can stack it
+     */
+    protected abstract Product itemToFill();
     protected void stock() {
         if (getWorld()== null) return;
-        if(stocked) return;
+        if(stocked) return;    
         
         //clear old itemes first
         clear();
@@ -45,11 +60,10 @@ public abstract class Bin extends DisplayUnit
         // Center the columns over the bin
         int leftX = getX() - ((COLS - 1) * COL_GAP) / 2;
     
-        // Build the pile: bottom layer first, last-added ends up on top
-        //for (int layer = 0; layer < LAYERS; layer++) {
+        //Build the pile: toplayer first, last-added ends up on bottom
+        //so when item is retrieved, it will retrieve the top one
         for (int layer = LAYERS-1; layer >=0; layer--) 
         {
-            //for (int c = 0; c < COLS; c++) {
             for (int c = COLS-1; c >= 0; c--) {
                 int randomX = Greenfoot.getRandomNumber(3) - 1; // -1..+1
                 int randomY = Greenfoot.getRandomNumber(3) - 1; // -1..+1
@@ -65,11 +79,6 @@ public abstract class Bin extends DisplayUnit
         }
         
         stocked=true;
-    }
-    protected abstract Product itemToFill();
-    public Product retrieve()
-    {
-        return retrieve(Lettuce.class);
     }  
 
 }

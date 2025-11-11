@@ -18,18 +18,21 @@ public abstract class MultiRowUnit extends DisplayUnit {
         stocked=false;
 
     }
+    /**
+     * subclass must implement this method based on the item to be stocked per row
+     */
+    abstract Product stockItemsByRow(int rowNum);
     protected void stock() {
         if (getWorld()== null) return;
         if(stocked) return;
         
         //clear old itemes first
         clear();
-//showText("stocking",Color.RED,getX(),getY());
-        //Fining top left corner of the display unit
-        int fridgeW = getImage().getWidth();
-        int fridgeH = getImage().getHeight();
-        int topLeftX = getX() - fridgeW/2;
-        int topLeftY = getY() - fridgeH/2;
+        
+        int imageW = getImage().getWidth();
+        int imageH = getImage().getHeight();
+        int topLeftX = getX() - imageW/2;
+        int topLeftY = getY() - imageH/2;
 
         for (int r = 0; r < ROWS; r++) {
             for (int c = 0; c < COLS; c++) {
@@ -50,10 +53,7 @@ public abstract class MultiRowUnit extends DisplayUnit {
         stocked=true;
         
     }
-    /*
-     * subclass must implement this method based on the item to be stocked per row
-     */
-    abstract Product stockItemsByRow(int rowNum);
+
 
 }
 

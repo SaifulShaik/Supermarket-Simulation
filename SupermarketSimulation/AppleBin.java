@@ -35,7 +35,7 @@ public class AppleBin extends Bin
     }
     public Product retrieve()
     {
-        return retrieve(Lettuce.class);
+        return retrieve(Apple.class);
     }  
 
 }

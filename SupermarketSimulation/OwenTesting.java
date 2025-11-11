@@ -250,7 +250,7 @@ public class OwenTesting extends SuperSmoothMover
         else if (productName.equals(SimulationWorld.PRODUCT_STEAK) ||
                  productName.equals(SimulationWorld.PRODUCT_DRUM_STICK)) 
         {
-            itemX = 1060; itemY = 280; //Display Warmer
+            itemX = 1060; itemY = 325; //Display Warmer
         }
     }
     /*
@@ -375,8 +375,8 @@ public class OwenTesting extends SuperSmoothMover
         {
             item.setLocation(getX(),getY());    
             basket.add(item);
-getWorld().showText(item.getName()+" has "+item.getStock(),350,50);//testing
-getWorld().showText("basket size="+basket.size(),150, 50);//testing
+//getWorld().showText(item.getName()+" has "+item.getStock(),350,50);//testing
+//getWorld().showText("basket size="+basket.size(),150, 50);//testing
         }
     }
     //Got to the exit of the shop
