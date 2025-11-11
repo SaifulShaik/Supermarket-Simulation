@@ -16,6 +16,7 @@ public abstract class Product extends SuperSmoothMover
     protected boolean isDiscounted=false;
     protected String name;
     protected Node node;
+    protected DisplayUnit displayUnit; // Reference to the DisplayUnit this product belongs to
     /**
      * Linked list to store Node objects that should be considered "in front" of
      * this product's image (for example, overlay nodes or markers). Subclasses
@@ -73,6 +74,20 @@ public abstract class Product extends SuperSmoothMover
     {   
         return node;
         
+    }
+    
+    /**
+     * Set the DisplayUnit this product belongs to.
+     */
+    public void setDisplayUnit(DisplayUnit unit) {
+        this.displayUnit = unit;
+    }
+    
+    /**
+     * Get the DisplayUnit this product belongs to.
+     */
+    public DisplayUnit getDisplayUnit() {
+        return displayUnit;
     }
 
     /* LinkedList helper methods */

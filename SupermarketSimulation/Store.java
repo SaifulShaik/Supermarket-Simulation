@@ -137,6 +137,9 @@ public class Store extends Actor
         for (Product product : availableProducts) {
             DisplayUnit matchingUnit = findDisplayUnitForProduct(product, units);
             if (matchingUnit != null) {
+                // Set the DisplayUnit reference in the product
+                product.setDisplayUnit(matchingUnit);
+                
                 // Get the node from the display unit (computed dynamically)
                 Node unitNode = matchingUnit.getCustomerNode();
                 if (unitNode != null) {

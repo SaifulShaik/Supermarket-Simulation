@@ -78,16 +78,15 @@ public abstract class DisplayUnit extends SuperSmoothMover
      */
     public Node getCustomerNode() {
         // If node already cached and store hasn't changed, return it
-        if (customerNode != null && parentStore != null) {
-            return customerNode;
-        }
-        
-        // Otherwise, compute the node based on current position
-        updateCustomerNode();
         return customerNode;
     }
     
     /**
+     * Get the parent store this DisplayUnit belongs to.
+     */
+    public Store getParentStore() {
+        return parentStore;
+    }    /**
      * Recompute the customer node based on current world position.
      * Should be called when the DisplayUnit is added to world or moved.
      */

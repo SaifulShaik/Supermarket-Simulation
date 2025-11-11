@@ -262,12 +262,6 @@ public abstract class Customer extends SuperSmoothMover
         }
 
         double[][] pos = currentStore.getCellCenter(node.getX(), node.getY());
-        if (pos == null) {
-            System.out.println("ERROR: Could not get world position for node! Removing from list.");
-            shoppingList.remove(0);
-            chooseNextProduct();
-            return;
-        }
         System.out.println("Next target: " + currentProductTarget.getName() +
                            " at (" + node.getX() + ", " + node.getY() + ") => (" +
                            (int)pos[0][0] + ", " + (int)pos[0][1] + ")");
