@@ -11,6 +11,10 @@ public abstract class DisplayUnit extends SuperSmoothMover
     // Flag to control whether display units should stock items (false in editor, true in simulation)
     private static boolean enableStocking = true;
     
+    // Node that customers navigate to (computed dynamically based on position)
+    protected Node customerNode;
+    protected Store parentStore;
+    
     public DisplayUnit() {}
     protected abstract void stock();
     
@@ -66,6 +70,61 @@ public abstract class DisplayUnit extends SuperSmoothMover
         }
 
         return null; // none found
+    }
+    
+    /**
+     * Compute and return the node where customers should stand when shopping at this display unit.
+     * The node is calculated based on the DisplayUnit's world position converted to grid coordinates.
+     */
+    public Node getCustomerNode() {
+        // If node already cached and store hasn't changed, return it
+        if (customerNode != null && parentStore != null) {
+            return customerNode;
+        }
+        
+        // Otherwise, compute the node based on current position
+        updateCustomerNode();
+        return customerNode;
+    }
+    
+    /**
+     * Recompute the customer node based on current world position.
+     * Should be called when the DisplayUnit is added to world or moved.
+     */
+    public void updateCustomerNode() {
+        if (getWorld() == null) return;
+        
+        // Find the Store this DisplayUnit belongs to
+        java.util.List<Store> stores = getWorld().getObjects(Store.class);
+        Store closestStore = null;
+        double minDistance = Double.MAX_VALUE;
+        
+        for (Store store : stores) {
+            double dx = getX() - store.getX();
+            double dy = getY() - store.getY();
+            double dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < minDistance) {
+                minDistance = dist;
+                closestStore = store;
+            }
+        }
+        
+        if (closestStore == null) return;
+        
+        parentStore = closestStore;
+        
+        // Convert world position to grid node
+        Node node = parentStore.getNodeAtWorldPosition(getX(), getY());
+        if (node != null) {
+            customerNode = node;
+        }
+    }
+    
+    @Override
+    protected void addedToWorld(World world) {
+        super.addedToWorld(world);
+        // Compute the customer node when added to world
+        updateCustomerNode();
     }
 
 }

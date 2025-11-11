@@ -62,58 +62,26 @@ public class Store extends Actor
             // entrance node
             nodes[23][21].setEntrance(true);
             
-            // Add products to the store - moved to nodes that aren't blocked
-            Coke coke = new Coke();
-            availableProducts.add(coke);
-            coke.setNode(nodes[13][13]);
-            
-            Doritos doritos = new Doritos();
-            availableProducts.add(doritos);
-            doritos.setNode(nodes[14][13]);
-            
-            Fanta fanta = new Fanta();
-            availableProducts.add(fanta);
-            fanta.setNode(nodes[15][13]);
-            
-            Water water = new Water();
-            availableProducts.add(water);
-            water.setNode(nodes[16][13]);
-            
-            Lays lays = new Lays();
-            availableProducts.add(lays);
-            lays.setNode(nodes[17][13]);
-            
-            Sprite sprite = new Sprite();
-            availableProducts.add(sprite);
-            sprite.setNode(nodes[18][13]);
-            
-            Ruffles ruffles = new Ruffles();
-            availableProducts.add(ruffles);
-            ruffles.setNode(nodes[19][13]);
+            // Add placeholder products to the store's product list
+            // These represent the types of products available, but their nodes
+            // will be assigned dynamically based on DisplayUnit positions
+            availableProducts.add(new Coke());
+            availableProducts.add(new Doritos());
+            availableProducts.add(new Fanta());
+            availableProducts.add(new Water());
+            availableProducts.add(new Lays());
+            availableProducts.add(new Sprite());
+            availableProducts.add(new Ruffles());
         } else {
             // Right store (Store 2) - add entrance node
             nodes[9][3].setEntrance(true);
             
-            // Add products to the store
-            Apple apple = new Apple();
-            availableProducts.add(apple);
-            apple.setNode(nodes[2][3]);
-            
-            Orange orange = new Orange();
-            availableProducts.add(orange);
-            orange.setNode(nodes[3][3]);
-            
-            Carrot carrot = new Carrot();
-            availableProducts.add(carrot);
-            carrot.setNode(nodes[4][3]);
-            
-            Lettuce lettuce = new Lettuce();
-            availableProducts.add(lettuce);
-            lettuce.setNode(nodes[5][3]);
-            
-            Steak steak = new Steak();
-            availableProducts.add(steak);
-            steak.setNode(nodes[6][3]);
+            // Add placeholder products to the store's product list
+            availableProducts.add(new Apple());
+            availableProducts.add(new Orange());
+            availableProducts.add(new Carrot());
+            availableProducts.add(new Lettuce());
+            availableProducts.add(new Steak());
         }
         
         // Create the store visual with grid after all nodes are set up
@@ -158,49 +126,71 @@ public class Store extends Actor
         World world = getWorld();
         if (world == null) return;
         
+        // Get all display units in the world
+        List<DisplayUnit> units = world.getObjects(DisplayUnit.class);
+        
+        // For each product in our available products list, find the matching DisplayUnit
+        // and assign the product's node to be the DisplayUnit's customer node
         for (Product product : availableProducts) {
-            // Find the DisplayUnit for this product in the world
-            List<DisplayUnit> units = world.getObjects(DisplayUnit.class);
-            for (DisplayUnit unit : units) {
-                // Check if this display unit contains our product type
-                if (unitHasProduct(unit, product)) {
-                    // Convert world position to grid coordinates
-                    int gridX = (unit.getX() - worldX) / cellSize;
-                    int gridY = (unit.getY() - worldY) / cellSize;
-                    
-                    if (isInBounds(gridX, gridY)) {
-                        product.setNode(nodes[gridX][gridY]);
-                        System.out.println("Set " + product.getName() + " to actual position: node(" + gridX + ", " + gridY + ") world(" + unit.getX() + ", " + unit.getY() + ")");
-                    }
-                    break;
+            DisplayUnit matchingUnit = findDisplayUnitForProduct(product, units);
+            if (matchingUnit != null) {
+                // Get the node from the display unit (computed dynamically)
+                Node unitNode = matchingUnit.getCustomerNode();
+                if (unitNode != null) {
+                    product.setNode(unitNode);
+                    System.out.println("Set " + product.getName() + " to DisplayUnit node at grid(" + 
+                                     unitNode.getX() + ", " + unitNode.getY() + ")");
                 }
             }
         }
     }
     
     /**
-     * Check if a DisplayUnit contains a specific product type
+     * Find the DisplayUnit that should contain this product type
      */
-    private boolean unitHasProduct(DisplayUnit unit, Product product) {
+    private DisplayUnit findDisplayUnitForProduct(Product product, List<DisplayUnit> units) {
         String productName = product.getName();
-        String unitClass = unit.getClass().getSimpleName();
+        String targetUnitType = null;
         
         // Map product names to display unit types
         if (productName.equals("Coke") || productName.equals("Sprite") || 
             productName.equals("Fanta") || productName.equals("Water")) {
-            return unitClass.equals("Fridge");
+            targetUnitType = "Fridge";
         }
-        if (productName.equals("Doritos") || productName.equals("Lays") || productName.equals("Ruffles")) {
-            return unitClass.equals("SnackShelf");
+        else if (productName.equals("Doritos") || productName.equals("Lays") || productName.equals("Ruffles")) {
+            targetUnitType = "SnackShelf";
         }
-        if (productName.equals("Apple")) return unitClass.equals("AppleBin");
-        if (productName.equals("Orange")) return unitClass.equals("OrangeBin");
-        if (productName.equals("Carrot")) return unitClass.equals("CarrotBin");
-        if (productName.equals("Lettuce")) return unitClass.equals("LettuceBin");
-        if (productName.equals("Steak")) return unitClass.equals("SteakWarmer");
-        if (productName.equals("Raw Beef")) return unitClass.equals("RawBeefHangers");
+        else if (productName.equals("Apple")) targetUnitType = "AppleBin";
+        else if (productName.equals("Orange")) targetUnitType = "OrangeBin";
+        else if (productName.equals("Carrot")) targetUnitType = "CarrotBin";
+        else if (productName.equals("Lettuce")) targetUnitType = "LettuceBin";
+        else if (productName.equals("Steak")) targetUnitType = "SteakWarmer";
+        else if (productName.equals("Raw Beef")) targetUnitType = "RawBeefHangers";
         
-        return false;
+        if (targetUnitType == null) return null;
+        
+        // Find the closest matching unit in this store's area
+        DisplayUnit closest = null;
+        double minDistance = Double.MAX_VALUE;
+        
+        for (DisplayUnit unit : units) {
+            if (unit.getClass().getSimpleName().equals(targetUnitType)) {
+                // Check if this unit is in our store's bounds
+                Node unitNode = getNodeAtWorldPosition(unit.getX(), unit.getY());
+                if (unitNode != null) {
+                    // Calculate distance from store center
+                    double dx = unit.getX() - (worldX + width/2);
+                    double dy = unit.getY() - (worldY + height/2);
+                    double dist = Math.sqrt(dx*dx + dy*dy);
+                    if (dist < minDistance) {
+                        minDistance = dist;
+                        closest = unit;
+                    }
+                }
+            }
+        }
+        
+        return closest;
     }
     
     public boolean isInBounds(int x, int y) {
