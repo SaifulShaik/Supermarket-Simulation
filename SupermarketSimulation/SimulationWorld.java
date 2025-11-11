@@ -52,8 +52,8 @@ public class SimulationWorld extends World
         // Enable stocking in simulation mode
         DisplayUnit.setEnableStocking(true);
         
-        addObject(new Store(480, 480, 20, true), 480, 220); // x: 40 - 480 y: 220 - 480
-        addObject(new Store(360, 120, 20, false), getWidth() - 240, 360);
+        //addObject(new Store(480, 480, 20, true), 480, 220); // x: 40 - 480 y: 220 - 480
+        //addObject(new Store(360, 120, 20, false), getWidth() - 240, 360);
         
         // add the Cashiers to store 1
         addObject(new Cashier(), getWidth()/2 + 200, getHeight()/2);

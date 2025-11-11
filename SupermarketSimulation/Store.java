@@ -2,12 +2,32 @@ import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 import java.util.*;
 
 public class Store {
+    String name;
+    
     private List<Product> availableProducts;
     
-    private Node[] nodes;
+    private List<Node> node;
     
     private boolean nodesVisible = true;
-
+    
+    
+    public Store(String name) {
+        this.name = name;
+        this.node = new ArrayList<>();
+        initializeNodes();
+    }
+    
+    public void initializeNodes() {
+        if (name.equals("Store 1")) {
+            // Fixed Nodes Added
+        } else if(name.equals("Store 2")) {
+            // Fixed Nodes Added
+        } else {
+            System.out.println("Not Valid Store.");
+        }
+    }
+    
+    //public Node getEntranceNode() { return ; }
 }
 
 
