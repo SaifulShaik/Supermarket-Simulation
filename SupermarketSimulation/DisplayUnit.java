@@ -1,5 +1,6 @@
 import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 import java.util.ArrayList;
+
 /*
  * 
  */
@@ -90,7 +91,7 @@ public abstract class DisplayUnit extends SuperSmoothMover
      * Recompute the customer node based on current world position.
      * Should be called when the DisplayUnit is added to world or moved.
      */
-    public void updateCustomerNode() {
+    /*public void updateCustomerNode() {
         if (getWorld() == null) return;
         
         // Find the Store this DisplayUnit belongs to
@@ -134,12 +135,11 @@ public abstract class DisplayUnit extends SuperSmoothMover
             int gridY = (getY() - storeY) / cellSize;
             
             // Create a new node at this virtual position (not blocked, not entrance)
-            customerNode = new Node(gridX, gridY, null, 0, 0, false, false);
+            customerNode = new Node(gridX, gridY, null, 0, 0, false, false, false);
             System.out.println("DisplayUnit " + getClass().getSimpleName() + " at (" + getX() + ", " + getY() + 
                              ") created virtual node at grid(" + gridX + ", " + gridY + ")");
         }
-    }
-
+    }*/
 }
 
 

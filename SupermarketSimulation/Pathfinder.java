@@ -9,7 +9,7 @@ import java.util.*;
  * @author Joe Zhuo
  * @version November 2025
  */
-public class Pathfinder
+/*public class Pathfinder
 {
     private Store store;
     
@@ -21,7 +21,7 @@ public class Pathfinder
      * Finds the shortest path from start point (sx, sy) to target point (tx, ty)
      * 
      * @return a list of nodes representing the path or empty if no paths
-     */
+     
     public List<Node> findPath(int sx, int sy, int tx, int ty) {
         PriorityQueue<Node> nodesToExplore = new PriorityQueue<>(Comparator.comparingInt(Node::getTotalDistance));
         List<Node> exploredNodes = new ArrayList<>();
@@ -100,4 +100,4 @@ public class Pathfinder
     private int estimateDistance(int x, int y, int targetX, int targetY) {
         return Math.abs(targetX - x) + Math.abs(targetY - y);
     }
-}
+}*/

@@ -38,13 +38,34 @@ public class SimulationWorld extends World
     public static final int GRID_START_Y = 100;  // Grid starts at y=100
     
     private static final GreenfootImage bg = new GreenfootImage("background.png");
+    
+    private static List<Node> roadNodes;
+    
     public SimulationWorld()
     { 
         super(bg.getWidth(), bg.getHeight(), 1);
         setBackground(bg); 
         
+        roadNodes = new ArrayList<>();
+        
+        Node roadSpawn = new Node(600, 100);
+        
+        Node entranceAccess = new Node(600, 400);
+        roadSpawn.addNeighbouringNode(entranceAccess);
+        
+        Store storeOne = new Store("Store 1");
+        Node storeOneEntranceNode = storeOne.getEntranceNode();
+        entranceAccess.addNeighbouringNode(storeOneEntranceNode);
+        
+        Store storeTwo = new Store("Store 2");
+        Node storeTwoEntranceNode = storeTwo.getEntranceNode();
+        entranceAccess.addNeighbouringNode(storeTwoEntranceNode);
+        
+        roadNodes.add(roadSpawn);
+        roadNodes.add(entranceAccess);
+        
         // Draw world-wide grid overlay
-        drawWorldGrid();
+        //drawWorldGrid();
         
         addObject(new CustomerSpawner(), 0, 0);
         addObject(new StoreUI(), getWidth()/2, 50);
@@ -73,14 +94,14 @@ public class SimulationWorld extends World
         // After display units are created and added to the world, update each DisplayUnit's
         // customer node based on its world position
         for (DisplayUnit unit : getObjects(DisplayUnit.class)) {
-            unit.updateCustomerNode();
+            //unit.updateCustomerNode();
         }
 
         // After display units are created and added to the world, refresh
         // all stores so they map product nodes from the actual display unit
         // positions (instead of relying on hard-coded positions).
         for (Store s : getObjects(Store.class)) {
-            s.updateProductLocations();
+            //s.updateProductLocations();
         }
 
         // Add visual markers for each display unit so nodes in front of units are visible
@@ -96,6 +117,10 @@ public class SimulationWorld extends World
             SnackShelf.class, Fridge.class, LettuceBin.class, CarrotBin.class, AppleBin.class,OrangeBin.class, SteakWarmer.class,RawBeefHangers.class           // furniture (back)
             );
         
+    }
+    
+    public static Node getStartNode() {
+        return roadNodes.get(0);
     }
 
     /** Add a NodeMarker that follows each DisplayUnit so nodes in front of
