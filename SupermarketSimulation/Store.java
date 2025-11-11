@@ -1,12 +1,22 @@
 import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 import java.util.*;
 
+public class Store {
+    private List<Product> availableProducts;
+    
+    private Node[] nodes;
+
+}
+
+
+
+
 /**
  * Represents a store
  * 
  * @author Joe
  * @version November 2025
- */
+ 
 public class Store extends Actor
 {
     private int width;
@@ -90,7 +100,6 @@ public class Store extends Actor
     
     /**
      * Create the store image - completely invisible
-     */
     private void createStoreImage() {
         GreenfootImage img = new GreenfootImage(width, height);
         
@@ -121,7 +130,7 @@ public class Store extends Actor
      * Re-scan display units in the world and update product node positions
      * to match the actual display unit locations. Public so the world can
      * call it after loading display units from saved layout.
-     */
+     *
     public void updateProductLocations() {
         World world = getWorld();
         if (world == null) return;
@@ -157,7 +166,7 @@ public class Store extends Actor
     
     /**
      * Find the DisplayUnit that should contain this product type
-     */
+     
     private DisplayUnit findDisplayUnitForProduct(Product product, List<DisplayUnit> units) {
         String productName = product.getName();
         String targetUnitType = null;
@@ -270,7 +279,7 @@ public class Store extends Actor
     /**
      * Convert world coordinates to grid cell coordinates
      * Returns null if the position is outside this store
-     */
+     
     public Node getNodeAtWorldPosition(double worldPosX, double worldPosY) {
         // Convert world position to grid coordinates
         int gridX = (int)((worldPosX - worldX) / cellSize);
@@ -297,4 +306,4 @@ public class Store extends Actor
     public List<Product> getAvailableProducts() {
         return availableProducts;
     }
-}
+*/

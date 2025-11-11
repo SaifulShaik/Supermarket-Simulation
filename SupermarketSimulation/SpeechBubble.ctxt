@@ -1,6 +1,6 @@
 #BlueJ class context
 comment0.target=SpeechBubble
-comment0.text=\r\n\ Speech\ bubble\ that\ appears\ above\ characters\r\n
+comment0.text=\n\ Speech\ bubble\ that\ appears\ above\ characters\n
 comment1.params=text
 comment1.target=SpeechBubble(java.lang.String)
 comment2.params=text
