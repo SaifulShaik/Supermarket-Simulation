@@ -1,7 +1,6 @@
 *.ctxt
+*.class
 *.DS_Store
 !project.greenfoot
-# Old binary layout file (now using JSON)
 display_layout.dat
-# JSON layout IS tracked so everyone gets the same layout
 !display_layout.json
