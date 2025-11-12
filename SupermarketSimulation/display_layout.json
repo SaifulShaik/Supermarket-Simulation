@@ -1,7 +1,7 @@
 [
   {
     "displayUnitType": "Fridge",
-    "x": 80,
+    "x": 100,
     "y": 180
   },
   {
@@ -58,5 +58,10 @@
     "displayUnitType": "LettuceBin",
     "x": 760,
     "y": 460
+  },
+  {
+    "displayUnitType": "Fridge",
+    "x": 600,
+    "y": 240
   }
 ]

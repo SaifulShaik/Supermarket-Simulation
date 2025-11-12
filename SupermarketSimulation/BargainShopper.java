@@ -8,10 +8,17 @@ import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
  */
 public class BargainShopper extends Customer
 {
+    private final int shopperTypeListLength = 2;
+    
     /**
      * Act - do whatever the BargainShopper wants to do. This method is called whenever
      * the 'Act' or 'Run' button gets pressed in the environment.
      */
+    
+    public BargainShopper(){
+        super.createShoppingList(shopperTypeListLength);
+    }
+    
     public void act()
     {
         // Add your action code here.

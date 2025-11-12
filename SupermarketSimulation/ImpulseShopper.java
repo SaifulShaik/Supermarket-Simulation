@@ -12,6 +12,13 @@ public class ImpulseShopper extends Customer
      * Act - do whatever the ImpulseShopper wants to do. This method is called whenever
      * the 'Act' or 'Run' button gets pressed in the environment.
      */
+    
+    private final int shopperTypeListLength = 2;
+    
+    public ImpulseShopper(){
+        super.createShoppingList(shopperTypeListLength);
+    }
+    
     public void act()
     {
         // Add your action code here.
