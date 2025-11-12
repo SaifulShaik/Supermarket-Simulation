@@ -33,6 +33,9 @@ public class SimulationWorld extends World
     public static final String PRODUCT_JIN_RAMEN = "Jin Ramen";
     public static final String PRODUCT_NISSIN = "Raw Beef";
     
+    //for spawning truck
+    private int truckDelay;
+    
     // Grid settings
     public static final int GRID_CELL_SIZE = 20; // pixels per cell
     public static final int GRID_START_Y = 100;  // Grid starts at y=100
@@ -106,19 +109,16 @@ public class SimulationWorld extends World
     // Add visual markers for stores' nodes (stores manage their own node markers)
     storeOne.showNodesInWorld(this);
     storeTwo.showNodesInWorld(this);
-        
-                //set paint order for products and shelves to properly display
-        setPaintOrder(
+   
+            //Set Paint order
+            //So customer, Product and Display units can present properly
+            setPaintOrder(
             Customer.class,
             FloatingText.class,
-            Doritos.class, Lays.class, Ruffles.class,           // snacks 
-            Coke.class, Water.class, Sprite.class, Fanta.class, // drinks 
-            Lettuce.class,Carrot.class,Apple.class,Orange.class,Steak.class,RawBeef.class,DrumStick.class,
-            XingRamen.class,Nissin.class,JinRamen.class,  //cup noodles
-            Candy.class,
-            //SnackShelf.class, FridgeOne.class, LettuceBin.class, CarrotBin.class, AppleBin.class,OrangeBin.class, SteakWarmer.class,RawBeefHangers.class           // furniture (back)
+            Product.class,
             DisplayUnit.class
             );
+
         
     }
     
@@ -163,7 +163,7 @@ public class SimulationWorld extends World
      */
     private void createDefaultLayout() {
         // add fridge to store 2
-        addObject(new FridgeAll(),75,225);
+        addObject(new Fridge(),75,225);
         // add shelve next to fridge
         addObject(new SnackShelf(),175,240);
         
@@ -184,9 +184,8 @@ public class SimulationWorld extends World
         //use zSort
         zSort ((ArrayList<Actor>)(getObjects(Actor.class)), this);
         
-        //spawnRestockingTruck();
+        spawnRestockingTruck();
     } 
-    /*
     private void spawnRestockingTruck()
     {
         truckDelay++;
@@ -196,7 +195,6 @@ public class SimulationWorld extends World
             truckDelay=0;
         }
     }
-    */
     /**
      * Z-sort so actors with higher Y (lower on screen) render in front.
      * Uses precise Y for SuperSmoothMover when available. Stable for ties.

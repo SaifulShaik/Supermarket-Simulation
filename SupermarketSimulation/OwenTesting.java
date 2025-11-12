@@ -9,6 +9,8 @@ public class OwenTesting extends SuperSmoothMover
     private int itemX=0;  //x value for finding the item
     private int itemY=0;  //y value for finding the item
     private int currentNode = 0; //for getting to the shop
+    
+    
     private boolean shoppingDone = false;
     private boolean leaving=false;
 

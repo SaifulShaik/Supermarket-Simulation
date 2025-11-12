@@ -1,10 +1,10 @@
 import greenfoot.*;
 import java.util.ArrayList;
 
-public class FridgeAll extends MultiRowUnit 
+public class Fridge extends MultiRowUnit 
 {
 
-    public FridgeAll() 
+    public Fridge() 
     {
         stockedItems = new ArrayList<>();
         image = new GreenfootImage("furniture/fridge.png");
