@@ -1,16 +1,16 @@
 #BlueJ class context
 comment0.target=Product
-comment0.text=\r\n\ Product\ class\r\n\ represents\ a\ purchasable\ item\ inside\ a\ store\r\n\ \r\n\ @author\ Owen\ Kung\r\n\ @version\ Nov\ 2025\r\n
+comment0.text=\n\ Product\ class\n\ represents\ a\ purchasable\ item\ inside\ a\ store\n\ \n\ @author\ Owen\ Kung\n\ @version\ Nov\ 2025\n
 comment1.params=
 comment1.target=Product()
 comment10.params=
 comment10.target=Node\ getNode()
 comment11.params=unit
 comment11.target=void\ setDisplayUnit(DisplayUnit)
-comment11.text=\r\n\ Set\ the\ DisplayUnit\ this\ product\ belongs\ to.\r\n
+comment11.text=\n\ Set\ the\ DisplayUnit\ this\ product\ belongs\ to.\n
 comment12.params=
 comment12.target=DisplayUnit\ getDisplayUnit()
-comment12.text=\r\n\ Get\ the\ DisplayUnit\ this\ product\ belongs\ to.\r\n
+comment12.text=\n\ Get\ the\ DisplayUnit\ this\ product\ belongs\ to.\n
 comment13.params=n
 comment13.target=void\ addNode(Node)
 comment13.text=Add\ a\ node\ to\ the\ end\ of\ the\ list.

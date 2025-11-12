@@ -50,7 +50,9 @@ public class SettingWorld extends World
     private List<DisplayUnitData> originalLayout = new ArrayList<>();
     
     private LinkedList<Node> pathNodes = new LinkedList<>();
-    private LinkedList<Node> nodeMarkers = new LinkedList<>();
+    private LinkedList<NodeMarker> nodeMarkers = new LinkedList<>();
+    // Nodes that are part of customer paths; editor should not allow placing objects here
+    private List<Node> forbiddenNodes = new ArrayList<>();
     
     /**
      * Constructor for objects of class SettingWorld.
@@ -68,6 +70,28 @@ public class SettingWorld extends World
         
         // Store original layout for reverting
         originalLayout = DisplayUnitData.loadLayout();
+        // Populate forbidden nodes from the store definitions so editor blocks placement on them
+        try {
+            Store s1 = new Store("Store 1");
+            Store s2 = new Store("Store 2");
+            if (s1.getNodes() != null) forbiddenNodes.addAll(s1.getNodes());
+            if (s2.getNodes() != null) forbiddenNodes.addAll(s2.getNodes());
+        } catch (Exception e) {
+            System.err.println("Error initializing store nodes for editor: " + e.getMessage());
+        }
+        if (forbiddenNodes.isEmpty()) {
+            System.out.println("Warning: no forbidden store nodes loaded into editor (forbiddenNodes is empty)");
+        }
+        // Add visual markers so the editor user can see forbidden node locations
+        for (Node n : forbiddenNodes) {
+            try {
+                NodeMarker nm = new NodeMarker(n);
+                addObject(nm, n.getX(), n.getY());
+                nodeMarkers.add(nm);
+            } catch (Exception ex) {
+                // ignore marker failures in editor
+            }
+        }
         
         setupUI();
         loadExistingLayout();
@@ -252,21 +276,30 @@ public class SettingWorld extends World
             y = (y / GRID_SIZE) * GRID_SIZE;
         }
         
-        // Check if placement would overlap with cashier zones - silently block without popup
-        if (isOnCashier(x, y, 50)) {
-            return; // Don't place, just return silently
-        }
-        
+        // Instantiate the unit first so we can compute its image size for a proper collision radius
+        String typeName = DISPLAY_UNIT_TYPES[currentUnitIndex];
         try {
-            String typeName = DISPLAY_UNIT_TYPES[currentUnitIndex];
             Class<?> clazz = Class.forName(typeName);
             DisplayUnit unit = (DisplayUnit) clazz.getDeclaredConstructor().newInstance();
-            
+
+            // Check if placement would overlap with cashier zones - silently block without popup
+            if (isOnCashier(x, y, 50)) {
+                System.out.println("Placement blocked: cashier zone");
+                return; // Don't place, just return silently
+            }
+
+            // Use bounding-box test so the entire image does not intersect any node
+            GreenfootImage uimg = unit.getImage();
+            if (doesImageIntersectAnyNodeWithImage(x, y, uimg)) {
+                System.out.println("Placement blocked: image at (" + x + "," + y + ") would intersect a node");
+                return;
+            }
+
             addObject(unit, x, y);
             placedUnits.add(unit);
             hasUnsavedChanges = true;
-            
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | 
+
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException |
                  NoSuchMethodException | java.lang.reflect.InvocationTargetException e) {
             System.err.println("Error placing unit: " + e.getMessage());
         }
@@ -287,6 +320,92 @@ public class SettingWorld extends World
             
             if (distanceSquared < (radius * radius)) {
                 return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Return true if the supplied world coordinate (x,y) is within `radius`
+     * pixels of any node in the editor's forbiddenNodes list.
+     */
+    private boolean isOnNode(int x, int y, int radius) {
+        int r2 = radius * radius;
+        for (Node n : forbiddenNodes) {
+            int dx = x - n.getX();
+            int dy = y - n.getY();
+            if (dx*dx + dy*dy < r2) return true;
+        }
+        return false;
+    }
+
+    /**
+     * Return true if the axis-aligned image rectangle (centered at cx,cy with
+     * width iw and height ih) intersects any forbidden node point.
+     */
+    private boolean doesImageIntersectAnyNode(int cx, int cy, int iw, int ih) {
+        int halfW = iw / 2;
+        int halfH = ih / 2;
+        // Add a small safety padding to avoid edge-case intersections
+        int pad = 4;
+        int left = cx - halfW - pad;
+        int right = cx + halfW + pad;
+        int top = cy - halfH - pad;
+        int bottom = cy + halfH + pad;
+
+        for (Node n : forbiddenNodes) {
+            int nx = n.getX();
+            int ny = n.getY();
+            if (nx >= left && nx <= right && ny >= top && ny <= bottom) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Pixel-precise test: return true if any forbidden node falls on a non-transparent
+     * pixel of the provided image when the image is placed centered at (cx,cy).
+     */
+    private boolean doesImageIntersectAnyNodeWithImage(int cx, int cy, GreenfootImage img) {
+        int iw = img.getWidth();
+        int ih = img.getHeight();
+        int halfW = iw / 2;
+        int halfH = ih / 2;
+        int left = cx - halfW;
+        int top = cy - halfH;
+
+        for (Node n : forbiddenNodes) {
+            int nx = n.getX();
+            int ny = n.getY();
+            int localX = nx - left;
+            int localY = ny - top;
+            if (localX < 0 || localY < 0 || localX >= iw || localY >= ih) continue;
+            try {
+                Object col = img.getColorAt(localX, localY);
+                int alpha = 255;
+                if (col instanceof java.awt.Color) {
+                    alpha = ((java.awt.Color) col).getAlpha();
+                } else if (col != null) {
+                    // Try to call common alpha-like methods via reflection to support
+                    // alternate Color implementations (e.g. greenfoot.Color)
+                    try {
+                        java.lang.reflect.Method m = col.getClass().getMethod("getAlpha");
+                        alpha = (Integer) m.invoke(col);
+                    } catch (Exception e1) {
+                        try {
+                            java.lang.reflect.Method m2 = col.getClass().getMethod("getTransparency");
+                            alpha = (Integer) m2.invoke(col);
+                        } catch (Exception e2) {
+                            // unknown color type, assume opaque
+                            alpha = 255;
+                        }
+                    }
+                }
+                if (alpha > 0) return true;
+            } catch (Exception e) {
+                // If image queries fail, fall back to the simpler bounding test
+                if (localX >= 0 && localX < iw && localY >= 0 && localY < ih) return true;
             }
         }
         return false;
@@ -315,8 +434,9 @@ public class SettingWorld extends World
                     newY = (newY / GRID_SIZE) * GRID_SIZE;
                 }
                 
-                // Check if new position would overlap with cashier - silently block movement
-                if (!isOnCashier(newX, newY, 50)) {
+                // Check if new position would overlap with cashier or a node - silently block movement
+                GreenfootImage dimg = draggedUnit.getImage();
+                if (!isOnCashier(newX, newY, 50) && !doesImageIntersectAnyNodeWithImage(newX, newY, dimg)) {
                     draggedUnit.setLocation(newX, newY);
                     hasUnsavedChanges = true;
                 }

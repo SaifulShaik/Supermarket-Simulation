@@ -1,6 +1,6 @@
 #BlueJ class context
 comment0.target=Node
-comment0.text=\r\n\ Node\ system\ \r\n\ represents\ one\ tile\ that\ is\ part\ of\ a\ path\r\n\ has\ a\ link\ to\ the\ previous\ nodes\ of\ the\ path\r\n\ \r\n\ @author\ Joe\ Zhuo\r\n\ @version\ November\ 2025\r\n
+comment0.text=\n\ Node\ system\ \n\ represents\ one\ tile\ that\ is\ part\ of\ a\ path\n\ has\ a\ link\ to\ the\ previous\ nodes\ of\ the\ path\n\ \n\ @author\ Joe\ Zhuo\n\ @version\ November\ 2025\n
 comment1.params=x\ y
 comment1.target=Node(int,\ int)
 comment2.params=n

@@ -1,6 +1,6 @@
 #BlueJ class context
 comment0.target=SteakWarmer
-comment0.text=\r\n\ Write\ a\ description\ of\ class\ Bin\ here.\r\n\ \r\n\ @author\ Owen\ Kung\r\n\ @version\ Nov\ 6\ 2025\r\n
+comment0.text=\n\ Write\ a\ description\ of\ class\ Bin\ here.\n\ \n\ @author\ Owen\ Kung\n\ @version\ Nov\ 6\ 2025\n
 comment1.params=
 comment1.target=SteakWarmer()
 comment2.params=a

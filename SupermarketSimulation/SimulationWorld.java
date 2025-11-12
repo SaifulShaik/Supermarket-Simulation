@@ -78,7 +78,6 @@ public class SimulationWorld extends World
         
         // add the Cashiers to store 1
         addObject(new Cashier(), getWidth()/2 + 200, getHeight()/2);
-        addObject(new Cashier(), getWidth()/2 + 300, getHeight()/2);
         
         // add cashier to store 2
         addObject(new Store2Cashier(), getWidth()/2-230, getHeight()/2+130);
@@ -104,8 +103,9 @@ public class SimulationWorld extends World
             //s.updateProductLocations();
         }
 
-        // Add visual markers for each display unit so nodes in front of units are visible
-        addNodeMarkersForDisplayUnits();
+    // Add visual markers for stores' nodes (stores manage their own node markers)
+    storeOne.showNodesInWorld(this);
+    storeTwo.showNodesInWorld(this);
         
         //set paint order for products and shelves to properly display
         setPaintOrder(

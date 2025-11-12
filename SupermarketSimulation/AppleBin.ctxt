@@ -1,6 +1,6 @@
 #BlueJ class context
 comment0.target=AppleBin
-comment0.text=\r\n\ Bin\ with\ Apples\r\n\ Has\ it's\ own\ stocking\ mechnism\r\n\ \r\n\ @author\ Owen\ Kung\r\n\ @version\ Nov\ 2025\r\n
+comment0.text=\n\ Bin\ with\ Apples\n\ Has\ it's\ own\ stocking\ mechnism\n\ \n\ @author\ Owen\ Kung\n\ @version\ Nov\ 2025\n
 comment1.params=
 comment1.target=AppleBin()
 comment2.params=

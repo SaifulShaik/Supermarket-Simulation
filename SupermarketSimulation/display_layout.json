@@ -1,7 +1,27 @@
 [
   {
+    "displayUnitType": "Fridge",
+    "x": 80,
+    "y": 180
+  },
+  {
     "displayUnitType": "SnackShelf",
-    "x": 160,
-    "y": 400
+    "x": 200,
+    "y": 180
+  },
+  {
+    "displayUnitType": "SnackShelf",
+    "x": 320,
+    "y": 180
+  },
+  {
+    "displayUnitType": "LettuceBin",
+    "x": 167,
+    "y": 288
+  },
+  {
+    "displayUnitType": "LettuceBin",
+    "x": 89,
+    "y": 289
   }
 ]

@@ -7,10 +7,19 @@ import greenfoot.*;
  */
 public class NodeMarker extends Actor {
     private DisplayUnit targetUnit;
+    private Node targetNode;
     private int yOffset = 50; // draw slightly above the unit center
 
     public NodeMarker(DisplayUnit unit) {
         this.targetUnit = unit;
+        this.targetNode = null;
+        createMarkerImage();
+    }
+
+    /** Create a marker that points at a specific Node (world coordinates). */
+    public NodeMarker(Node node) {
+        this.targetNode = node;
+        this.targetUnit = null;
         createMarkerImage();
     }
 
@@ -22,15 +31,26 @@ public class NodeMarker extends Actor {
         setImage(img);
     }
 
-    @Override
     public void act() {
-        if (targetUnit == null || targetUnit.getWorld() == null) {
-            // remove self if the target is gone
-            if (getWorld() != null) getWorld().removeObject(this);
+        // If this marker was built for a DisplayUnit, follow the unit as before
+        if (targetUnit != null) {
+            if (targetUnit.getWorld() == null) {
+                if (getWorld() != null) getWorld().removeObject(this);
+                return;
+            }
+            setLocation(targetUnit.getX(), targetUnit.getY() + yOffset);
             return;
         }
 
-        // follow the target unit's position
-        setLocation(targetUnit.getX(), targetUnit.getY() + yOffset);
+        // If this marker targets a Node, position it at the node's world coordinates
+        if (targetNode != null) {
+            // Nodes hold absolute world coordinates
+            if (getWorld() == null) return; // world is required to be present
+            setLocation(targetNode.getX(), targetNode.getY());
+            return;
+        }
+
+        // If neither target exists, remove ourselves
+        if (getWorld() != null) getWorld().removeObject(this);
     }
 }
