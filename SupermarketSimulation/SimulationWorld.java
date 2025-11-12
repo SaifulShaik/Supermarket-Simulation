@@ -41,6 +41,9 @@ public class SimulationWorld extends World
     
     private static List<Node> roadNodes;
     
+    private static Store storeOne;
+    private static Store storeTwo;
+    
     public SimulationWorld()
     { 
         super(bg.getWidth(), bg.getHeight(), 1);
@@ -53,7 +56,7 @@ public class SimulationWorld extends World
         Node entranceAccess = new Node(600, 425);
         roadSpawn.addNeighbouringNode(entranceAccess);
         
-        Store storeOne = new Store("Store 1");
+        storeOne = new Store("Store 1");
         Node storeOneEntranceNode = storeOne.getEntranceNode();
         entranceAccess.addNeighbouringNode(storeOneEntranceNode);
         
@@ -103,9 +106,9 @@ public class SimulationWorld extends World
             //s.updateProductLocations();
         }
 
-    // Add visual markers for stores' nodes (stores manage their own node markers)
-    storeOne.showNodesInWorld(this);
-    storeTwo.showNodesInWorld(this);
+        // Add visual markers for stores' nodes (stores manage their own node markers)
+        storeOne.showNodesInWorld(this);
+        storeTwo.showNodesInWorld(this);
         
         //set paint order for products and shelves to properly display
         setPaintOrder(
@@ -117,6 +120,14 @@ public class SimulationWorld extends World
             SnackShelf.class, Fridge.class, LettuceBin.class, CarrotBin.class, AppleBin.class,OrangeBin.class, SteakWarmer.class,RawBeefHangers.class           // furniture (back)
             );
         
+    }
+    
+    public static Store getStoreOne() {
+        return storeOne;
+    }
+    
+    public static Store getStoreTwo() {
+        return storeTwo;
     }
     
     public static Node getStartNode() {

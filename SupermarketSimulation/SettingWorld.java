@@ -51,9 +51,11 @@ public class SettingWorld extends World
     
     private LinkedList<Node> pathNodes = new LinkedList<>();
     private LinkedList<NodeMarker> nodeMarkers = new LinkedList<>();
+    
     // Nodes that are part of customer paths; editor should not allow placing objects here
     private List<Node> forbiddenNodes = new ArrayList<>();
     // track N key edge for printing all units' node mapping
+    
     private boolean lastNDown = false;
     
     /**

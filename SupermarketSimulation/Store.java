@@ -205,6 +205,10 @@ public class Store {
         }
         return null;
     }
+    
+    public List<Product> getAvailableProducts() {
+        return availableProducts;
+    }
 
     /**
      * Return the list of nodes that belong to this store. Used by the editor

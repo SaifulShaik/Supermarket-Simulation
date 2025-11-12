@@ -16,7 +16,7 @@ public class ImpulseShopper extends Customer
     private final int shopperTypeListLength = 2;
     
     public ImpulseShopper(){
-        super.createShoppingList(shopperTypeListLength);
+        
     }
     
     public void act()

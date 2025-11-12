@@ -15,15 +15,16 @@ public abstract class Customer extends SuperSmoothMover
     private double movementSpeed;
     private double budget;
     
-    protected ArrayList<String> shoppingList = new ArrayList<>();
+    /*protected ArrayList<String> shoppingList = new ArrayList<>();
     protected ArrayList<String> shoppingListStore = new ArrayList<>();
     public final ArrayList<String> supermarketProductsList = new ArrayList<>(Arrays.asList(
         "Apple", "Candy", "Carrot", "Chips", "Cup Noodle", "Lettuce", "Orange", "Pop", "Water"
         ));
     public final ArrayList<String> butcherProductsList = new ArrayList<>(Arrays.asList(
         "Bacon", "Baked Chicken", "Cooked Steak", "Drumstick", "Meat On The Bone", "Raw Chicken", "Raw Steak"
-        ));
-    
+        ));*/
+    private List<Product> shoppingList;
+    private int maxShoppingListItems;
     private List<Product> cart;
     
     private Node previousNode;
@@ -36,15 +37,20 @@ public abstract class Customer extends SuperSmoothMover
     
     public Customer() {}
     
-    public Customer(double movementSpeed, double budget, Node currentNode) {
+    public Customer(double movementSpeed, double budget, Node currentNode, int maxShoppingListItems) {
         this.movementSpeed = movementSpeed;
         this.budget = budget;
+        
+        this.maxShoppingListItems = maxShoppingListItems;
+        shoppingList = new ArrayList<>();
         
         this.currentNode = currentNode;
         targetNode = null;
         previousNode = null;
         
         store = null;
+        
+        generateShoppingList(maxShoppingListItems);
     }
     
     public void act() {
@@ -57,40 +63,51 @@ public abstract class Customer extends SuperSmoothMover
     protected void chooseStore() {
         List<Store> stores = getWorld().getObjects(Store.class);
         
-        if (stores.isEmpty()) { return; }
+        if (stores.isEmpty()) { 
+            return; 
+        }
         
-        int chosenStore;
-        if (shoppingListStore.get(0) == "butcher"){ chosenStore=0; }
-        else{ chosenStore=1; }
+        Store bestStore = null;
+        int bestMatchCount = -1;
         
-        System.out.println("Hi");
+        for (Store s : stores) {
+            int matchCount = 0;
+            List<Product> available = s.getAvailableProducts();
+            
+            for (Product p: shoppingList) {
+                if (available.contains(p)) {
+                    matchCount++;
+                }
+            }
+            
+            if (matchCount > bestMatchCount) {
+                bestMatchCount = matchCount;
+                bestStore = s;
+            }
+        }
         
-        Store s = stores.get(chosenStore);
-
-        targetNode = s.getEntranceNode();
-        store = s;
-        System.out.println("Heading to store entrance at: " 
-        + targetNode.getX() + "," + targetNode.getY());
+        if (bestStore == null) {
+            bestStore = stores.get(Greenfoot.getRandomNumber(stores.size()));
+        }
+        
+        store = bestStore;
+        targetNode = bestStore.getEntranceNode();
     }
     
-    protected void createShoppingList(int listLength){
-        for(int i = 0 ; i < listLength ; i++){
-            int productStore = Greenfoot.getRandomNumber(2);
-            int productListLength;
-            String product;
-            if (productStore==0){ 
-                productListLength = supermarketProductsList.size();
-                product = supermarketProductsList.get(Greenfoot.getRandomNumber(productListLength));
-                shoppingListStore.add("supermarket");
-            }
-            else{
-                productListLength = butcherProductsList.size();
-                product = butcherProductsList.get(Greenfoot.getRandomNumber(productListLength));
-                shoppingListStore.add("butcher");
-            }
-            shoppingList.add(product);
+    protected List<Product> generateShoppingList(int maxShoppingListItems) {
+        List<Product> items = new ArrayList<>();
+        
+        List<Product> availableItems = new ArrayList<>();
+        availableItems.addAll(SimulationWorld.getStoreOne().getAvailableProducts());
+        availableItems.addAll(SimulationWorld.getStoreTwo().getAvailableProducts());
+        
+        int numItems = 1 + Greenfoot.getRandomNumber(maxShoppingListItems);
+        
+        for (int i = 0 ; i < numItems ; i++) {
+            items.add(availableItems.get(Greenfoot.getRandomNumber(availableItems.size())));
         }
-        System.out.println("Going to " + shoppingListStore.get(0) + " for " + shoppingList.get(0));
+        
+        return items;
     }
     
     protected void move() {
