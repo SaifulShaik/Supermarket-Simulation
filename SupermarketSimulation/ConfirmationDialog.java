@@ -4,7 +4,7 @@ import greenfoot.*;
  * A reusable dialog box for displaying messages and optional YES/NO buttons.
  * Can be used for confirmations and notifications.
  * 
- * @author AI Assistant
+ * @author Saiful Shaik
  * @version Nov 8, 2025
  */
 public class ConfirmationDialog extends Actor {

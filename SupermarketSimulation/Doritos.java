@@ -13,7 +13,6 @@ public class Doritos extends Product
     
     public Doritos()
     {
-        price=3.5;
         name=SimulationWorld.PRODUCT_DORITOS;
         image = new GreenfootImage("product/chips/Chips 1.PNG");
         image.scale(image.getWidth()/2, image.getHeight()/2);

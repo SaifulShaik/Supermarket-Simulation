@@ -13,7 +13,6 @@ public class Orange extends Product
     
     public Orange()
     {
-        price=0.95;
         name=SimulationWorld.PRODUCT_ORANGE;
         image = new GreenfootImage("product/Orange.PNG");
         image.scale(image.getWidth()/2, image.getHeight()/2);

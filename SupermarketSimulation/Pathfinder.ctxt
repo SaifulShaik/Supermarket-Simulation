@@ -1,11 +1,11 @@
 #BlueJ class context
 comment0.target=Pathfinder
-comment0.text=\n\ Pathfinding\ system\ for\ customers\n\ Can\ be\ used\ in\ any\ way\n\ Has\ one\ main\ role\:\ finds\ the\ shortest\ distance\ from\ point\ a\ to\ b\ inside\ a\ store\n\n\ @author\ Joe\ Zhuo\n\ @version\ November\ 2025\n
+comment0.text=\r\n\ Pathfinding\ system\ for\ customers\r\n\ Can\ be\ used\ in\ any\ way\r\n\ Has\ one\ main\ role\:\ finds\ the\ shortest\ distance\ from\ point\ a\ to\ b\ inside\ a\ store\r\n\r\n\ @author\ Joe\ Zhuo\r\n\ @version\ November\ 2025\r\n
 comment1.params=store
 comment1.target=Pathfinder(Store)
 comment2.params=sx\ sy\ tx\ ty
 comment2.target=java.util.List\ findPath(int,\ int,\ int,\ int)
-comment2.text=\n\ Finds\ the\ shortest\ path\ from\ start\ point\ (sx,\ sy)\ to\ target\ point\ (tx,\ ty)\n\ \n\ @return\ a\ list\ of\ nodes\ representing\ the\ path\ or\ empty\ if\ no\ paths\n
+comment2.text=\r\n\ Finds\ the\ shortest\ path\ from\ start\ point\ (sx,\ sy)\ to\ target\ point\ (tx,\ ty)\r\n\ \r\n\ @return\ a\ list\ of\ nodes\ representing\ the\ path\ or\ empty\ if\ no\ paths\r\n
 comment3.params=targetNode
 comment3.target=java.util.List\ reconstructPath(Node)
 comment4.params=

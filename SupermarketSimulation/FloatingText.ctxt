@@ -1,6 +1,6 @@
 #BlueJ class context
 comment0.target=FloatingText
-comment0.text=\n\ Floating\ Text\ that\ fades\ out\ after\ appearing.\n\ \n\ This\ is\ particularly\ helpful\ to\ display\ the\ status\ of\ a\ player\ and\ create\ visual\ effects\n\ \n\ @author\:\ Owen\ Kung\n\ @version\:\ Oct\ 2025\ \ //reused\ from\ vehicle\ simulation\n
+comment0.text=\n\ Floating\ Text\ that\ fades\ out\ after\ appearing.\n\ \n\ This\ is\ particularly\ helpful\ to\ display\ the\ status\ of\ a\ player\ and\ create\ visual\ effects\n\ \n\ @author\:\ Owen\ Kung\ (edited\ by\ Joe)\n\ @version\:\ Oct\ 2025\ \ //reused\ from\ vehicle\ simulation\n
 comment1.params=message
 comment1.target=FloatingText(java.lang.String)
 comment1.text=\n\ Without\ specifying\ color,\ \n\ Use\ Color.Green\n\ Font\ 20\n\ Transparent\ background\n\ \n\ @param\ messages\:\ message\ to\ display\n

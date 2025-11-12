@@ -1,4 +1,5 @@
 import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
+import java.util.*;
 
 /**
  * Node system 
@@ -10,90 +11,47 @@ import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
  */
 public class Node
 {
-    private int x;
-    private int y;
+    private int worldX;
+    private int worldY;
     
-    public Node previousNode;
-    
-    private int distanceFromStart;
-    private int distanceToGoal;
-    
-    private boolean isBlocked;
+    private List<Node> neighbouringNodes;
+
     private boolean isEntrance;
+    private boolean hasCustomer;
     
-    public Node(int x, int y, Node previousNode, int distanceFromStart, int distanceToGoal, boolean isBlocked, boolean isEntrance) {
-        this.x = x;
-        this.y = y;
-        this.previousNode = previousNode;
-        this.distanceFromStart = distanceFromStart;
-        this.distanceToGoal = distanceToGoal;
-        this.isBlocked = isBlocked;
-        this.isEntrance = isEntrance;
+    public Node(int x, int y) {
+        worldX = x;
+        worldY = y;
+        isEntrance = false;
+        hasCustomer = false;
+        neighbouringNodes = new ArrayList<>();
     }
     
-    public int getTotalDistance() {
-        return distanceFromStart + distanceToGoal;
-    }
-    
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        
-        if (!(obj instanceof Node)) return false;
-        
-        Node other = (Node) obj;
-        return this.x == other.x && this.y == other.y;
-    }
-    
-    public int getDistanceFromGoal() {
-        return distanceToGoal;
-    }
-    
-    public void setDistanceToGoal(int amount) {
-        distanceToGoal = amount;
-    }
-    
-    public int getDistanceFromStart() {
-        return distanceFromStart;
-    }
-    
-    public void setDistanceFromStart(int amount) {
-        distanceFromStart = amount;
-    }
-    
-    public Node getPreviousNode() {
-        return previousNode;
+    public void addNeighbouringNode(Node n) {
+        neighbouringNodes.add(n);
     }
     
     public int getX() {
-        return x;
+        return worldX;
     }
     
     public int getY() {
-        return y;
-    }
-    
-    public boolean checkIsBlocked() {
-        return isBlocked;
-    }
-    
-    public void setBlocked(boolean blocked) {
-        isBlocked = blocked;
+        return worldY;
     }
     
     public boolean checkIsEntrance() {
         return isEntrance;
     }
     
-    public void setEntrance(boolean entrance) {
-        isEntrance = entrance;
+    public void setEntrance() {
+        isEntrance = true;
     }
     
-    public int getWorldX() {
-        return x * 20 + 20 / 2;
+    public boolean checkHasCustomer() {
+        return hasCustomer;
     }
     
-    public int getWorldY() {
-        return y * 20 + 20 / 2;
+    public List<Node> getNeighbouringNodes() {
+        return neighbouringNodes;
     }
 }

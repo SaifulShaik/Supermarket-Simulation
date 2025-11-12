@@ -74,16 +74,16 @@ public class LandingPage extends World
     {
         createBackground();
         
-        titleLabel = new Label("SUPERMARKET SIMULATOR", 56);
+        titleLabel = new Label("SUPERMARKET SIMULATOR", 80);
         titleLabel.setLineColor(new Color(0, 0, 0, 0));
         titleLabel.setFillColor(new Color(255, 255, 255, titleOpacity));
-        subtitleLabel = new Label("BUILD. SAIFUL. WITH.", 22);
+        subtitleLabel = new Label("BUILD. SAIFUL. WITH.", 40);
         subtitleLabel.setLineColor(new Color(0, 0, 0, 0));
         subtitleLabel.setFillColor(new Color(225, 225, 225, titleOpacity));
         addObject(titleLabel, 600, titleY);
-        addObject(subtitleLabel, 600, 220);
+        addObject(subtitleLabel, 600, 200);
         playButton = new Button("START GAME", 220, 65, 
-                                new Color(34, 139, 34), 
+                                new Color(34, 200, 170), 
                                 new Color(50, 205, 50), 
                                 Color.WHITE, 30);
         addObject(playButton, 600, 340);
@@ -103,9 +103,7 @@ public class LandingPage extends World
 
     private void createBackground()
     {
-        GreenfootImage bg = getBackground();
-        bg.setColor(Color.WHITE);
-        bg.fill();
+        setBackground(new GreenfootImage("Landing Background.PNG"));
     }
     
     private void addCloudEffect(GreenfootImage bg)
@@ -159,7 +157,7 @@ public class LandingPage extends World
         // Play sound effect if available
         
         // Smooth transition
-        fadeOutAndTransition(new Cutscene());
+        fadeOutAndTransition(new SimulationWorld());
         
     }
     

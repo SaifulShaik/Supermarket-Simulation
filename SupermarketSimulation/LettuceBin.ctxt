@@ -1,0 +1,10 @@
+#BlueJ class context
+comment0.target=LettuceBin
+comment0.text=\n\ Write\ a\ description\ of\ class\ Bin\ here.\n\ \n\ @author\ Owen\ Kung\n\ @version\ Nov\ 6\ 2025\n
+comment1.params=
+comment1.target=LettuceBin()
+comment2.params=
+comment2.target=void\ act()
+comment3.params=
+comment3.target=void\ stock()
+numComments=4

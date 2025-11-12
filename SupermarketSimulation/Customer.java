@@ -1,121 +1,117 @@
-import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
+import greenfoot.*; 
 import java.util.*;
 
 /**
- * An object that represents a customer inside a store
- * 
+ * An abstract customer that uses A* pathfinding to navigate the store.
+ * Each customer has a shopping list, cart, and can find the shortest
+ * path to each product's location before collecting it.
+ *
  * @author Joe
  * @version November 2025
  */
-public abstract class Customer extends SuperSmoothMover
+
+public abstract class Customer extends SuperSmoothMover 
 {
-    protected List<Product> shoppingList;
-    protected List<Product> cart;
-    protected Product currentProductTarget;
+    private double movementSpeed;
+    private double budget;
     
-    protected Node targetNode;
-    protected List<Node> currentPath;
-    protected Node currentNode;
+    private List<Product> cart;
     
-    private Pathfinder pathfinder;
+    private Node previousNode;
+    private Node currentNode;
+    private Node targetNode;
     
-    protected int facing; // 0: top, 1: right, 2: down, 3: left
-    //protected double targetLocationoffset = UI.getHeight;
-    protected double budget; 
-    protected double movementSpeed; 
-    protected double timeInLine;
-    protected double queuePosition;
-    protected boolean hasPaid;
-    protected int emotion; // handle this later
+    private int pauseTimer = 0;
     
-    private Store currentStore;
+    private Store store;
     
-    public Customer() {
-        cart = new ArrayList<>();
-        budget = 20 + Greenfoot.getRandomNumber(81); //20 - 100 dollar budget
-        movementSpeed = 1 + (Greenfoot.getRandomNumber(21) / 10); // 1-3 peed
-        emotion = 0;
-        currentStore = null;
-    }
+    public Customer() {}
     
-    public Customer(int budget, int speed) {
-        cart = new ArrayList<>();
+    public Customer(double movementSpeed, double budget, Node currentNode) {
+        this.movementSpeed = movementSpeed;
         this.budget = budget;
-        movementSpeed = speed;
-        emotion = 0;
-        currentStore = null;
+        
+        this.currentNode = currentNode;
+        targetNode = null;
+        previousNode = null;
+        
+        store = null;
     }
     
     public void act() {
-        if (currentStore == null) {
+        if (store == null) {
             chooseStore();
         }
-        else if (currentNode == null) {
-            moveToStore();
-        }
-        else if (!shoppingList.isEmpty()) {
-            move();
-            if (currentProductTarget == null) {
-                chooseNextProduct();
-            }
-        } 
-        else {
-            getWorld().removeObject(this);
-        }
-        /*else if (!hasPaid) {
-            checkout();
-        } 
-        else {
-            leaveStore();
-        }*/
-
+        move();
     }
     
     protected void chooseStore() {
-        // get first store
-        // make it choose better store based on products later
         List<Store> stores = getWorld().getObjects(Store.class);
-        if (!stores.isEmpty()) {
-            currentStore = stores.get(0);
+        
+        if (stores.isEmpty()) {
+            return;
         }
         
-        shoppingList = generateShoppingList();
-        
-        List<Node> entrances = currentStore.getEntranceNodes();
-        if (!entrances.isEmpty()) {
-            targetNode = entrances.get(Greenfoot.getRandomNumber(entrances.size()));
-        }
-    
-        pathfinder = new Pathfinder(currentStore);
-    }
-    
-    protected void leaveStore() {
-        // we'll just remove it for now
-        // later change it to walk towards bottom of the road
-        getWorld().removeObject(this);
+        Store s = stores.get(Greenfoot.getRandomNumber(stores.size()));
+
+        targetNode = s.getEntranceNode();
+        store = s;
+        System.out.println("Heading to store entrance at: " 
+        + targetNode.getX() + "," + targetNode.getY());
     }
     
     protected void move() {
-        if (currentProductTarget == null && !shoppingList.isEmpty()) {
-            chooseNextProduct();
+        if (pauseTimer > 0) {
+            pauseTimer--;
+            return;
         }
-    
-        if (currentProductTarget != null) {
-            targetNode = currentProductTarget.getNode();
-            moveTowards(targetNode);
-    
-            if (canAccessItem(currentProductTarget)) {
-                addItemToCart(currentProductTarget);
-                currentProductTarget = null;
+
+        if (targetNode != null) {
+            moveToNode(targetNode); 
+            return;
+        }
+
+        List<Node> neighbouringNodes = currentNode.getNeighbouringNodes();
+        
+        if (neighbouringNodes.isEmpty() || neighbouringNodes == null) {
+            return;
+        }
+        
+        List<Node> availableNodes = new ArrayList<>();
+        
+        for (Node n : neighbouringNodes) {
+            if (n == previousNode) continue;
+            else {
+                availableNodes.add(n);
             }
         }
+        
+        if (availableNodes.isEmpty() || availableNodes == null) {
+            return;
+        }
+        
+        Node nextNode = availableNodes.get(Greenfoot.getRandomNumber(availableNodes.size()));
+        previousNode = currentNode;
+        targetNode = nextNode;
+        
+        moveToNode(nextNode);
     }
     
-    protected void moveToStore() {
-        double dx = targetNode.getWorldX() - getX();
-        double dy = targetNode.getWorldY() - getY();
+    protected void moveToNode(Node n) {
+        int dx = n.getX() - getX();
+        int dy = n.getY() - getY();
         
-        if (dx < 1 && dy < 1) currentNode = targetNode;
+        double distance = Math.sqrt(dx * dx + dy * dy);
+        
+        if (distance < movementSpeed) {
+            setLocation(n.getX(), n.getY());
+            
+            currentNode = n;
+            targetNode = null;
+            
+            pauseTimer = 5 + Greenfoot.getRandomNumber(5);
+            return;
+        }
         
         double angle = Math.atan2(dy, dx);
         
@@ -125,115 +121,17 @@ public abstract class Customer extends SuperSmoothMover
         setLocation(newX, newY);
     }
     
-    protected boolean canAccessItem(Product p) {
-        if (p == null || currentStore == null) return false;
-        
-        Node productNode = p.getNode();
-        if (productNode == null) return false;
-    
-        int[][] directions = { {0, -1}, {0, 1}, {-1, 0}, {1, 0} };
-        
-        for (int[] dir : directions) {
-            Node neighbor = currentStore.getNode(currentNode.getX() + dir[0], currentNode.getY() + dir[1]);
-            
-            if (neighbor != null && neighbor.equals(productNode)) {
-                return true;
-            }
-        }
-        return false;                           
+    public void leaveStore() {
+        getWorld().removeObject(this);
     }
     
-    protected void moveTowards(Node targetNode) {
-        if (targetNode == null || currentNode == null || pathfinder == null) {
-            return;
-        }
-    
-        if (currentPath == null || currentPath.isEmpty()) {
-            currentPath = pathfinder.findPath(currentNode.getX(), currentNode.getY(), targetNode.getX(), targetNode.getY());
-            
-            if (currentPath == null || currentPath.isEmpty()) return;
-        }
-        
-        if (canAccessItem(currentProductTarget)) return;
-        
-        Node nextNode = currentPath.get(0);
-    
-        double[][] location = currentStore.getCellCenter(nextNode.getX(), nextNode.getY());
-        
-        if (location != null) {
-            double dx = location[0][0] - getX();
-            double dy = location[0][1] - getY();
-            
-            if (Math.hypot(dx, dy) < 1) {
-                currentPath.remove(0);
-                currentNode = nextNode;
-                return;
-            }
-            
-            double angle = Math.atan2(dy, dx);
-            
-            double newX = getX() + Math.cos(angle) * movementSpeed;
-            double newY = getY() + Math.sin(angle) * movementSpeed;
-    
-            setLocation(newX, newY);
-        }
-    }
-    
-    // do proper turning later
-    protected void turnTowards(int direction) {}
-    
-    protected void chooseNextProduct() {
-        if (shoppingList == null || shoppingList.isEmpty()) {
-            currentProductTarget = null;
-            return; // call checkout when list is empty later
-        }
-        
-        currentProductTarget = shoppingList.get(0);
-        targetNode = currentProductTarget.getNode();
-    }
-    
-    protected void addItemToCart(Product item) {
-        if (item != null && !cart.contains(item)) {
-            cart.add(item);
-            shoppingList.remove(item);
-        }
-    }
-    
-    protected void removeItemFromCart(Product item) {
-        cart.remove(item);
-    }
-    
-    protected List<Product> generateShoppingList() { 
-        // will use all products later
-        List<Product> list = new ArrayList<>();
-    
-        if (currentStore == null) return list;
-        
-        List<Product> storeProducts = currentStore.getAvailableProducts();
-        if (storeProducts == null || storeProducts.isEmpty()) return list;
-        
-        int numItems = 1 + Greenfoot.getRandomNumber(5);
-        
-        for (int i = 0; i < numItems; i++) {
-            Product p = storeProducts.get(Greenfoot.getRandomNumber(storeProducts.size()));
-            if (!list.contains(p)) { 
-                list.add(p);
-            }
-        }
-        
-        return list;
-    }
-    
-    protected void checkout() {}
-    protected void chooseCashier() {}
-    
-    protected double calculatePriceOfCart() { 
-        double totalCost = 0;
+    public double calculatePriceOfCart() {
+        double total = 0;
         
         for (Product p : cart) {
-            totalCost += p.getPrice();
+            total += p.getPrice();
         }
         
-        return totalCost;
+        return total;
     }
 }

@@ -1,104 +1,189 @@
 import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)  
 import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Supermarket Simulation World
+ * Write a description of class MyWorld here.
  * 
- * 
- * @author Owen Kung
- * @version Nov 4 2025
+ * @author Saiful Shaik, Owen Kung
+ * @version Modified: Nov, 8, 2025
  */
 public class SimulationWorld extends World
 {
+    //public static final int WORLD_WIDTH = 1048;
+    //public static final int WORLD_HEIGHT = 514;
+    
+    // Product name constants
+    public static final String PRODUCT_APPLE = "Apple";
+    public static final String PRODUCT_ORANGE = "Orange";
+    public static final String PRODUCT_CARROT = "Carrot";
+    public static final String PRODUCT_LETTUCE = "Lettuce";
+    public static final String PRODUCT_COKE = "Coke";
+    public static final String PRODUCT_SPRITE = "Sprite";
+    public static final String PRODUCT_FANTA = "Fanta";
+    public static final String PRODUCT_WATER = "Water";
+    public static final String PRODUCT_DORITOS = "Doritos";
+    public static final String PRODUCT_LAYS = "Lays";
+    public static final String PRODUCT_RUFFLES = "Ruffles";
+    public static final String PRODUCT_STEAK = "Steak";
+    public static final String PRODUCT_RAWBEEF = "Raw Beef";
+    public static final String PRODUCT_CANDY = "Candy";
+    public static final String PRODUCT_DRUM_STICK = "Drumstick";
+    public static final String PRODUCT_XING_RAMEN = "Xing Ramen";
+    public static final String PRODUCT_JIN_RAMEN = "Jin Ramen";
+    public static final String PRODUCT_NISSIN = "Raw Beef";
+    
+    // Grid settings
+    public static final int GRID_CELL_SIZE = 20; // pixels per cell
+    public static final int GRID_START_Y = 100;  // Grid starts at y=100
+    
     private static final GreenfootImage bg = new GreenfootImage("background.png");
     
-    //Avaialble product names, global reference
-    public static String PRODUCT_COKE="Coke";
-    public static String PRODUCT_SPRITE="Sprite";
-    public static String PRODUCT_FANTA="Fanta";
-    public static String PRODUCT_WATER="Water";
-    public static String PRODUCT_DORITOS="Doritos";
-    public static String PRODUCT_LAYS="Lays";
-    public static String PRODUCT_RUFFLES="Ruffles";
-    public static String PRODUCT_XING_RAMEN="Xing Ramen Cup Noodle";
-    public static String PRODUCT_NISSIN="Nissin Cup Noodle";
-    public static String PRODUCT_JIN_RAMEN="Jin Ramen Cup Noodle";
-    public static String PRODUCT_STEAK="Steak";
-    public static String PRODUCT_RAW_BEEF="Raw Beef";
-    public static String PRODUCT_DRUM_STICK="Roastd Drum Stick";
-    public static String PRODUCT_LETTUCE="Lettuce";
-    public static String PRODUCT_CARROT="Carrot";
-    public static String PRODUCT_APPLE="Apple";
-    public static String PRODUCT_ORANGE="Orange";
-    public static String PRODUCT_CANDY="Candy";
+    private static List<Node> roadNodes;
     
-    //Paramters for spawning truck
-    private int truckDelay;
     public SimulationWorld()
     { 
-             
         super(bg.getWidth(), bg.getHeight(), 1);
         setBackground(bg); 
-    
+        
+        roadNodes = new ArrayList<>();
+        
+        Node roadSpawn = new Node(600, 100);
+        
+        Node entranceAccess = new Node(600, 400);
+        roadSpawn.addNeighbouringNode(entranceAccess);
+        
+        Store storeOne = new Store("Store 1");
+        Node storeOneEntranceNode = storeOne.getEntranceNode();
+        entranceAccess.addNeighbouringNode(storeOneEntranceNode);
+        
+        Store storeTwo = new Store("Store 2");
+        Node storeTwoEntranceNode = storeTwo.getEntranceNode();
+        entranceAccess.addNeighbouringNode(storeTwoEntranceNode);
+        
+        roadNodes.add(roadSpawn);
+        roadNodes.add(entranceAccess);
+        
+        // Draw world-wide grid overlay
+        //drawWorldGrid();
+        
+        addObject(new CustomerSpawner(), 0, 0);
+        addObject(new StoreUI(), getWidth()/2, 50);
+        
+        // Enable stocking in simulation mode
+        DisplayUnit.setEnableStocking(true);
+        
+        //addObject(new Store(480, 480, 20, true), 480, 220); // x: 40 - 480 y: 220 - 480
+        //addObject(new Store(360, 120, 20, false), getWidth() - 240, 360);
         
         // add the Cashiers to store 1
         addObject(new Cashier(), getWidth()/2 + 200, getHeight()/2);
-        addObject(new Cashier(), getWidth()/2 + 300, getHeight()/2);
         
         // add cashier to store 2
         addObject(new Store2Cashier(), getWidth()/2-230, getHeight()/2+130);
         addObject(new Store2Cashier(), getWidth()/2-330, getHeight()/2+130);
         
-        // add fridge one to store 2
-        addObject(new FridgeOne(),65,225);
-        // add fridge two to store 2
-        addObject(new FridgeTwo(),135,225);
-        // add shelve next to fridge
-        addObject(new SnackShelf(),230,240);
-        // add shelve next to fridge
-        addObject(new CupNoodleShelf(),335,240);
-        // add CandyBin to store 1
-        addObject(new CandyBin(),60,400);
-        
-        
         // add the butcher
         Butcher butcher = new Butcher();
         addObject(butcher, 975, 260);
         
-        // add Lettuce Bin ub store 1
-        addObject(new LettuceBin(),1010,460);
-         // add Carrot Bin ub store 1
-        addObject(new CarrotBin(),940,460);
-        // add Apple Bin ub store 1
-        addObject(new AppleBin(),870,460);
-        // add Orange Bin ub store 1
-        addObject(new OrangeBin(),800,460);
-        // add SteakHangers to store 1
-        addObject(new RawBeefHangers(),935,147);
-        // add SteakWarmer to store 1
-        addObject(new SteakWarmer(),1060,260);
- 
+        // Load display units from saved layout, or use default if no saved layout exists
+        loadDisplayUnits();
+
+        // After display units are created and added to the world, update each DisplayUnit's
+        // customer node based on its world position
+        for (DisplayUnit unit : getObjects(DisplayUnit.class)) {
+            //unit.updateCustomerNode();
+        }
+
+        // After display units are created and added to the world, refresh
+        // all stores so they map product nodes from the actual display unit
+        // positions (instead of relying on hard-coded positions).
+        for (Store s : getObjects(Store.class)) {
+            //s.updateProductLocations();
+        }
+
+    // Add visual markers for stores' nodes (stores manage their own node markers)
+    storeOne.showNodesInWorld(this);
+    storeTwo.showNodesInWorld(this);
+        
         //set paint order for products and shelves to properly display
         setPaintOrder(
-            FloatingText.class,
-            Doritos.class, Lays.class, Ruffles.class,           // snacks 
-            Coke.class, Water.class, Sprite.class, Fanta.class, // drinks 
-            Lettuce.class,Carrot.class,Apple.class,Orange.class,Steak.class,RawBeef.class,DrumStick.class,
-            XingRamen.class,Nissin.class,JinRamen.class,  //cup noodles
-            Candy.class,
-            //SnackShelf.class, FridgeOne.class, LettuceBin.class, CarrotBin.class, AppleBin.class,OrangeBin.class, SteakWarmer.class,RawBeefHangers.class           // furniture (back)
-            DisplayUnit.class
+            Customer.class,                                      // customers (very front)
+            NodeMarker.class,                                    // node markers (above display units)
+            Doritos.class, Lays.class, Ruffles.class,           // snacks (front)
+            Coke.class, Water.class, Sprite.class, Fanta.class, // drinks (middle)
+            Lettuce.class,Carrot.class,Apple.class,Orange.class,Steak.class,RawBeef.class,
+            SnackShelf.class, Fridge.class, LettuceBin.class, CarrotBin.class, AppleBin.class,OrangeBin.class, SteakWarmer.class,RawBeefHangers.class           // furniture (back)
             );
         
-addObject(new OwenTesting(),608,300);
     }
+    
+    public static Node getStartNode() {
+        return roadNodes.get(0);
+    }
+
+    /** Add a NodeMarker that follows each DisplayUnit so nodes in front of
+     * display units are visible while the simulation runs.
+     */
+    private void addNodeMarkersForDisplayUnits() {
+        java.util.List<DisplayUnit> units = getObjects(DisplayUnit.class);
+        for (DisplayUnit unit : units) {
+            // create a marker that follows the unit; position it initially on the unit
+            NodeMarker marker = new NodeMarker(unit);
+            addObject(marker, unit.getX(), unit.getY() - 8);
+        }
+    }
+    
+    /**
+     * Load display units from saved layout or create default layout
+     */
+    private void loadDisplayUnits() {
+        List<DisplayUnitData> savedLayout = DisplayUnitData.loadLayout();
+        
+        if (!savedLayout.isEmpty()) {
+            // Load from saved file
+            for (DisplayUnitData data : savedLayout) {
+                DisplayUnit unit = data.createDisplayUnit();
+                if (unit != null) {
+                    addObject(unit, data.getX(), data.getY());
+                }
+            }
+        } else {
+            // Use default layout if no saved layout exists
+            createDefaultLayout();
+        }
+    }
+    
+    /**
+     * Create the default display unit layout (original hardcoded positions)
+     */
+    private void createDefaultLayout() {
+        // add fridge to store 2
+        addObject(new Fridge(),75,225);
+        // add shelve next to fridge
+        addObject(new SnackShelf(),175,240);
+        
+        // add Lettuce Bin in store 1
+        addObject(new LettuceBin(),1010,460);
+        // add Carrot Bin in store 1
+        addObject(new CarrotBin(),940,460);
+        // add Apple Bin in store 1
+        addObject(new AppleBin(),870,460);
+        // add Orange Bin in store 1
+        addObject(new OrangeBin(),800,460);
+        // add SteakHangers to store 1
+        addObject(new RawBeefHangers(),920,175);
+    }
+    
     public void act () 
     {
         //use zSort
         zSort ((ArrayList<Actor>)(getObjects(Actor.class)), this);
         
-        spawnRestockingTruck();
+        //spawnRestockingTruck();
     } 
+    /*
     private void spawnRestockingTruck()
     {
         truckDelay++;
@@ -108,6 +193,7 @@ addObject(new OwenTesting(),608,300);
             truckDelay=0;
         }
     }
+    */
     /**
      * Z-sort so actors with higher Y (lower on screen) render in front.
      * Uses precise Y for SuperSmoothMover when available. Stable for ties.
@@ -187,8 +273,36 @@ addObject(new OwenTesting(),608,300);
     {
         return (int)(v + Math.signum(v) * 0.5);
     }
+    
+    /**
+     * Draw a world-wide grid overlay covering the entire screen below y=100
+     */
+    private void drawWorldGrid() {
+        GreenfootImage bg = getBackground();
+        
+        // Save current color
+        Color gridColor = new Color(0, 0, 0);
+        bg.setColor(gridColor);
+        bg.setTransparency(40); // Semi-transparent so background shows through
+        
+        int worldWidth = getWidth();
+        int worldHeight = getHeight();
+        
+        // Draw vertical grid lines
+        for (int x = 0; x <= worldWidth; x += GRID_CELL_SIZE) {
+            bg.drawLine(x, GRID_START_Y, x, worldHeight);
+        }
+        
+        // Draw horizontal grid lines
+        for (int y = GRID_START_Y; y <= worldHeight; y += GRID_CELL_SIZE) {
+            bg.drawLine(0, y, worldWidth, y);
+        }
+        
+        // Draw a thicker line at y=100 to mark the grid boundary
+        bg.setColor(new Color(0, 0, 0));
+        bg.setTransparency(150);
+        for (int i = 0; i < 3; i++) {
+            bg.drawLine(0, GRID_START_Y + i, worldWidth, GRID_START_Y + i);
+        }
+    }
 }
-
-
-
-

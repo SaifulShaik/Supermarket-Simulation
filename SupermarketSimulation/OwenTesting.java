@@ -66,7 +66,7 @@ public class OwenTesting extends SuperSmoothMover
         shoppingList.add(SimulationWorld.PRODUCT_LETTUCE);
         shoppingList.add(SimulationWorld.PRODUCT_CARROT);
         shoppingList.add(SimulationWorld.PRODUCT_STEAK);
-        shoppingList.add(SimulationWorld.PRODUCT_RAW_BEEF);
+        shoppingList.add(SimulationWorld.PRODUCT_RAWBEEF);
         shoppingList.add(SimulationWorld.PRODUCT_DRUM_STICK);
     }
 
@@ -243,7 +243,7 @@ public class OwenTesting extends SuperSmoothMover
         { 
             itemX = 800; itemY = 350; //orange bin area
         } 
-        else if (productName.equals(SimulationWorld.PRODUCT_RAW_BEEF) )
+        else if (productName.equals(SimulationWorld.PRODUCT_RAWBEEF) )
         {
             itemX = 975; itemY = 290; //next to steak warmer
         }
@@ -362,7 +362,7 @@ public class OwenTesting extends SuperSmoothMover
             unit = getDisplayUnit(SteakWarmer.class);
             item=unit.retrieve(DrumStick.class);;
         }
-        else if(productName.equals(SimulationWorld.PRODUCT_RAW_BEEF))
+        else if(productName.equals(SimulationWorld.PRODUCT_RAWBEEF))
         {
             unit = getDisplayUnit(RawBeefHangers.class);
             item=unit.retrieve(RawBeef.class);;

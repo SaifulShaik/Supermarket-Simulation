@@ -1,0 +1,17 @@
+#BlueJ class context
+comment0.target=CutsceneP2
+comment0.text=\n\ Write\ a\ description\ of\ class\ CutsceneP2\ here.\n\ \n\ @author\ (your\ name)\ \n\ @version\ (a\ version\ number\ or\ a\ date)\n
+comment1.params=
+comment1.target=CutsceneP2()
+comment1.text=\n\ Constructor\ for\ objects\ of\ class\ CutsceneP2.\n\ \n
+comment2.params=
+comment2.target=void\ act()
+comment3.params=imageName
+comment3.target=void\ setText(java.lang.String)
+comment4.params=
+comment4.target=void\ drawBackground()
+comment5.params=
+comment5.target=void\ transitionToSimulation()
+comment6.params=nextWorld
+comment6.target=void\ fadeOutAndTransition(greenfoot.World)
+numComments=7

@@ -1,0 +1,10 @@
+#BlueJ class context
+comment0.target=MultiRowUnit
+comment1.params=
+comment1.target=MultiRowUnit()
+comment2.params=
+comment2.target=void\ stock()
+comment3.params=rowNum
+comment3.target=Product\ stockItemsByRow(int)
+comment3.text=\n\ subclass\ must\ implement\ this\ method\ based\ on\ the\ item\ to\ be\ stocked\ per\ row\n
+numComments=4

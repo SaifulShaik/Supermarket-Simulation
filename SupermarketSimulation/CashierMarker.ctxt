@@ -1,0 +1,8 @@
+#BlueJ class context
+comment0.target=CashierMarker
+comment0.text=\n\ Visual\ marker\ to\ show\ where\ cashiers\ are\ located\ in\ the\ SettingsWorld\ editor.\n\ Displays\ a\ semi-transparent\ red\ box\ with\ "CASHIER"\ text.\n\ \n\ @author\ Saiful\ Shaik\n\ @version\ Nov\ 8,\ 2025\n
+comment1.params=width\ height
+comment1.target=CashierMarker(int,\ int)
+comment2.params=width\ height
+comment2.target=void\ createImage(int,\ int)
+numComments=3

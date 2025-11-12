@@ -13,7 +13,6 @@ public class Ruffles extends Product
     
     public Ruffles()
     {
-        price=2.75;
         name=SimulationWorld.PRODUCT_RUFFLES;
         image = new GreenfootImage("product/chips/Chips 2.PNG");
         image.scale(image.getWidth()/2, image.getHeight()/2);

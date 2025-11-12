@@ -13,11 +13,10 @@ public class RawBeef extends Product
     
     public RawBeef() 
     {
-        price=6.75;
-        name=SimulationWorld.PRODUCT_RAW_BEEF;
-        image = new GreenfootImage("product/Raw Steak.png");
-        image.scale(image.getWidth()/4, image.getHeight()/4);
-        //image.rotate(90);
+        name=SimulationWorld.PRODUCT_RAWBEEF;
+        image = new GreenfootImage("product/Raw Steak.PNG");
+        image.scale(image.getWidth()/2, image.getHeight()/2);
+        image.rotate(90);
         setImage(image);
         
         //whenever a Sprite is added to a shelve,

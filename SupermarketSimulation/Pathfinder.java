@@ -9,7 +9,7 @@ import java.util.*;
  * @author Joe Zhuo
  * @version November 2025
  */
-public class Pathfinder
+/*public class Pathfinder
 {
     private Store store;
     
@@ -21,7 +21,7 @@ public class Pathfinder
      * Finds the shortest path from start point (sx, sy) to target point (tx, ty)
      * 
      * @return a list of nodes representing the path or empty if no paths
-     */
+     
     public List<Node> findPath(int sx, int sy, int tx, int ty) {
         PriorityQueue<Node> nodesToExplore = new PriorityQueue<>(Comparator.comparingInt(Node::getTotalDistance));
         List<Node> exploredNodes = new ArrayList<>();
@@ -54,10 +54,10 @@ public class Pathfinder
                 // creates neighbouring node
                 Node neighbour = store.getNode(nx, ny);
                 
-                // dont explore the node if it has been explored already or is blocked or is an entrance
-                if (exploredNodes.contains(neighbour) || neighbour.checkIsBlocked() || neighbour.checkIsEntrance()) continue;
-                
-                boolean skip = false;
+                // Don't explore blocked nodes, but DO allow entrance nodes for pathfinding
+                if (neighbour == null || exploredNodes.contains(neighbour) || neighbour.checkIsBlocked()) {
+                    continue;
+                }
                 
                 int tentativeDist = currentNode.getDistanceFromStart() + 1;
                 
@@ -66,10 +66,7 @@ public class Pathfinder
                     neighbour.previousNode = currentNode;
                     neighbour.setDistanceFromStart(tentativeDist);
                     neighbour.setDistanceToGoal(estimateDistance(nx, ny, tx, ty));
-                    
-                    if (!nodesToExplore.contains(neighbour)) {
-                        nodesToExplore.add(neighbour);
-                    }
+                    nodesToExplore.add(neighbour);
                 }
 
             }
@@ -82,11 +79,17 @@ public class Pathfinder
         List<Node> path = new ArrayList<>();
         
         Node current = targetNode;
-        while (current != null) {
+        while (current != null && current.getPreviousNode() != null) {
             path.add(current);
             current = current.getPreviousNode();
         }
         Collections.reverse(path);
+        
+        // Remove the first node (starting position) if it exists
+        if (!path.isEmpty() && path.get(0).getPreviousNode() == null) {
+            path.remove(0);
+        }
+        
         return path;
     }
     
@@ -97,4 +100,4 @@ public class Pathfinder
     private int estimateDistance(int x, int y, int targetX, int targetY) {
         return Math.abs(targetX - x) + Math.abs(targetY - y);
     }
-}
+}*/
