@@ -15,6 +15,15 @@ public abstract class Customer extends SuperSmoothMover
     private double movementSpeed;
     private double budget;
     
+    protected ArrayList<String> shoppingList = new ArrayList<>();
+    protected ArrayList<String> shoppingListStore = new ArrayList<>();
+    public final ArrayList<String> supermarketProductsList = new ArrayList<>(Arrays.asList(
+        "Apple", "Candy", "Carrot", "Chips", "Cup Noodle", "Lettuce", "Orange", "Pop", "Water"
+        ));
+    public final ArrayList<String> butcherProductsList = new ArrayList<>(Arrays.asList(
+        "Bacon", "Baked Chicken", "Cooked Steak", "Drumstick", "Meat On The Bone", "Raw Chicken", "Raw Steak"
+        ));
+    
     private List<Product> cart;
     
     private Node previousNode;
@@ -48,16 +57,40 @@ public abstract class Customer extends SuperSmoothMover
     protected void chooseStore() {
         List<Store> stores = getWorld().getObjects(Store.class);
         
-        if (stores.isEmpty()) {
-            return;
-        }
+        if (stores.isEmpty()) { return; }
         
-        Store s = stores.get(Greenfoot.getRandomNumber(stores.size()));
+        int chosenStore;
+        if (shoppingListStore.get(0) == "butcher"){ chosenStore=0; }
+        else{ chosenStore=1; }
+        
+        System.out.println("Hi");
+        
+        Store s = stores.get(chosenStore);
 
         targetNode = s.getEntranceNode();
         store = s;
         System.out.println("Heading to store entrance at: " 
         + targetNode.getX() + "," + targetNode.getY());
+    }
+    
+    protected void createShoppingList(int listLength){
+        for(int i = 0 ; i < listLength ; i++){
+            int productStore = Greenfoot.getRandomNumber(2);
+            int productListLength;
+            String product;
+            if (productStore==0){ 
+                productListLength = supermarketProductsList.size();
+                product = supermarketProductsList.get(Greenfoot.getRandomNumber(productListLength));
+                shoppingListStore.add("supermarket");
+            }
+            else{
+                productListLength = butcherProductsList.size();
+                product = butcherProductsList.get(Greenfoot.getRandomNumber(productListLength));
+                shoppingListStore.add("butcher");
+            }
+            shoppingList.add(product);
+        }
+        System.out.println("Going to " + shoppingListStore.get(0) + " for " + shoppingList.get(0));
     }
     
     protected void move() {

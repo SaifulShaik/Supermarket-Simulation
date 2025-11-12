@@ -1,7 +1,7 @@
 [
   {
     "displayUnitType": "Fridge",
-    "x": 80,
+    "x": 100,
     "y": 180
   },
   {
@@ -16,7 +16,52 @@
   },
   {
     "displayUnitType": "LettuceBin",
-    "x": 240,
+    "x": 60,
+    "y": 380
+  },
+  {
+    "displayUnitType": "SteakWarmer",
+    "x": 1080,
+    "y": 340
+  },
+  {
+    "displayUnitType": "LettuceBin",
+    "x": 220,
     "y": 300
+  },
+  {
+    "displayUnitType": "CarrotBin",
+    "x": 280,
+    "y": 300
+  },
+  {
+    "displayUnitType": "CarrotBin",
+    "x": 160,
+    "y": 300
+  },
+  {
+    "displayUnitType": "LettuceBin",
+    "x": 820,
+    "y": 460
+  },
+  {
+    "displayUnitType": "LettuceBin",
+    "x": 880,
+    "y": 460
+  },
+  {
+    "displayUnitType": "LettuceBin",
+    "x": 940,
+    "y": 460
+  },
+  {
+    "displayUnitType": "LettuceBin",
+    "x": 760,
+    "y": 460
+  },
+  {
+    "displayUnitType": "Fridge",
+    "x": 600,
+    "y": 240
   }
 ]

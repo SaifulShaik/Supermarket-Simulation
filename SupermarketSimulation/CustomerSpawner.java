@@ -8,7 +8,7 @@ import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
  */
 public class CustomerSpawner extends Actor
 {
-    private final static int spawnRate = 120;
+    private final static int spawnRate = 100;
     
     public void act() {
         spawnCustomers();
