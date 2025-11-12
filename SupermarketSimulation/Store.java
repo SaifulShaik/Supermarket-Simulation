@@ -1,6 +1,9 @@
 import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 import java.util.*;
-
+/**
+ * @author Joe and Saiful
+ * @version nov 11, 2025
+ */
 public class Store {
     String name;
     

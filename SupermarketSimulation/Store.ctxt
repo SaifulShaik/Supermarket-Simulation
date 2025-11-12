@@ -1,5 +1,6 @@
 #BlueJ class context
 comment0.target=Store
+comment0.text=\n\ @author\ Joe\ and\ Saiful\n\ @version\ nov\ 11,\ 2025\n
 comment1.params=name
 comment1.target=Store(java.lang.String)
 comment2.params=world
