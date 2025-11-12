@@ -198,7 +198,7 @@ public class SettingWorld extends World
         handleUnitSelection();
         handleGridModeToggle();
         handleUnitInspect();
-        handlePrintAllNodesKey();
+        //handlePrintAllNodesKey();
         handleUnitPlacement();
         handleUnitDragging();
         handleUnitDeletion();
