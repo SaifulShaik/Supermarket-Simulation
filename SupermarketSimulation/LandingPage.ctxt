@@ -1,13 +1,13 @@
 #BlueJ class context
 comment0.target=LandingPage
-comment0.text=\n\ Write\ a\ description\ of\ class\ MyWorld\ here.\n\ \n\ @author\ (your\ name)\ \n\ @version\ (a\ version\ number\ or\ a\ date)\n
+comment0.text=\r\n\ Write\ a\ description\ of\ class\ MyWorld\ here.\r\n\ \r\n\ @author\ (your\ name)\ \r\n\ @version\ (a\ version\ number\ or\ a\ date)\r\n
 comment1.params=
 comment1.target=LandingPage()
 comment10.params=
 comment10.target=void\ transitionToSettings()
 comment11.params=
 comment11.target=void\ transitionToCredits()
-comment11.text=\n\ Transition\ to\ credits\ world\n
+comment11.text=\r\n\ Transition\ to\ credits\ world\r\n
 comment12.params=nextWorld
 comment12.target=void\ fadeOutAndTransition(greenfoot.World)
 comment13.params=scaleFactor
@@ -18,7 +18,7 @@ comment15.params=
 comment15.target=void\ resetAnimations()
 comment2.params=
 comment2.target=void\ act()
-comment2.text=\n\ Act\ method\ -\ called\ every\ frame\n\ Handles\ animations\ and\ button\ interactions\n
+comment2.text=\r\n\ Act\ method\ -\ called\ every\ frame\r\n\ Handles\ animations\ and\ button\ interactions\r\n
 comment3.params=
 comment3.target=void\ prepare()
 comment4.params=

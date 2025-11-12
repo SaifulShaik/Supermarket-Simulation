@@ -1,6 +1,6 @@
 #BlueJ class context
 comment0.target=Store
-comment0.text=\n\ @author\ Joe\ and\ Saiful\n\ @version\ nov\ 11,\ 2025\n
+comment0.text=\r\n\ @author\ Joe\ and\ Saiful\r\n\ @version\ nov\ 11,\ 2025\r\n
 comment1.params=name
 comment1.target=Store(java.lang.String)
 comment2.params=world
@@ -17,5 +17,5 @@ comment7.params=x\ y
 comment7.target=Node\ getNode(int,\ int)
 comment8.params=
 comment8.target=java.util.List\ getNodes()
-comment8.text=\n\ Return\ the\ list\ of\ nodes\ that\ belong\ to\ this\ store.\ Used\ by\ the\ editor\n\ to\ prevent\ placing\ objects\ on\ customer\ paths.\n
+comment8.text=\r\n\ Return\ the\ list\ of\ nodes\ that\ belong\ to\ this\ store.\ Used\ by\ the\ editor\r\n\ to\ prevent\ placing\ objects\ on\ customer\ paths.\r\n
 numComments=9
