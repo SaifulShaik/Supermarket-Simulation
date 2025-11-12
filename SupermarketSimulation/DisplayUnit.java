@@ -1,15 +1,17 @@
 import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 import java.util.ArrayList;
 
-/*
- * 
+/**
+ * @author:Owen Kung
+ * @version: Nov 2025
  */
 public abstract class DisplayUnit extends SuperSmoothMover
 {
     protected ArrayList<Product> stockedItems;
     protected boolean stocked = false;  // Track if this unit has been stocked
+    protected boolean reStocked=false;
     
-    // Flag to control whether display units should stock items (false in editor, true in simulation)
+    //Flag to control whether display units should stock items (false in editor, true in simulation)
     private static boolean enableStocking = true;
     
     // Node that customers navigate to (computed dynamically based on position)
@@ -18,7 +20,31 @@ public abstract class DisplayUnit extends SuperSmoothMover
     
     public DisplayUnit() {}
     protected abstract void stock();
-    
+/*
+    public void act()
+    {
+        if(RestockingTruck.loading && !reStocked)
+        {
+            stocked=false; 
+            //stock();
+            reStocked=true;
+            showText("restocked",Color.YELLOW,getX(),getY()+getImage().getHeight()/2);   
+        }
+        if(!RestockingTruck.loading)
+        {
+            reStocked=false; //ready for the next restock       
+        }
+        stock();
+    }
+ */
+
+    public void act()
+    {
+        // Only stock if stocking is enabled (not in editor mode)
+        if (isStockingEnabled()) {
+            stock();
+        }
+    }
     /**
      * Set whether display units should stock items
      */

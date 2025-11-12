@@ -78,14 +78,14 @@ public class SimulationWorld extends World
         
         // add the Cashiers to store 1
         addObject(new Cashier(), getWidth()/2 + 200, getHeight()/2);
+        addObject(new Cashier(), getWidth()/2 + 300, getHeight()/2);
         
         // add cashier to store 2
         addObject(new Store2Cashier(), getWidth()/2-230, getHeight()/2+130);
         addObject(new Store2Cashier(), getWidth()/2-330, getHeight()/2+130);
         
         // add the butcher
-        Butcher butcher = new Butcher();
-        addObject(butcher, 975, 260);
+        addObject(new Butcher(), 975, 260);
         
         // Load display units from saved layout, or use default if no saved layout exists
         loadDisplayUnits();
@@ -107,14 +107,17 @@ public class SimulationWorld extends World
     storeOne.showNodesInWorld(this);
     storeTwo.showNodesInWorld(this);
         
-        //set paint order for products and shelves to properly display
+                //set paint order for products and shelves to properly display
         setPaintOrder(
-            Customer.class,                                      // customers (very front)
-            NodeMarker.class,                                    // node markers (above display units)
-            Doritos.class, Lays.class, Ruffles.class,           // snacks (front)
-            Coke.class, Water.class, Sprite.class, Fanta.class, // drinks (middle)
-            Lettuce.class,Carrot.class,Apple.class,Orange.class,Steak.class,RawBeef.class,
-            SnackShelf.class, Fridge.class, LettuceBin.class, CarrotBin.class, AppleBin.class,OrangeBin.class, SteakWarmer.class,RawBeefHangers.class           // furniture (back)
+            Customer.class,
+            FloatingText.class,
+            Doritos.class, Lays.class, Ruffles.class,           // snacks 
+            Coke.class, Water.class, Sprite.class, Fanta.class, // drinks 
+            Lettuce.class,Carrot.class,Apple.class,Orange.class,Steak.class,RawBeef.class,DrumStick.class,
+            XingRamen.class,Nissin.class,JinRamen.class,  //cup noodles
+            Candy.class,
+            //SnackShelf.class, FridgeOne.class, LettuceBin.class, CarrotBin.class, AppleBin.class,OrangeBin.class, SteakWarmer.class,RawBeefHangers.class           // furniture (back)
+            DisplayUnit.class
             );
         
     }
@@ -160,7 +163,7 @@ public class SimulationWorld extends World
      */
     private void createDefaultLayout() {
         // add fridge to store 2
-        addObject(new Fridge(),75,225);
+        addObject(new FridgeAll(),75,225);
         // add shelve next to fridge
         addObject(new SnackShelf(),175,240);
         
@@ -173,7 +176,7 @@ public class SimulationWorld extends World
         // add Orange Bin in store 1
         addObject(new OrangeBin(),800,460);
         // add SteakHangers to store 1
-        addObject(new RawBeefHangers(),920,175);
+        addObject(new RawBeefHangers(),935,147);
     }
     
     public void act () 

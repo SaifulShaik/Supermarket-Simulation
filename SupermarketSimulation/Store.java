@@ -130,17 +130,17 @@ public class Store {
             nodes.add(n11);
             nodes.add(n12);
         } else if(name.equals("Store 2")) {
-            Node n1 = new Node(750, 400);
-            Node n2a = new Node(825, 400);
-            Node n3a = new Node(925, 400);
-            Node n4a = new Node(1000, 400);
-            Node n5a = new Node(1075, 400);
+            Node n1 = new Node(750, 425);
+            Node n2a = new Node(825, 425);
+            Node n3a = new Node(925, 425);
+            Node n4a = new Node(1000, 425);
+            Node n5a = new Node(1075, 425);
             
-            Node n1b = new Node(750, 275);
-            Node n2b = new Node(825, 275);
-            Node n3b = new Node(925, 275);
-            Node n4b = new Node(1000, 275);
-            Node n5b = new Node(1075, 275);
+            Node n1b = new Node(750, 325);
+            Node n2b = new Node(825, 325);
+            Node n3b = new Node(925, 325);
+            Node n4b = new Node(1000,325);
+            Node n5b = new Node(1075, 325);
             
             n1.setEntrance();
             

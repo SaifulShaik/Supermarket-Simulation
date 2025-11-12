@@ -1,22 +1,74 @@
 [
   {
-    "displayUnitType": "Fridge",
+    "displayUnitType": "FridgeAll",
     "x": 80,
     "y": 180
   },
   {
     "displayUnitType": "SnackShelf",
     "x": 200,
-    "y": 180
+    "y": 195
   },
   {
-    "displayUnitType": "SnackShelf",
+    "displayUnitType": "CupNoodleShelf",
     "x": 320,
-    "y": 180
+    "y": 195
   },
   {
+<<<<<<< Updated upstream
     "displayUnitType": "LettuceBin",
     "x": 240,
     "y": 300
+=======
+    "displayUnitType": "CandyBin",
+    "x": 60,
+    "y": 380
+  },
+  {
+    "displayUnitType": "SteakWarmer",
+    "x": 1065,
+    "y": 250
+  },
+  {
+    "displayUnitType": "AppleBin",
+    "x": 140,
+    "y": 300
+  },
+  {
+    "displayUnitType": "LettuceBin",
+    "x": 220,
+    "y": 300
+  },
+  {
+    "displayUnitType": "CarrotBin",
+    "x": 300,
+    "y": 300
+  },
+  {
+    "displayUnitType": "OrangeBin",
+    "x": 800,
+    "y": 460
+  },
+  {
+    "displayUnitType": "LettuceBin",
+    "x": 880,
+    "y": 460
+  },
+  {
+    "displayUnitType": "CarrotBin",
+    "x": 960,
+    "y": 460
+  },
+  {
+    "displayUnitType": "AppleBin",
+    "x": 1040,
+    "y": 460
+  },
+  {
+    "displayUnitType": "RawBeefHangers",
+    "x": 940,
+    "y": 145
+>>>>>>> Stashed changes
   }
+
 ]
