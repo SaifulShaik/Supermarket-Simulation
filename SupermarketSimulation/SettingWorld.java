@@ -157,7 +157,7 @@ public class SettingWorld extends World
         // Add actual cashier objects so you can see exactly where they are
         // add the Cashiers to store 1
         addObject(new Cashier(), getWidth()/2 + 200, getHeight()/2);
-        addObject(new Cashier(), getWidth()/2 + 300, getHeight()/2);
+        //addObject(new Cashier(), getWidth()/2 + 300, getHeight()/2);
         
         // add cashier to store 2
         addObject(new Store2Cashier(), getWidth()/2-230, getHeight()/2+130);
