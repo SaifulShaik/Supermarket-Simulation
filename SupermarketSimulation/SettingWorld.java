@@ -53,6 +53,8 @@ public class SettingWorld extends World
     private LinkedList<NodeMarker> nodeMarkers = new LinkedList<>();
     // Nodes that are part of customer paths; editor should not allow placing objects here
     private List<Node> forbiddenNodes = new ArrayList<>();
+    // track N key edge for printing all units' node mapping
+    private boolean lastNDown = false;
     
     /**
      * Constructor for objects of class SettingWorld.
@@ -174,8 +176,15 @@ public class SettingWorld extends World
         for (DisplayUnitData data : savedUnits) {
             DisplayUnit unit = data.createDisplayUnit();
             if (unit != null) {
-                addObject(unit, data.getX(), data.getY());
-                placedUnits.add(unit);
+                    addObject(unit, data.getX(), data.getY());
+                    placedUnits.add(unit);
+                    // assign nearest node so customers will stop at the correct location
+                    Node nearest = findNearestNode(data.getX(), data.getY());
+                    if (nearest != null) {
+                        unit.setCustomerNode(nearest);
+                        System.out.println("Loaded DisplayUnit " + unit.getClass().getSimpleName() +
+                            " at (" + data.getX() + "," + data.getY() + ") -> Node(" + nearest.getX() + "," + nearest.getY() + ")");
+                    }
             }
         }
     }
@@ -188,11 +197,34 @@ public class SettingWorld extends World
         
         handleUnitSelection();
         handleGridModeToggle();
+        handleUnitInspect();
+        handlePrintAllNodesKey();
         handleUnitPlacement();
         handleUnitDragging();
         handleUnitDeletion();
         handleSaveButton();
         handleBackButton();
+    }
+
+    /**
+     * If the user clicks an existing DisplayUnit, print its assigned customer node.
+     */
+    private void handleUnitInspect() {
+        if (Greenfoot.mouseClicked(null)) {
+            MouseInfo mouse = Greenfoot.getMouseInfo();
+            if (mouse == null) return;
+            List<DisplayUnit> units = getObjectsAt(mouse.getX(), mouse.getY(), DisplayUnit.class);
+            if (!units.isEmpty()) {
+                DisplayUnit u = units.get(0);
+                Node n = u.getCustomerNode();
+                String unitName = u.getClass().getSimpleName();
+                if (n != null) {
+                    System.out.println("DisplayUnit " + unitName + " at (" + u.getX() + "," + u.getY() + ") -> Node(" + n.getX() + "," + n.getY() + ")");
+                } else {
+                    System.out.println("DisplayUnit " + unitName + " at (" + u.getX() + "," + u.getY() + ") -> no node assigned");
+                }
+            }
+        }
     }
     
     /**
@@ -298,6 +330,13 @@ public class SettingWorld extends World
             addObject(unit, x, y);
             placedUnits.add(unit);
             hasUnsavedChanges = true;
+            // assign nearest node so customers will stop at the correct location
+            Node nearest = findNearestNode(x, y);
+            if (nearest != null) {
+                unit.setCustomerNode(nearest);
+                System.out.println("Placed DisplayUnit " + unit.getClass().getSimpleName() +
+                    " at (" + x + "," + y + ") -> Node(" + nearest.getX() + "," + nearest.getY() + ")");
+            }
 
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException |
                  NoSuchMethodException | java.lang.reflect.InvocationTargetException e) {
@@ -361,6 +400,25 @@ public class SettingWorld extends World
             }
         }
         return false;
+    }
+
+    /**
+     * Find the nearest node (from forbiddenNodes) to the given world coordinate.
+     * Returns null if there are no nodes.
+     */
+    private Node findNearestNode(int x, int y) {
+        Node best = null;
+        double bestDist = Double.POSITIVE_INFINITY;
+        for (Node n : forbiddenNodes) {
+            double dx = x - n.getX();
+            double dy = y - n.getY();
+            double d = Math.hypot(dx, dy);
+            if (d < bestDist) {
+                bestDist = d;
+                best = n;
+            }
+        }
+        return best;
     }
 
     /**
@@ -438,6 +496,13 @@ public class SettingWorld extends World
                 GreenfootImage dimg = draggedUnit.getImage();
                 if (!isOnCashier(newX, newY, 50) && !doesImageIntersectAnyNodeWithImage(newX, newY, dimg)) {
                     draggedUnit.setLocation(newX, newY);
+                    // update customer node after moving
+                    Node nearest = findNearestNode(newX, newY);
+                    if (nearest != null) {
+                        draggedUnit.setCustomerNode(nearest);
+                        System.out.println("Moved DisplayUnit " + draggedUnit.getClass().getSimpleName() +
+                            " to (" + newX + "," + newY + ") -> Node(" + nearest.getX() + "," + nearest.getY() + ")");
+                    }
                     hasUnsavedChanges = true;
                 }
                 // If on cashier, just don't move it - no popup

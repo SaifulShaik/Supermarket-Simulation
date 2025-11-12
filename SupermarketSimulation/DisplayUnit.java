@@ -81,6 +81,25 @@ public abstract class DisplayUnit extends SuperSmoothMover
         // If node already cached and store hasn't changed, return it
         return customerNode;
     }
+
+    /**
+     * Allow external code (editor/world) to set which Node customers should
+     * navigate to when shopping at this DisplayUnit.
+     */
+    public void setCustomerNode(Node n) {
+        this.customerNode = n;
+        // Debug: print assignment so editor/runtime shows which node is linked
+        try {
+            String name = this.getClass().getSimpleName();
+            if (n != null) {
+                System.out.println("DisplayUnit " + name + " at (" + getX() + "," + getY() + ") assigned Node(" + n.getX() + "," + n.getY() + ")");
+            } else {
+                System.out.println("DisplayUnit " + name + " at (" + getX() + "," + getY() + ") unassigned Node (null)");
+            }
+        } catch (Exception e) {
+            // ignore printing errors in environments where getX/getY or System.out behave differently
+        }
+    }
     
     /**
      * Get the parent store this DisplayUnit belongs to.
