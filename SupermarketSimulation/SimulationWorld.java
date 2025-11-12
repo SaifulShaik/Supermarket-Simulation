@@ -5,7 +5,7 @@ import java.util.List;
 /**
  * Write a description of class MyWorld here.
  * 
- * @author Saiful Shaik, Owen Kung
+ * @author Saiful Shaik, Owen Kung, Joe Zhuo
  * @version Modified: Nov, 8, 2025
  */
 public class SimulationWorld extends World
@@ -50,7 +50,7 @@ public class SimulationWorld extends World
         
         Node roadSpawn = new Node(600, 100);
         
-        Node entranceAccess = new Node(600, 400);
+        Node entranceAccess = new Node(600, 425);
         roadSpawn.addNeighbouringNode(entranceAccess);
         
         Store storeOne = new Store("Store 1");

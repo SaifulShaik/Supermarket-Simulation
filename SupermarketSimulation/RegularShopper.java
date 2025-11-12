@@ -10,7 +10,7 @@ public class RegularShopper extends Customer
 {
     GreenfootImage shopper = new GreenfootImage("maleShopper/left3.png");
     public RegularShopper(Node n) {
-        super(2, 100, n);
+        super(20, 100, n);
         shopper.scale(shopper.getWidth() / 8, shopper.getHeight() / 8);
 
         int w = shopper.getWidth();
