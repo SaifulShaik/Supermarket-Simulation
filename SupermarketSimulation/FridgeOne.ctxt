@@ -1,7 +1,0 @@
-#BlueJ class context
-comment0.target=FridgeOne
-comment1.params=
-comment1.target=FridgeOne()
-comment2.params=rowNum
-comment2.target=Product\ stockItemsByRow(int)
-numComments=3

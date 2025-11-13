@@ -36,8 +36,13 @@
   },
   {
     "displayUnitType": "CarrotBin",
-    "x": 300,
+    "x": 160,
     "y": 300
+  },
+  {
+    "displayUnitType": "LettuceBin",
+    "x": 820,
+    "y": 460
   },
   {
     "displayUnitType": "LettuceBin",
@@ -70,8 +75,13 @@
     "y": 300
   },
   {
-    "displayUnitType": "LettuceBin",
-    "x": 80,
+    "displayUnitType": "Fridge",
+    "x": 600,
+    "y": 240
+  },
+  {
+    "displayUnitType": "AppleBin",
+    "x": 280,
     "y": 300
   }
 ]

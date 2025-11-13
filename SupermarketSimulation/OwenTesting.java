@@ -1,6 +1,6 @@
 import greenfoot.*; 
 import java.util.*;
-
+/*
 public class OwenTesting extends SuperSmoothMover
 {
     // movement variables
@@ -183,7 +183,7 @@ public class OwenTesting extends SuperSmoothMover
         }
         
     }
-    //Point the sprite toward the step direction. */
+    //Point the sprite toward the step direction. 
     //chatGPT still under construction
     private void face(int dx, int dy) {
         if (dx > 0)      setRotation(0);   // right
@@ -198,7 +198,7 @@ public class OwenTesting extends SuperSmoothMover
     }
     /*
      * set the x  y value where the item can be found
-     */
+     
     private void setItemXY(String productName)
     {
         itemX = 0;
@@ -258,7 +258,7 @@ public class OwenTesting extends SuperSmoothMover
     /*
      * Retrieve the product by giving product name
      * Add the product to the basket  - can later be used for checking out.
-     */
+     
     private void retrieveItem(String productName)
     {
         DisplayUnit unit;
@@ -398,7 +398,7 @@ public class OwenTesting extends SuperSmoothMover
     }
     /*
      * After exit the store, leave the shopping mall
-     */
+     
     private void leave()
     {
         if(!leaving)
@@ -413,7 +413,7 @@ public class OwenTesting extends SuperSmoothMover
     }
     /*
      * Get the requested DisplayUnit with class type
-     */
+     
     private DisplayUnit getDisplayUnit(Class displayClass)
     {
         ArrayList<DisplayUnit> units= (ArrayList<DisplayUnit>) getWorld().getObjects(DisplayUnit.class);
@@ -447,4 +447,4 @@ public class OwenTesting extends SuperSmoothMover
  showText(text,Color.RED,600,150);//for testing
 
     }
-}
+}*/
