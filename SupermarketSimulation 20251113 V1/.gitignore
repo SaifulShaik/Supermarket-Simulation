@@ -1,0 +1,21 @@
+ # Greenfoot/BlueJ
+*.class
+*.ctxt
+
+
+.classpath
+.project
+standalone.properties
+*.lock
+
+
+*.DS_Store
+Thumbs.db
+
+
+display_layout.dat
+
+
+!project.greenfoot
+!display_layout.json
+!greenfoot.jar
