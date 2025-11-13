@@ -62,7 +62,7 @@ public abstract class Customer extends SuperSmoothMover
         
         store = null;
         
-        createShoppingList(10); //for testing
+        //createShoppingList(10); //for testing
         //owenTesting();
         //initiazlied cart      
         cart=new ArrayList();
@@ -127,6 +127,7 @@ public abstract class Customer extends SuperSmoothMover
         }
         //System.out.println("Going to " + shoppingListStore.get(0) + " for " + shoppingList.get(0));
     }
+    /**
     private void owenTestng()
     {
         shoppingList.add(SimulationWorld.PRODUCT_COKE); 
@@ -148,6 +149,7 @@ public abstract class Customer extends SuperSmoothMover
         shoppingList.add(SimulationWorld.PRODUCT_RAW_BEEF);
         shoppingList.add(SimulationWorld.PRODUCT_DRUM_STICK);
     }
+    */
     /*
      * Retrieve products in the shopping list
      * Add the product to the basket  - can later be used for checking out.
@@ -314,17 +316,6 @@ public abstract class Customer extends SuperSmoothMover
             }
         }
         return null;
-        
-        int numItems = 1 + Greenfoot.getRandomNumber(maxShoppingListItems);
-        
-        for (int i = 0 ; i < numItems ; i++) {
-            if (availableItems.size() > 0) {
-                Product item = availableItems.get(Greenfoot.getRandomNumber(availableItems.size()));
-                items.add(item);
-            }
-        }
-        
-        return items;
     }
     protected void move() {
         if (pauseTimer > 0) {

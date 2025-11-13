@@ -175,7 +175,7 @@ public abstract class DisplayUnit extends SuperSmoothMover
                              ") created virtual node at grid(" + gridX + ", " + gridY + ")");
         }
     }*/
-}
+
     public void setParentStore(Store s) {
         this.parentStore = s;
     }
