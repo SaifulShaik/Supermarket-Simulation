@@ -85,8 +85,9 @@ public abstract class DisplayUnit extends SuperSmoothMover
                 p.setStock(p.getStock()-1);
                 
                 //Remove from world and stockedItems list
-                getWorld().removeObject(p);
-                //p.getImage().setTransparency(0);
+                //getWorld().removeObject(p);
+                p.getImage().setTransparency(0);
+                showText(p.getName()+"\n retrieved", Color.RED,getX(),getY());
                 stockedItems.remove(p);
                 
                 return p;//only return the first found

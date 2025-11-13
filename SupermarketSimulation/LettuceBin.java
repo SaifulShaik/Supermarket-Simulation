@@ -28,15 +28,6 @@ public class LettuceBin extends Bin
         setImage(image);
         stocked=false;
     }
-/*
-    public void act()
-    {
-        // Only stock if stocking is enabled (not in editor mode)
-        if (isStockingEnabled()) {
-            stock();
-        }
-    }
-*/
     protected Product itemToFill()
     {
        return new Lettuce();

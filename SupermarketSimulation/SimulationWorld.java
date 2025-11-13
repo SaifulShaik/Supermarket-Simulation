@@ -11,7 +11,7 @@ import java.util.List;
 public class SimulationWorld extends World
 {
     //public static final int WORLD_WIDTH = 1048;
-    //public static final int WORLD_HEIGHT = 514;
+    //public static final int WORLD_HEIGHT = 514;  
     
     // Product name constants
     public static final String PRODUCT_APPLE = "Apple";
@@ -189,7 +189,7 @@ public class SimulationWorld extends World
     private void spawnRestockingTruck()
     {
         truckDelay++;
-        if(truckDelay>=420)
+        if(truckDelay>=1200)
         {
             addObject(new RestockingTruck(),600,200);
             truckDelay=0;
