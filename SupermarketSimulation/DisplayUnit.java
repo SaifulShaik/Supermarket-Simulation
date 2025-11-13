@@ -107,6 +107,24 @@ public abstract class DisplayUnit extends SuperSmoothMover
     public Store getParentStore() {
         return parentStore;
     }    /**
+    
+    /**
+     * Set the parent store for this display unit. Intended for editor/world wiring.
+     */
+    public void setParentStore(Store s) {
+        this.parentStore = s;
+    }
+
+    /**
+     * Return the list of stocked Product instances for this DisplayUnit.
+     * Ensures a non-null list is returned so callers don't need to null-check.
+     */
+    public java.util.List<Product> getStockedItems() {
+        if (stockedItems == null) stockedItems = new ArrayList<Product>();
+        return stockedItems;
+    }
+    
+    /**
      * Recompute the customer node based on current world position.
      * Should be called when the DisplayUnit is added to world or moved.
      */

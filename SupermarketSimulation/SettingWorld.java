@@ -54,6 +54,9 @@ public class SettingWorld extends World
     
     // Nodes that are part of customer paths; editor should not allow placing objects here
     private List<Node> forbiddenNodes = new ArrayList<>();
+    // store instances used by the editor to get node lists and register display units
+    private Store store1;
+    private Store store2;
     // track N key edge for printing all units' node mapping
     
     private boolean lastNDown = false;
@@ -76,10 +79,10 @@ public class SettingWorld extends World
         originalLayout = DisplayUnitData.loadLayout();
         // Populate forbidden nodes from the store definitions so editor blocks placement on them
         try {
-            Store s1 = new Store("Store 1");
-            Store s2 = new Store("Store 2");
-            if (s1.getNodes() != null) forbiddenNodes.addAll(s1.getNodes());
-            if (s2.getNodes() != null) forbiddenNodes.addAll(s2.getNodes());
+            store1 = new Store("Store 1");
+            store2 = new Store("Store 2");
+            if (store1.getNodes() != null) forbiddenNodes.addAll(store1.getNodes());
+            if (store2.getNodes() != null) forbiddenNodes.addAll(store2.getNodes());
         } catch (Exception e) {
             System.err.println("Error initializing store nodes for editor: " + e.getMessage());
         }
@@ -183,9 +186,17 @@ public class SettingWorld extends World
                     // assign nearest node so customers will stop at the correct location
                     Node nearest = findNearestNode(data.getX(), data.getY());
                     if (nearest != null) {
-                        unit.setCustomerNode(nearest);
-                        System.out.println("Loaded DisplayUnit " + unit.getClass().getSimpleName() +
-                            " at (" + data.getX() + "," + data.getY() + ") -> Node(" + nearest.getX() + "," + nearest.getY() + ")");
+                            unit.setCustomerNode(nearest);
+                            // register unit with the owning store (if any)
+                            if (store1 != null && store1.ownsNode(nearest)) {
+                                store1.addDisplayUnit(unit);
+                                unit.setParentStore(store1);
+                            } else if (store2 != null && store2.ownsNode(nearest)) {
+                                store2.addDisplayUnit(unit);
+                                unit.setParentStore(store2);
+                            }
+                            System.out.println("Loaded DisplayUnit " + unit.getClass().getSimpleName() +
+                                " at (" + data.getX() + "," + data.getY() + ") -> Node(" + nearest.getX() + "," + nearest.getY() + ")");
                     }
             }
         }
@@ -200,7 +211,6 @@ public class SettingWorld extends World
         handleUnitSelection();
         handleGridModeToggle();
         handleUnitInspect();
-        //handlePrintAllNodesKey();
         handleUnitPlacement();
         handleUnitDragging();
         handleUnitDeletion();
@@ -336,6 +346,13 @@ public class SettingWorld extends World
             Node nearest = findNearestNode(x, y);
             if (nearest != null) {
                 unit.setCustomerNode(nearest);
+                if (store1 != null && store1.ownsNode(nearest)) {
+                    store1.addDisplayUnit(unit);
+                    unit.setParentStore(store1);
+                } else if (store2 != null && store2.ownsNode(nearest)) {
+                    store2.addDisplayUnit(unit);
+                    unit.setParentStore(store2);
+                }
                 System.out.println("Placed DisplayUnit " + unit.getClass().getSimpleName() +
                     " at (" + x + "," + y + ") -> Node(" + nearest.getX() + "," + nearest.getY() + ")");
             }
@@ -501,6 +518,20 @@ public class SettingWorld extends World
                     // update customer node after moving
                     Node nearest = findNearestNode(newX, newY);
                     if (nearest != null) {
+                        // update store membership if changed
+                        Store oldStore = draggedUnit.getParentStore();
+                        Store newStore = null;
+                        if (store1 != null && store1.ownsNode(nearest)) newStore = store1;
+                        else if (store2 != null && store2.ownsNode(nearest)) newStore = store2;
+
+                        if (oldStore != null && oldStore != newStore) {
+                            oldStore.removeDisplayUnit(draggedUnit);
+                        }
+                        if (newStore != null && newStore != oldStore) {
+                            newStore.addDisplayUnit(draggedUnit);
+                            draggedUnit.setParentStore(newStore);
+                        }
+
                         draggedUnit.setCustomerNode(nearest);
                         System.out.println("Moved DisplayUnit " + draggedUnit.getClass().getSimpleName() +
                             " to (" + newX + "," + newY + ") -> Node(" + nearest.getX() + "," + nearest.getY() + ")");
@@ -526,6 +557,12 @@ public class SettingWorld extends World
                 List<DisplayUnit> unitsAtMouse = getObjectsAt(mouse.getX(), mouse.getY(), DisplayUnit.class);
                 if (!unitsAtMouse.isEmpty()) {
                     DisplayUnit unit = unitsAtMouse.get(0);
+                    // unregister from parent store if assigned
+                    Store ps = unit.getParentStore();
+                    if (ps != null) {
+                        ps.removeDisplayUnit(unit);
+                        unit.setParentStore(null);
+                    }
                     removeObject(unit);
                     placedUnits.remove(unit);
                     hasUnsavedChanges = true;
@@ -567,6 +604,12 @@ public class SettingWorld extends World
     private void cleanupAndExit() {
         // Remove all placed display units to prevent them from stocking when enableStocking is set to true
         for (DisplayUnit unit : new ArrayList<>(placedUnits)) {
+            // unregister from parent store
+            Store ps = unit.getParentStore();
+            if (ps != null) {
+                ps.removeDisplayUnit(unit);
+                unit.setParentStore(null);
+            }
             removeObject(unit);
         }
         placedUnits.clear();

@@ -1,6 +1,6 @@
 #BlueJ class context
 comment0.target=SimulationWorld
-comment0.text=\r\n\ Write\ a\ description\ of\ class\ MyWorld\ here.\r\n\ \r\n\ @author\ Saiful\ Shaik,\ Owen\ Kung,\ Joe\ Zhuo\r\n\ @version\ Modified\:\ Nov,\ 8,\ 2025\r\n
+comment0.text=\n\ Write\ a\ description\ of\ class\ MyWorld\ here.\n\ \n\ @author\ Saiful\ Shaik,\ Owen\ Kung,\ Joe\ Zhuo\n\ @version\ Modified\:\ Nov,\ 8,\ 2025\n
 comment1.params=
 comment1.target=SimulationWorld()
 comment10.params=v
@@ -8,7 +8,7 @@ comment10.target=int\ roundAwayFromZero(double)
 comment10.text=Helper\:\ symmetric\ rounding\ that\ rounds\ halves\ away\ from\ zero.
 comment11.params=
 comment11.target=void\ drawWorldGrid()
-comment11.text=\r\n\ Draw\ a\ world-wide\ grid\ overlay\ covering\ the\ entire\ screen\ below\ y\=100\r\n
+comment11.text=\n\ Draw\ a\ world-wide\ grid\ overlay\ covering\ the\ entire\ screen\ below\ y\=100\n
 comment2.params=
 comment2.target=Store\ getStoreOne()
 comment3.params=
@@ -17,16 +17,16 @@ comment4.params=
 comment4.target=Node\ getStartNode()
 comment5.params=
 comment5.target=void\ addNodeMarkersForDisplayUnits()
-comment5.text=\ Add\ a\ NodeMarker\ that\ follows\ each\ DisplayUnit\ so\ nodes\ in\ front\ of\r\n\ display\ units\ are\ visible\ while\ the\ simulation\ runs.\r\n
+comment5.text=\ Add\ a\ NodeMarker\ that\ follows\ each\ DisplayUnit\ so\ nodes\ in\ front\ of\n\ display\ units\ are\ visible\ while\ the\ simulation\ runs.\n
 comment6.params=
 comment6.target=void\ loadDisplayUnits()
-comment6.text=\r\n\ Load\ display\ units\ from\ saved\ layout\ or\ create\ default\ layout\r\n
+comment6.text=\n\ Load\ display\ units\ from\ saved\ layout\ or\ create\ default\ layout\n
 comment7.params=
 comment7.target=void\ createDefaultLayout()
-comment7.text=\r\n\ Create\ the\ default\ display\ unit\ layout\ (original\ hardcoded\ positions)\r\n
+comment7.text=\n\ Create\ the\ default\ display\ unit\ layout\ (original\ hardcoded\ positions)\n
 comment8.params=
 comment8.target=void\ act()
 comment9.params=actorsToSort\ world
 comment9.target=void\ zSort(java.util.ArrayList,\ greenfoot.World)
-comment9.text=\r\n\ Z-sort\ so\ actors\ with\ higher\ Y\ (lower\ on\ screen)\ render\ in\ front.\r\n\ Uses\ precise\ Y\ for\ SuperSmoothMover\ when\ available.\ Stable\ for\ ties.\r\n
+comment9.text=\n\ Z-sort\ so\ actors\ with\ higher\ Y\ (lower\ on\ screen)\ render\ in\ front.\n\ Uses\ precise\ Y\ for\ SuperSmoothMover\ when\ available.\ Stable\ for\ ties.\n
 numComments=12
