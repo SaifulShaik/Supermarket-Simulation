@@ -7,7 +7,7 @@ import java.io.IOException;
  * Users can scroll through available display units, place them in free or grid mode,
  * save layouts, and navigate back with unsaved changes confirmation.
  * 
- * @author Saiful Shaik
+ * @author Saiful Shaik and Joe Zhuo
  * @version Nov 8, 2025
  */
 public class SettingWorld extends World
@@ -54,12 +54,11 @@ public class SettingWorld extends World
     
     // Nodes that are part of customer paths; editor should not allow placing objects here
     private List<Node> forbiddenNodes = new ArrayList<>();
-    // store instances used by the editor to get node lists and register display units
-    private Store store1;
-    private Store store2;
-    // track N key edge for printing all units' node mapping
     
+    // track N key edge for printing all units' node mapping
     private boolean lastNDown = false;
+    
+    private static final int accessRadius = 50;
     
     /**
      * Constructor for objects of class SettingWorld.
@@ -79,10 +78,8 @@ public class SettingWorld extends World
         originalLayout = DisplayUnitData.loadLayout();
         // Populate forbidden nodes from the store definitions so editor blocks placement on them
         try {
-            store1 = new Store("Store 1");
-            store2 = new Store("Store 2");
-            if (store1.getNodes() != null) forbiddenNodes.addAll(store1.getNodes());
-            if (store2.getNodes() != null) forbiddenNodes.addAll(store2.getNodes());
+            if (SimulationWorld.storeOne.getNodes() != null) forbiddenNodes.addAll(SimulationWorld.storeOne.getNodes());
+            if (SimulationWorld.storeTwo.getNodes() != null) forbiddenNodes.addAll(SimulationWorld.storeTwo.getNodes());
         } catch (Exception e) {
             System.err.println("Error initializing store nodes for editor: " + e.getMessage());
         }
@@ -183,21 +180,37 @@ public class SettingWorld extends World
             if (unit != null) {
                     addObject(unit, data.getX(), data.getY());
                     placedUnits.add(unit);
+                    
+                    List<Node> nearbyNodes = findNodesInRange(data.getX(), data.getY(), accessRadius);
+                    unit.setCustomerNodes(nearbyNodes);
+                    
+                    for (Node n : nearbyNodes) {
+                        if (SimulationWorld.storeOne != null && SimulationWorld.storeTwo.ownsNode(n)) {
+                            SimulationWorld.storeOne.addDisplayUnit(unit);
+                            unit.setParentStore(SimulationWorld.storeOne);
+                            break;
+                        } else if (SimulationWorld.storeTwo != null && SimulationWorld.storeTwo.ownsNode(n)) {
+                            SimulationWorld.storeTwo.addDisplayUnit(unit);
+                            unit.setParentStore(SimulationWorld.storeTwo);
+                            break;
+                        }
+                    }
+                    
                     // assign nearest node so customers will stop at the correct location
-                    Node nearest = findNearestNode(data.getX(), data.getY());
+                    /*Node nearest = findNearestNode(data.getX(), data.getY());
                     if (nearest != null) {
                             unit.setCustomerNode(nearest);
                             // register unit with the owning store (if any)
-                            if (store1 != null && store1.ownsNode(nearest)) {
-                                store1.addDisplayUnit(unit);
-                                unit.setParentStore(store1);
-                            } else if (store2 != null && store2.ownsNode(nearest)) {
-                                store2.addDisplayUnit(unit);
-                                unit.setParentStore(store2);
+                            if (SimulationWorld.storeOne != null && SimulationWorld.storeOne.ownsNode(nearest)) {
+                                SimulationWorld.storeOne.addDisplayUnit(unit);
+                                unit.setParentStore(SimulationWorld.storeOne);
+                            } else if (SimulationWorld.storeTwo != null && SimulationWorld.storeTwo.ownsNode(nearest)) {
+                                SimulationWorld.storeTwo.addDisplayUnit(unit);
+                                unit.setParentStore(SimulationWorld.storeTwo);
                             }
                             System.out.println("Loaded DisplayUnit " + unit.getClass().getSimpleName() +
                                 " at (" + data.getX() + "," + data.getY() + ") -> Node(" + nearest.getX() + "," + nearest.getY() + ")");
-                    }
+                    }*/
             }
         }
     }
@@ -225,15 +238,23 @@ public class SettingWorld extends World
         if (Greenfoot.mouseClicked(null)) {
             MouseInfo mouse = Greenfoot.getMouseInfo();
             if (mouse == null) return;
+            
             List<DisplayUnit> units = getObjectsAt(mouse.getX(), mouse.getY(), DisplayUnit.class);
+            
             if (!units.isEmpty()) {
                 DisplayUnit u = units.get(0);
-                Node n = u.getCustomerNode();
+                
+                List<Node> nodes = u.getCustomerNodes();
+                
                 String unitName = u.getClass().getSimpleName();
-                if (n != null) {
-                    System.out.println("DisplayUnit " + unitName + " at (" + u.getX() + "," + u.getY() + ") -> Node(" + n.getX() + "," + n.getY() + ")");
+                if (nodes != null && !nodes.isEmpty()) {
+                    System.out.print("DisplayUnit " + unitName + " at (" + u.getX() + "," + u.getY() + ") -> Nodes: ");
+                    for (Node n : nodes) {
+                        System.out.print("(" + n.getX() + "," + n.getY() + ") ");
+                    }
+                    System.out.println();
                 } else {
-                    System.out.println("DisplayUnit " + unitName + " at (" + u.getX() + "," + u.getY() + ") -> no node assigned");
+                    System.out.println("DisplayUnit " + unitName + " at (" + u.getX() + "," + u.getY() + ") -> no nodes assigned");
                 }
             }
         }
@@ -342,20 +363,35 @@ public class SettingWorld extends World
             addObject(unit, x, y);
             placedUnits.add(unit);
             hasUnsavedChanges = true;
+            
+            List<Node> nearbyNodes = findNodesInRange(x, y, accessRadius);
+            unit.setCustomerNodes(nearbyNodes);
+            
+            for (Node n : nearbyNodes) {
+                if (SimulationWorld.storeOne != null && SimulationWorld.storeOne.ownsNode(n)) {
+                    SimulationWorld.storeOne.addDisplayUnit(unit);
+                    unit.setParentStore(SimulationWorld.storeOne);
+                    break;
+                } else if (SimulationWorld.storeTwo != null && SimulationWorld.storeTwo.ownsNode(n)) {
+                    SimulationWorld.storeTwo.addDisplayUnit(unit);
+                    unit.setParentStore(SimulationWorld.storeTwo);
+                    break;
+                }
+            }
             // assign nearest node so customers will stop at the correct location
-            Node nearest = findNearestNode(x, y);
+            /*Node nearest = findNearestNode(x, y);
             if (nearest != null) {
                 unit.setCustomerNode(nearest);
-                if (store1 != null && store1.ownsNode(nearest)) {
-                    store1.addDisplayUnit(unit);
-                    unit.setParentStore(store1);
-                } else if (store2 != null && store2.ownsNode(nearest)) {
-                    store2.addDisplayUnit(unit);
-                    unit.setParentStore(store2);
+                if (SimulationWorld.storeOne != null && SimulationWorld.storeOne.ownsNode(nearest)) {
+                    SimulationWorld.storeOne.addDisplayUnit(unit);
+                    unit.setParentStore(SimulationWorld.storeOne);
+                } else if (SimulationWorld.storeTwo != null && SimulationWorld.storeTwo.ownsNode(nearest)) {
+                    SimulationWorld.storeTwo.addDisplayUnit(unit);
+                    unit.setParentStore(SimulationWorld.storeTwo);
                 }
                 System.out.println("Placed DisplayUnit " + unit.getClass().getSimpleName() +
                     " at (" + x + "," + y + ") -> Node(" + nearest.getX() + "," + nearest.getY() + ")");
-            }
+            }*/
 
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException |
                  NoSuchMethodException | java.lang.reflect.InvocationTargetException e) {
@@ -516,13 +552,33 @@ public class SettingWorld extends World
                 if (!isOnCashier(newX, newY, 50) && !doesImageIntersectAnyNodeWithImage(newX, newY, dimg)) {
                     draggedUnit.setLocation(newX, newY);
                     // update customer node after moving
-                    Node nearest = findNearestNode(newX, newY);
+                    
+                    int accessRadius = 50; // pixels
+                    List<Node> nearbyNodes = findNodesInRange(newX, newY, accessRadius);
+                    draggedUnit.setCustomerNodes(nearbyNodes);
+                    
+                    for (Node n : nearbyNodes) {
+                        Store oldStore = draggedUnit.getParentStore();
+                        Store newStore = null;
+                        if (SimulationWorld.storeOne != null && SimulationWorld.storeOne.ownsNode(n)) newStore = SimulationWorld.storeOne;
+                        else if (SimulationWorld.storeTwo != null && SimulationWorld.storeTwo.ownsNode(n)) newStore = SimulationWorld.storeTwo;
+                    
+                        if (oldStore != null && oldStore != newStore) {
+                            oldStore.removeDisplayUnit(draggedUnit);
+                        }
+                        if (newStore != null && newStore != oldStore) {
+                            newStore.addDisplayUnit(draggedUnit);
+                            draggedUnit.setParentStore(newStore);
+                        }
+                        break; 
+                    }
+                    /*Node nearest = findNearestNode(newX, newY);
                     if (nearest != null) {
                         // update store membership if changed
                         Store oldStore = draggedUnit.getParentStore();
                         Store newStore = null;
-                        if (store1 != null && store1.ownsNode(nearest)) newStore = store1;
-                        else if (store2 != null && store2.ownsNode(nearest)) newStore = store2;
+                        if (SimulationWorld.storeOne != null && SimulationWorld.storeOne.ownsNode(nearest)) newStore = SimulationWorld.storeOne;
+                        else if (SimulationWorld.storeTwo != null && SimulationWorld.storeTwo.ownsNode(nearest)) newStore = SimulationWorld.storeTwo;
 
                         if (oldStore != null && oldStore != newStore) {
                             oldStore.removeDisplayUnit(draggedUnit);
@@ -535,7 +591,7 @@ public class SettingWorld extends World
                         draggedUnit.setCustomerNode(nearest);
                         System.out.println("Moved DisplayUnit " + draggedUnit.getClass().getSimpleName() +
                             " to (" + newX + "," + newY + ") -> Node(" + nearest.getX() + "," + nearest.getY() + ")");
-                    }
+                    }*/
                     hasUnsavedChanges = true;
                 }
                 // If on cashier, just don't move it - no popup
@@ -648,6 +704,30 @@ public class SettingWorld extends World
         }
     }
     
+    public static List<Node> findNodesInRange(int x, int y, int radius) {
+        List<Node> nodesInRange = new ArrayList<>();
+        int r2 = radius * radius;
+        
+        for (Node n : SimulationWorld.storeOne.getNodes()) {
+            int dx = x - n.getX();
+            int dy = y - n.getY();
+            
+            if (dx*dx + dy*dy <= r2) {
+                nodesInRange.add(n);
+            }
+        }
+        
+        for (Node n : SimulationWorld.storeTwo.getNodes()) {
+            int dx = x - n.getX();
+            int dy = y - n.getY();
+            
+            if (dx*dx + dy*dy <= r2) {
+                nodesInRange.add(n);
+            }
+        }
+        return nodesInRange;
+    }
+    
     /**
      * Check if a click was on UI elements
      */
@@ -657,20 +737,5 @@ public class SettingWorld extends World
         // Check if click is on any button or label area
         return y < 80 || y > getHeight() - 80;
     }
-    /*
-    private void createNode(int gridX, int gridY, boolean isBlocked, boolean isEntrance) {
-        Node previous = pathNodes.isEmpty() ? null : pathNodes.getLast();
-        Node node = new Node(gridX, gridY, previous, 0, 0, isBlocked, isEntrance);
-    
-        pathNodes.add(node);
-    
-        NodeMarker marker = new NodeMarker(node);
-        addObject(marker, node.getWorldX(), node.getWorldY());
-        nodeMarkers.add(marker);
-    
-        // Make sure markers are always drawn in front of display units and background
-        setPaintOrder(NodeMarker.class, DisplayUnit.class, Cashier.class);
-    }
-    */
 }
 

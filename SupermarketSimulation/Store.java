@@ -21,9 +21,9 @@ public class Store {
     public Store(String name) {
         this.name = name;
         this.nodes = new ArrayList<>();
-        initializeNodes();
-        // Initialize availableProducts list and populate from any registered display units
         this.availableProducts = new ArrayList<>();
+        
+        initializeNodes();
         refreshAvailableProducts();
     }
 
@@ -213,7 +213,6 @@ public class Store {
     }
     
     public List<Product> getAvailableProducts() {
-        if (availableProducts == null) availableProducts = new ArrayList<>();
         return availableProducts;
     }
 
@@ -274,8 +273,7 @@ public class Store {
      * Call this after bulk changes or during initialization.
      */
     public void refreshAvailableProducts() {
-        if (availableProducts == null) availableProducts = new ArrayList<>();
-        else availableProducts.clear();
+        availableProducts.clear();
 
         if (availableDisplayUnits == null) return;
         for (DisplayUnit du : availableDisplayUnits) {

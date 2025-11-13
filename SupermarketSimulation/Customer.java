@@ -50,7 +50,7 @@ public abstract class Customer extends SuperSmoothMover
         
         store = null;
         
-        generateShoppingList(maxShoppingListItems);
+        shoppingList = generateShoppingList(maxShoppingListItems);
     }
     
     public void act() {
@@ -67,44 +67,53 @@ public abstract class Customer extends SuperSmoothMover
             return; 
         }
         
-        Store bestStore = null;
-        int bestMatchCount = -1;
+        List<Product> storeOneShoppingList = new ArrayList<>();
+        List<Product> storeTwoShoppingList = new ArrayList<>();
         
-        for (Store s : stores) {
-            int matchCount = 0;
-            List<Product> available = s.getAvailableProducts();
-            
-            for (Product p: shoppingList) {
-                if (available.contains(p)) {
-                    matchCount++;
-                }
+        for (Product p : shoppingList) {
+            if (SimulationWorld.storeOne.getAvailableProducts().contains(p)) {
+                storeOneShoppingList.add(p);
             }
-            
-            if (matchCount > bestMatchCount) {
-                bestMatchCount = matchCount;
-                bestStore = s;
+            if (SimulationWorld.storeTwo.getAvailableProducts().contains(p)) {
+                storeTwoShoppingList.add(p);
             }
         }
         
-        if (bestStore == null) {
-            bestStore = stores.get(Greenfoot.getRandomNumber(stores.size()));
+        if (storeOneShoppingList.size() > storeTwoShoppingList.size()) {
+            store = SimulationWorld.storeOne;
+            shoppingList = storeOneShoppingList;
+        }
+        else if (storeOneShoppingList.size() < storeTwoShoppingList.size()){
+            store = SimulationWorld.storeTwo;
+            shoppingList = storeTwoShoppingList;
+        }
+        else {
+            int chosenStore = Greenfoot.getRandomNumber(stores.size());
+            store = stores.get(chosenStore);
+            shoppingList = store == SimulationWorld.storeOne ? storeOneShoppingList : storeTwoShoppingList;
         }
         
-        store = bestStore;
-        targetNode = bestStore.getEntranceNode();
+        targetNode = store.getEntranceNode();
     }
     
     protected List<Product> generateShoppingList(int maxShoppingListItems) {
         List<Product> items = new ArrayList<>();
         
         List<Product> availableItems = new ArrayList<>();
-        availableItems.addAll(SimulationWorld.getStoreOne().getAvailableProducts());
-        availableItems.addAll(SimulationWorld.getStoreTwo().getAvailableProducts());
+        availableItems.addAll(SimulationWorld.storeOne.getAvailableProducts());
+        availableItems.addAll(SimulationWorld.storeTwo.getAvailableProducts());
+        
+        if (maxShoppingListItems <= 0) {
+            maxShoppingListItems = 1; 
+        }
         
         int numItems = 1 + Greenfoot.getRandomNumber(maxShoppingListItems);
         
         for (int i = 0 ; i < numItems ; i++) {
-            items.add(availableItems.get(Greenfoot.getRandomNumber(availableItems.size())));
+            if (availableItems.size() > 0) {
+                Product item = availableItems.get(Greenfoot.getRandomNumber(availableItems.size()));
+                items.add(item);
+            }
         }
         
         return items;
