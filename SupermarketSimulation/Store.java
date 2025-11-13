@@ -50,11 +50,8 @@ public class Store {
     
     public void initializeNodes() {
         if (name.equals("Store 1")) {
-            Node n1 = new Node(425, 425);
+            Node n1 = new Node(425, 450);
             n1.setEntrance();
-            
-            Node n1a = new Node(425, 450);
-            
             Node n2 = new Node(425, 335);
             
             Node n3 = new Node(350, 335);
@@ -76,7 +73,6 @@ public class Store {
             Node n12 = new Node(350, 450);
             
             n1.addNeighbouringNode(n2);
-            n1a.addNeighbouringNode(n1);
             n2.addNeighbouringNode(n3);
             n3.addNeighbouringNode(n4a);
             n3.addNeighbouringNode(n4b);
@@ -116,7 +112,6 @@ public class Store {
             n12.addNeighbouringNode(n4a);
             
             nodes.add(n1);
-            nodes.add(n1a);
             nodes.add(n2);
             nodes.add(n3);
             nodes.add(n4a);
@@ -141,11 +136,11 @@ public class Store {
             Node n4a = new Node(1000, 425);
             Node n5a = new Node(1075, 425);
             
-            Node n1b = new Node(750, 275);
-            Node n2b = new Node(825, 275);
-            Node n3b = new Node(925, 275);
-            Node n4b = new Node(1000, 275);
-            Node n5b = new Node(1075, 275);
+            Node n1b = new Node(750, 325);
+            Node n2b = new Node(825, 325);
+            Node n3b = new Node(925, 325);
+            Node n4b = new Node(1000,325);
+            Node n5b = new Node(1075, 325);
             
             n1.setEntrance();
             

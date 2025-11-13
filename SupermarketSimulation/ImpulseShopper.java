@@ -1,24 +1,31 @@
-import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
+import greenfoot.*;  
+import java.util.ArrayList;
 
 /**
- * Write a description of class ImpulseShopper here.
+ * The impulsive is impatient
+ * Can't wait for a long time
  * 
- * @author (your name) 
- * @version (a version number or a date)
+ * @author Owen Kung 
+ * @version Nov 2025
  */
 public class ImpulseShopper extends Customer
 {
+    
+    private boolean shoppingDone = false;
+    private boolean leaving=false;
+    
+    //shopping list
+    private ArrayList<String> shoppingList = new ArrayList<>();
+    //whatever products obtained from the store
+    private ArrayList<Product> basket=new ArrayList<>();
+    public ImpulseShopper()
+    {
+        //shopping list for testing 
+    }
     /**
      * Act - do whatever the ImpulseShopper wants to do. This method is called whenever
      * the 'Act' or 'Run' button gets pressed in the environment.
      */
-    
-    private final int shopperTypeListLength = 2;
-    
-    public ImpulseShopper(){
-        super.createShoppingList(shopperTypeListLength);
-    }
-    
     public void act()
     {
         // Add your action code here.

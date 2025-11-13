@@ -1,28 +1,33 @@
 [
   {
     "displayUnitType": "Fridge",
-    "x": 100,
+    "x": 80,
     "y": 180
   },
   {
     "displayUnitType": "SnackShelf",
     "x": 200,
-    "y": 180
+    "y": 195
   },
   {
-    "displayUnitType": "SnackShelf",
+    "displayUnitType": "CupNoodleShelf",
     "x": 320,
-    "y": 180
+    "y": 195
   },
   {
-    "displayUnitType": "LettuceBin",
+    "displayUnitType": "CandyBin",
     "x": 60,
     "y": 380
   },
   {
     "displayUnitType": "SteakWarmer",
-    "x": 1080,
-    "y": 340
+    "x": 1065,
+    "y": 250
+  },
+  {
+    "displayUnitType": "AppleBin",
+    "x": 140,
+    "y": 300
   },
   {
     "displayUnitType": "LettuceBin",
@@ -31,37 +36,42 @@
   },
   {
     "displayUnitType": "CarrotBin",
-    "x": 280,
+    "x": 300,
     "y": 300
-  },
-  {
-    "displayUnitType": "CarrotBin",
-    "x": 160,
-    "y": 300
-  },
-  {
-    "displayUnitType": "LettuceBin",
-    "x": 820,
-    "y": 460
   },
   {
     "displayUnitType": "LettuceBin",
     "x": 880,
-    "y": 460
+    "y": 450
   },
   {
-    "displayUnitType": "LettuceBin",
+    "displayUnitType": "CarrotBin",
+    "x": 960,
+    "y": 450
+  },
+  {
+    "displayUnitType": "AppleBin",
+    "x": 1040,
+    "y": 450
+  },
+  {
+    "displayUnitType": "RawBeefHangers",
     "x": 940,
+    "y": 145
+  },
+  {
+    "displayUnitType": "LettuceBin",
+    "x": 800,
     "y": 460
   },
   {
     "displayUnitType": "LettuceBin",
-    "x": 760,
-    "y": 460
+    "x": 360,
+    "y": 300
   },
   {
-    "displayUnitType": "Fridge",
-    "x": 600,
-    "y": 240
+    "displayUnitType": "LettuceBin",
+    "x": 80,
+    "y": 300
   }
 ]

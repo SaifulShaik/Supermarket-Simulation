@@ -9,6 +9,8 @@ public class OwenTesting extends SuperSmoothMover
     private int itemX=0;  //x value for finding the item
     private int itemY=0;  //y value for finding the item
     private int currentNode = 0; //for getting to the shop
+    
+    
     private boolean shoppingDone = false;
     private boolean leaving=false;
 
@@ -66,7 +68,7 @@ public class OwenTesting extends SuperSmoothMover
         shoppingList.add(SimulationWorld.PRODUCT_LETTUCE);
         shoppingList.add(SimulationWorld.PRODUCT_CARROT);
         shoppingList.add(SimulationWorld.PRODUCT_STEAK);
-        shoppingList.add(SimulationWorld.PRODUCT_RAWBEEF);
+        shoppingList.add(SimulationWorld.PRODUCT_RAW_BEEF);
         shoppingList.add(SimulationWorld.PRODUCT_DRUM_STICK);
     }
 
@@ -243,14 +245,14 @@ public class OwenTesting extends SuperSmoothMover
         { 
             itemX = 800; itemY = 350; //orange bin area
         } 
-        else if (productName.equals(SimulationWorld.PRODUCT_RAWBEEF) )
+        else if (productName.equals(SimulationWorld.PRODUCT_RAW_BEEF) )
         {
             itemX = 975; itemY = 290; //next to steak warmer
         }
         else if (productName.equals(SimulationWorld.PRODUCT_STEAK) ||
                  productName.equals(SimulationWorld.PRODUCT_DRUM_STICK)) 
         {
-            itemX = 1060; itemY = 280; //Display Warmer
+            itemX = 1060; itemY = 325; //Display Warmer
         }
     }
     /*
@@ -362,7 +364,7 @@ public class OwenTesting extends SuperSmoothMover
             unit = getDisplayUnit(SteakWarmer.class);
             item=unit.retrieve(DrumStick.class);;
         }
-        else if(productName.equals(SimulationWorld.PRODUCT_RAWBEEF))
+        else if(productName.equals(SimulationWorld.PRODUCT_RAW_BEEF))
         {
             unit = getDisplayUnit(RawBeefHangers.class);
             item=unit.retrieve(RawBeef.class);;
@@ -375,8 +377,8 @@ public class OwenTesting extends SuperSmoothMover
         {
             item.setLocation(getX(),getY());    
             basket.add(item);
-getWorld().showText(item.getName()+" has "+item.getStock(),350,50);//testing
-getWorld().showText("basket size="+basket.size(),150, 50);//testing
+//getWorld().showText(item.getName()+" has "+item.getStock(),350,50);//testing
+//getWorld().showText("basket size="+basket.size(),150, 50);//testing
         }
     }
     //Got to the exit of the shop

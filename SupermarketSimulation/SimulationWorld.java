@@ -5,7 +5,7 @@ import java.util.List;
 /**
  * Write a description of class MyWorld here.
  * 
- * @author Saiful Shaik, Owen Kung, Joe Zhuo
+ * @author Saiful Shaik, Owen Kung
  * @version Modified: Nov, 8, 2025
  */
 public class SimulationWorld extends World
@@ -26,12 +26,15 @@ public class SimulationWorld extends World
     public static final String PRODUCT_LAYS = "Lays";
     public static final String PRODUCT_RUFFLES = "Ruffles";
     public static final String PRODUCT_STEAK = "Steak";
-    public static final String PRODUCT_RAWBEEF = "Raw Beef";
+    public static final String PRODUCT_RAW_BEEF = "Raw Beef";
     public static final String PRODUCT_CANDY = "Candy";
     public static final String PRODUCT_DRUM_STICK = "Drumstick";
     public static final String PRODUCT_XING_RAMEN = "Xing Ramen";
     public static final String PRODUCT_JIN_RAMEN = "Jin Ramen";
     public static final String PRODUCT_NISSIN = "Raw Beef";
+    
+    //for spawning truck
+    private int truckDelay;
     
     // Grid settings
     public static final int GRID_CELL_SIZE = 20; // pixels per cell
@@ -50,7 +53,7 @@ public class SimulationWorld extends World
         
         Node roadSpawn = new Node(600, 100);
         
-        Node entranceAccess = new Node(600, 425);
+        Node entranceAccess = new Node(600, 400);
         roadSpawn.addNeighbouringNode(entranceAccess);
         
         Store storeOne = new Store("Store 1");
@@ -78,14 +81,14 @@ public class SimulationWorld extends World
         
         // add the Cashiers to store 1
         addObject(new Cashier(), getWidth()/2 + 200, getHeight()/2);
+        addObject(new Cashier(), getWidth()/2 + 300, getHeight()/2);
         
         // add cashier to store 2
         addObject(new Store2Cashier(), getWidth()/2-230, getHeight()/2+130);
         addObject(new Store2Cashier(), getWidth()/2-330, getHeight()/2+130);
         
         // add the butcher
-        Butcher butcher = new Butcher();
-        addObject(butcher, 975, 260);
+        addObject(new Butcher(), 975, 260);
         
         // Load display units from saved layout, or use default if no saved layout exists
         loadDisplayUnits();
@@ -106,16 +109,16 @@ public class SimulationWorld extends World
     // Add visual markers for stores' nodes (stores manage their own node markers)
     storeOne.showNodesInWorld(this);
     storeTwo.showNodesInWorld(this);
-        
-        //set paint order for products and shelves to properly display
-        setPaintOrder(
-            Customer.class,                                      // customers (very front)
-            NodeMarker.class,                                    // node markers (above display units)
-            Doritos.class, Lays.class, Ruffles.class,           // snacks (front)
-            Coke.class, Water.class, Sprite.class, Fanta.class, // drinks (middle)
-            Lettuce.class,Carrot.class,Apple.class,Orange.class,Steak.class,RawBeef.class,
-            SnackShelf.class, Fridge.class, LettuceBin.class, CarrotBin.class, AppleBin.class,OrangeBin.class, SteakWarmer.class,RawBeefHangers.class           // furniture (back)
+   
+            //Set Paint order
+            //So customer, Product and Display units can present properly
+            setPaintOrder(
+            Customer.class,
+            FloatingText.class,
+            Product.class,
+            DisplayUnit.class
             );
+
         
     }
     
@@ -173,7 +176,7 @@ public class SimulationWorld extends World
         // add Orange Bin in store 1
         addObject(new OrangeBin(),800,460);
         // add SteakHangers to store 1
-        addObject(new RawBeefHangers(),920,175);
+        addObject(new RawBeefHangers(),935,147);
     }
     
     public void act () 
@@ -181,9 +184,8 @@ public class SimulationWorld extends World
         //use zSort
         zSort ((ArrayList<Actor>)(getObjects(Actor.class)), this);
         
-        //spawnRestockingTruck();
+        spawnRestockingTruck();
     } 
-    /*
     private void spawnRestockingTruck()
     {
         truckDelay++;
@@ -193,7 +195,6 @@ public class SimulationWorld extends World
             truckDelay=0;
         }
     }
-    */
     /**
      * Z-sort so actors with higher Y (lower on screen) render in front.
      * Uses precise Y for SuperSmoothMover when available. Stable for ties.

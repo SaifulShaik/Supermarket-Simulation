@@ -24,10 +24,6 @@ public class CupNoodleShelf extends MultiRowUnit
         stocked=false;
 
     }
-    public Product retrieve()
-    {
-        return retrieve(SnackShelf.class);
-    }
     protected Product stockItemsByRow(int rowNum)
     {
             if(rowNum==0)
