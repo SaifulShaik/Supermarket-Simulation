@@ -14,7 +14,8 @@
     "x": 320,
     "y": 195
   },
-  { "displayUnitType": "CandyBin",
+  {
+    "displayUnitType": "CandyBin",
     "x": 60,
     "y": 380
   },
@@ -35,33 +36,52 @@
   },
   {
     "displayUnitType": "CarrotBin",
-    "x": 300,
+    "x": 160,
     "y": 300
   },
   {
-    "displayUnitType": "OrangeBin",
-    "x": 800,
+    "displayUnitType": "LettuceBin",
+    "x": 820,
     "y": 460
   },
   {
     "displayUnitType": "LettuceBin",
     "x": 880,
-    "y": 460
+    "y": 450
   },
   {
     "displayUnitType": "CarrotBin",
     "x": 960,
-    "y": 460
+    "y": 450
   },
   {
     "displayUnitType": "AppleBin",
     "x": 1040,
-    "y": 460
+    "y": 450
   },
   {
     "displayUnitType": "RawBeefHangers",
     "x": 940,
     "y": 145
+  },
+  {
+    "displayUnitType": "LettuceBin",
+    "x": 800,
+    "y": 460
+  },
+  {
+    "displayUnitType": "LettuceBin",
+    "x": 360,
+    "y": 300
+  },
+  {
+    "displayUnitType": "Fridge",
+    "x": 600,
+    "y": 240
+  },
+  {
+    "displayUnitType": "AppleBin",
+    "x": 280,
+    "y": 300
   }
-
 ]

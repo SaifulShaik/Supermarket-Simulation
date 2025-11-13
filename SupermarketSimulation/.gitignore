@@ -1,7 +1,21 @@
+ # Greenfoot/BlueJ
+*.class
 *.ctxt
+
+
+.classpath
+.project
+standalone.properties
+*.lock
+
+
 *.DS_Store
-!project.greenfoot
-# Old binary layout file (now using JSON)
+Thumbs.db
+
+
 display_layout.dat
-# JSON layout IS tracked so everyone gets the same layout
+
+
+!project.greenfoot
 !display_layout.json
+!greenfoot.jar

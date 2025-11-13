@@ -5,9 +5,13 @@ import java.util.*;
  * @version nov 11, 2025
  */
 public class Store {
+    SettingWorld settingWorld;
     String name;
+    // test
     
     private List<Product> availableProducts;
+    private List<DisplayUnit> availableDisplayUnits = new ArrayList<>();
+    private List<Node> accessDisplayUnitNode;
     
     private List<Node> nodes;
     
@@ -18,7 +22,10 @@ public class Store {
     public Store(String name) {
         this.name = name;
         this.nodes = new ArrayList<>();
+        this.availableProducts = new ArrayList<>();
+        
         initializeNodes();
+        refreshAvailableProducts();
     }
 
     public void showNodesInWorld(World world) {
@@ -200,6 +207,10 @@ public class Store {
         }
         return null;
     }
+    
+    public List<Product> getAvailableProducts() {
+        return availableProducts;
+    }
 
     /**
      * Return the list of nodes that belong to this store. Used by the editor
@@ -207,5 +218,79 @@ public class Store {
      */
     public List<Node> getNodes() {
         return nodes;
+    }
+
+    /**
+     * Register a DisplayUnit with this Store.
+     */
+    public void addDisplayUnit(DisplayUnit unit) {
+        if (unit == null) return;
+        if (availableDisplayUnits == null) availableDisplayUnits = new ArrayList<>();
+        if (!availableDisplayUnits.contains(unit)) availableDisplayUnits.add(unit);
+        // ensure availableProducts is up-to-date when a new display unit is registered
+        if (availableProducts == null) availableProducts = new ArrayList<>();
+        try {
+            java.util.List<Product> stocked = unit.getStockedItems();
+            if (stocked != null) {
+                for (Product p : stocked) {
+                    if (p != null && !availableProducts.contains(p)) availableProducts.add(p);
+                }
+            }
+        } catch (Exception e) {
+            // if unit doesn't expose stocked items for any reason it throws this print statment
+            System.out.println("Hi");
+        }
+    }
+
+    /**
+     * Remove a DisplayUnit from this Store.
+     */
+    public void removeDisplayUnit(DisplayUnit unit) {
+        if (availableDisplayUnits == null) return;
+        availableDisplayUnits.remove(unit);
+        // remove any products that belonged exclusively to the removed unit
+        if (availableProducts != null && unit != null) {
+            try {
+                java.util.List<Product> stocked = unit.getStockedItems();
+                if (stocked != null) {
+                    for (Product p : stocked) {
+                        if (p != null) availableProducts.remove(p);
+                    }
+                }
+            } catch (Exception e) {
+                // ignore
+                System.out.println("Bye");
+            }
+        }
+    }
+
+    /**
+     * Rebuild the availableProducts list from the currently-registered display units.
+     * Call this after bulk changes or during initialization.
+     */
+    public void refreshAvailableProducts() {
+        availableProducts.clear();
+
+        if (availableDisplayUnits == null) return;
+        for (DisplayUnit du : availableDisplayUnits) {
+            if (du == null) continue;
+            try {
+                java.util.List<Product> stocked = du.getStockedItems();
+                if (stocked == null) continue;
+                for (Product p : stocked) {
+                    if (p != null && !availableProducts.contains(p)) availableProducts.add(p);
+                }
+            } catch (Exception e) {
+                // ignore individual unit errors
+                System.out.println("why");
+            }
+        }
+    }
+
+    /**
+     * Return true if this store owns the provided node.
+     */
+    public boolean ownsNode(Node n) {
+        return nodes != null && nodes.contains(n);
     }
 }

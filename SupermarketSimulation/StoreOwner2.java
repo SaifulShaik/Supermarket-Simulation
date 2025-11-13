@@ -11,7 +11,6 @@ public class StoreOwner2 extends Actor
         bubble = null;
         dialogueStage = 0;
         
-        // Create a simple shopkeeper image (you can replace with actual image)
         GreenfootImage image = new GreenfootImage(80, 100);
         image.setColor(new Color(100, 120, 180));
         image.fillOval(20, 10, 40, 40); // Head

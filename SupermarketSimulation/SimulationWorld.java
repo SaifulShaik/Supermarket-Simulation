@@ -26,7 +26,7 @@ public class SimulationWorld extends World
     public static final String PRODUCT_LAYS = "Lays";
     public static final String PRODUCT_RUFFLES = "Ruffles";
     public static final String PRODUCT_STEAK = "Steak";
-    public static final String PRODUCT_RAWBEEF = "Raw Beef";
+    public static final String PRODUCT_RAW_BEEF = "Raw Beef";
     public static final String PRODUCT_CANDY = "Candy";
     public static final String PRODUCT_DRUM_STICK = "Drumstick";
     public static final String PRODUCT_XING_RAMEN = "Xing Ramen";
@@ -44,6 +44,9 @@ public class SimulationWorld extends World
     
     private static List<Node> roadNodes;
     
+    public static Store storeOne = new Store("Store 1");
+    public static Store storeTwo = new Store("Store 2");
+    
     public SimulationWorld()
     { 
         super(bg.getWidth(), bg.getHeight(), 1);
@@ -56,11 +59,9 @@ public class SimulationWorld extends World
         Node entranceAccess = new Node(600, 400);
         roadSpawn.addNeighbouringNode(entranceAccess);
         
-        Store storeOne = new Store("Store 1");
         Node storeOneEntranceNode = storeOne.getEntranceNode();
         entranceAccess.addNeighbouringNode(storeOneEntranceNode);
         
-        Store storeTwo = new Store("Store 2");
         Node storeTwoEntranceNode = storeTwo.getEntranceNode();
         entranceAccess.addNeighbouringNode(storeTwoEntranceNode);
         
@@ -69,15 +70,33 @@ public class SimulationWorld extends World
         
         // Draw world-wide grid overlay
         //drawWorldGrid();
-        
-        addObject(new CustomerSpawner(), 0, 0);
         addObject(new StoreUI(), getWidth()/2, 50);
         
         // Enable stocking in simulation mode
         DisplayUnit.setEnableStocking(true);
         
-        //addObject(new Store(480, 480, 20, true), 480, 220); // x: 40 - 480 y: 220 - 480
-        //addObject(new Store(360, 120, 20, false), getWidth() - 240, 360);
+        loadDisplayUnits();
+        
+        for (DisplayUnit unit : getObjects(DisplayUnit.class)) {
+            unit.stock();
+    
+            List<Node> nearbyNodes = SettingWorld.findNodesInRange(unit.getX(), unit.getY(), 50);
+            
+            for (Node n : nearbyNodes) {
+                if (storeOne.ownsNode(n)) {
+                    unit.setParentStore(storeOne);
+                    storeOne.addDisplayUnit(unit);
+                    break;
+                } else if (storeTwo.ownsNode(n)) {
+                    unit.setParentStore(storeTwo);
+                    storeTwo.addDisplayUnit(unit);
+                    break;
+                }
+            }
+        }
+
+        storeOne.refreshAvailableProducts();
+        storeTwo.refreshAvailableProducts();
         
         // add the Cashiers to store 1
         addObject(new Cashier(), getWidth()/2 + 200, getHeight()/2);
@@ -152,7 +171,8 @@ public class SimulationWorld extends World
                     addObject(unit, data.getX(), data.getY());
                 }
             }
-        } else {
+        } 
+        else {
             // Use default layout if no saved layout exists
             createDefaultLayout();
         }
