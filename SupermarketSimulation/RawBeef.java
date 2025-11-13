@@ -14,7 +14,7 @@ public class RawBeef extends Product
     public RawBeef() 
     {
         name=SimulationWorld.PRODUCT_RAW_BEEF;
-        image = new GreenfootImage("product/Raw Steak.png");
+        image = new GreenfootImage("product/Raw Steak.PNG");
         image.scale(image.getWidth()/4, image.getHeight()/4);
         //image.rotate(90);
         setImage(image);
