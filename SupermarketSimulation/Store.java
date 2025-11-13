@@ -7,6 +7,7 @@ import java.util.*;
 public class Store {
     SettingWorld settingWorld;
     String name;
+    // test
     
     private List<Product> availableProducts;
     private List<DisplayUnit> availableDisplayUnits = new ArrayList<>();
