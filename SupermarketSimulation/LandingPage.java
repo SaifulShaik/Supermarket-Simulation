@@ -54,7 +54,7 @@ public class LandingPage extends World
         
         if (playButton != null && playButton.wasClicked())
         {
-            transitionToCutscene();
+            transitionToSimulation();
         }
         
         if (settingsButton != null && settingsButton.wasClicked())
