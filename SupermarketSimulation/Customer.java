@@ -139,6 +139,7 @@ public abstract class Customer extends SuperSmoothMover
         shoppingList.add(SimulationWorld.PRODUCT_RAW_BEEF);
         shoppingList.add(SimulationWorld.PRODUCT_DRUM_STICK);
     }
+    
     /*
      * Retrieve products in the shopping list
      * Add the product to the basket  - can later be used for checking out.
@@ -287,6 +288,7 @@ public abstract class Customer extends SuperSmoothMover
         }
 
     }
+    
     /*
      * Get the requested DisplayUnit with class type
      * 
@@ -306,6 +308,7 @@ public abstract class Customer extends SuperSmoothMover
         }
         return null;
     }
+    
     protected void move() {
         if (pauseTimer > 0) {
             pauseTimer--;

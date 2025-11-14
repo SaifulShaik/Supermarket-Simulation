@@ -1,4 +1,5 @@
 import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
+import java.util.ArrayList;
 
 /**
  * Spawns customers into the road 
@@ -6,6 +7,9 @@ import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
  * @author Joe 
  * @version November 2025
  */
+
+
+
 public class CustomerSpawner extends Actor
 {
     private final static int spawnRate = 150;
@@ -15,15 +19,19 @@ public class CustomerSpawner extends Actor
     }
     
     private void spawnCustomers() {
-        if (Greenfoot.getRandomNumber(spawnRate) == 0) {
-            int customerType = Greenfoot.getRandomNumber(1);
-            
-            Node startNode = SimulationWorld.getStartNode();
-            
-            switch (customerType) {
-                case 0:
-                    getWorld().addObject(new RegularShopper(startNode), startNode.getX(), startNode.getY());
-                    break;
+        ArrayList<RegularShopper> customers = (ArrayList<RegularShopper>) getWorld().getObjects(RegularShopper.class);
+        
+        if (customers.isEmpty()){
+                if (Greenfoot.getRandomNumber(spawnRate) == 0) {
+                int customerType = Greenfoot.getRandomNumber(1);
+                
+                Node startNode = SimulationWorld.getStartNode();
+                
+                switch (customerType) {
+                    case 0:
+                        getWorld().addObject(new RegularShopper(startNode), startNode.getX(), startNode.getY());
+                        break;
+                }
             }
         }
     }

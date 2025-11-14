@@ -44,8 +44,7 @@ public class SimulationWorld extends World
     
     private static List<Node> roadNodes;
     
-    public SimulationWorld()
-    { 
+    public SimulationWorld(){
         super(bg.getWidth(), bg.getHeight(), 1);
         setBackground(bg); 
         
@@ -106,20 +105,13 @@ public class SimulationWorld extends World
             //s.updateProductLocations();
         }
 
-    // Add visual markers for stores' nodes (stores manage their own node markers)
-    storeOne.showNodesInWorld(this);
-    storeTwo.showNodesInWorld(this);
-   
-            //Set Paint order
-            //So customer, Product and Display units can present properly
-            setPaintOrder(
-            Customer.class,
-            FloatingText.class,
-            Product.class,
-            DisplayUnit.class
-            );
-
-        
+        // Add visual markers for stores' nodes (stores manage their own node markers)
+        storeOne.showNodesInWorld(this);
+        storeTwo.showNodesInWorld(this);
+       
+        //Set Paint order
+        //So customer, Product and Display units can present properly
+        setPaintOrder(Customer.class,FloatingText.class, Product.class,DisplayUnit.class);
     }
     
     public static Node getStartNode() {
