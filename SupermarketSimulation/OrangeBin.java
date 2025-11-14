@@ -37,13 +37,4 @@ public class OrangeBin extends Bin
     {
         return retrieve(Orange.class);
     }  
-/*
-    public void act()
-    {
-        // Only stock if stocking is enabled (not in editor mode)
-        if (isStockingEnabled()) {
-            stock();
-        }
-    }
-*/
 }

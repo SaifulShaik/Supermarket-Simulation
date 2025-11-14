@@ -11,7 +11,7 @@ import java.util.List;
 public class SimulationWorld extends World
 {
     //public static final int WORLD_WIDTH = 1048;
-    //public static final int WORLD_HEIGHT = 514;
+    //public static final int WORLD_HEIGHT = 514;  
     
     // Product name constants
     public static final String PRODUCT_APPLE = "Apple";
@@ -44,9 +44,6 @@ public class SimulationWorld extends World
     
     private static List<Node> roadNodes;
     
-    public static Store storeOne = new Store("Store 1");
-    public static Store storeTwo = new Store("Store 2");
-    
     public SimulationWorld()
     { 
         super(bg.getWidth(), bg.getHeight(), 1);
@@ -59,9 +56,11 @@ public class SimulationWorld extends World
         Node entranceAccess = new Node(600, 400);
         roadSpawn.addNeighbouringNode(entranceAccess);
         
+        Store storeOne = new Store("Store 1");
         Node storeOneEntranceNode = storeOne.getEntranceNode();
         entranceAccess.addNeighbouringNode(storeOneEntranceNode);
         
+        Store storeTwo = new Store("Store 2");
         Node storeTwoEntranceNode = storeTwo.getEntranceNode();
         entranceAccess.addNeighbouringNode(storeTwoEntranceNode);
         
@@ -70,33 +69,15 @@ public class SimulationWorld extends World
         
         // Draw world-wide grid overlay
         //drawWorldGrid();
+        
+        addObject(new CustomerSpawner(), 0, 0);
         addObject(new StoreUI(), getWidth()/2, 50);
         
         // Enable stocking in simulation mode
         DisplayUnit.setEnableStocking(true);
         
-        loadDisplayUnits();
-        
-        for (DisplayUnit unit : getObjects(DisplayUnit.class)) {
-            unit.stock();
-    
-            List<Node> nearbyNodes = SettingWorld.findNodesInRange(unit.getX(), unit.getY(), 50);
-            
-            for (Node n : nearbyNodes) {
-                if (storeOne.ownsNode(n)) {
-                    unit.setParentStore(storeOne);
-                    storeOne.addDisplayUnit(unit);
-                    break;
-                } else if (storeTwo.ownsNode(n)) {
-                    unit.setParentStore(storeTwo);
-                    storeTwo.addDisplayUnit(unit);
-                    break;
-                }
-            }
-        }
-
-        storeOne.refreshAvailableProducts();
-        storeTwo.refreshAvailableProducts();
+        //addObject(new Store(480, 480, 20, true), 480, 220); // x: 40 - 480 y: 220 - 480
+        //addObject(new Store(360, 120, 20, false), getWidth() - 240, 360);
         
         // add the Cashiers to store 1
         addObject(new Cashier(), getWidth()/2 + 200, getHeight()/2);
@@ -107,8 +88,10 @@ public class SimulationWorld extends World
         addObject(new Store2Cashier(), getWidth()/2-330, getHeight()/2+130);
         
         // add the butcher
-        Butcher butcher = new Butcher();
-        addObject(butcher, 975, 260);
+        addObject(new Butcher(), 975, 260);
+        
+        // Load display units from saved layout, or use default if no saved layout exists
+        loadDisplayUnits();
 
         // After display units are created and added to the world, update each DisplayUnit's
         // customer node based on its world position
@@ -123,21 +106,17 @@ public class SimulationWorld extends World
             //s.updateProductLocations();
         }
 
-        // Add visual markers for stores' nodes (stores manage their own node markers)
-        storeOne.showNodesInWorld(this);
-        storeTwo.showNodesInWorld(this);
-        
-        // adds customer spawner
-        addObject(new CustomerSpawner(), 0, 0);
-        
-        //set paint order for products and shelves to properly display
-        setPaintOrder(
-            Customer.class,                                      // customers (very front)
-            NodeMarker.class,                                    // node markers (above display units)
-            Doritos.class, Lays.class, Ruffles.class,           // snacks (front)
-            Coke.class, Water.class, Sprite.class, Fanta.class, // drinks (middle)
-            Lettuce.class,Carrot.class,Apple.class,Orange.class,Steak.class,RawBeef.class,
-            SnackShelf.class, Fridge.class, LettuceBin.class, CarrotBin.class, AppleBin.class,OrangeBin.class, SteakWarmer.class,RawBeefHangers.class           // furniture (back)
+    // Add visual markers for stores' nodes (stores manage their own node markers)
+    storeOne.showNodesInWorld(this);
+    storeTwo.showNodesInWorld(this);
+   
+            //Set Paint order
+            //So customer, Product and Display units can present properly
+            setPaintOrder(
+            Customer.class,
+            FloatingText.class,
+            Product.class,
+            DisplayUnit.class
             );
 
         
@@ -173,8 +152,7 @@ public class SimulationWorld extends World
                     addObject(unit, data.getX(), data.getY());
                 }
             }
-        } 
-        else {
+        } else {
             // Use default layout if no saved layout exists
             createDefaultLayout();
         }
@@ -211,7 +189,7 @@ public class SimulationWorld extends World
     private void spawnRestockingTruck()
     {
         truckDelay++;
-        if(truckDelay>=420)
+        if(truckDelay>=1200)
         {
             addObject(new RestockingTruck(),600,200);
             truckDelay=0;
@@ -329,3 +307,6 @@ public class SimulationWorld extends World
         }
     }
 }
+
+
+

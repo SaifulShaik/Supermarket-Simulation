@@ -27,7 +27,11 @@ public abstract class Product extends SuperSmoothMover
         price = 2.0 + (int)(Math.random() * 6); // $2 - $7
         stock = 1;
     }
-    
+    public String getName()
+    {
+        return name;
+    }
+
     public double getPrice() { 
         return price; 
     }

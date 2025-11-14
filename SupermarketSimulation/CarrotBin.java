@@ -38,14 +38,5 @@ public class CarrotBin extends Bin
     {
         return retrieve(Carrot.class);
     }  
-/*
-    public void act()
-    {
-        // Only stock if stocking is enabled (not in editor mode)
-        if (isStockingEnabled()) {
-            stock();
-        }
-    }
-*/
 
 }
