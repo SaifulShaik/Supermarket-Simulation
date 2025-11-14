@@ -54,8 +54,7 @@ public class LandingPage extends World
         
         if (playButton != null && playButton.wasClicked())
         {
-            
-            transitionToSimulation();
+            transitionToCutscene();
         }
         
         if (settingsButton != null && settingsButton.wasClicked())
@@ -167,6 +166,14 @@ public class LandingPage extends World
         
         // Transition to settings
         fadeOutAndTransition(new SettingWorld());
+    }
+    
+    private void transitionToCutscene()
+    {
+        // Play sound effect if available
+        
+        // Transition to settings
+        fadeOutAndTransition(new Cutscene());
     }
     
     /**
