@@ -1037,6 +1037,6 @@ target9.x=0
 target9.y=0
 version=3.1.0
 width=1470
-world.lastInstantiated=SimulationWorld
+world.lastInstantiated=LandingPage
 xPosition=0
 yPosition=34

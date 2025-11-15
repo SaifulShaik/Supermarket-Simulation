@@ -48,6 +48,9 @@ public class SettingWorld extends World
     private List<DisplayUnit> placedUnits = new ArrayList<>();
     private ConfirmationDialog activeDialog = null;
     private List<DisplayUnitData> originalLayout = new ArrayList<>();
+    // Preview for placement (follows mouse)
+    private PlacementPreview preview;
+    private java.util.Map<String, GreenfootImage> previewCache = new java.util.HashMap<>();
     
     private LinkedList<Node> pathNodes = new LinkedList<>();
     private LinkedList<NodeMarker> nodeMarkers = new LinkedList<>();
@@ -94,6 +97,9 @@ public class SettingWorld extends World
         }
         
         setupUI();
+        // Create placement preview actor (hidden until mouse is over world)
+        preview = new PlacementPreview();
+        addObject(preview, -100, -100);
         loadExistingLayout();
     }
     
@@ -146,6 +152,58 @@ public class SettingWorld extends World
         
         // Add visual indicators for cashier zones
         showCashierZones();
+        // Ensure preview draws above other world objects
+        setPaintOrder(PlacementPreview.class, NodeMarker.class, DisplayUnit.class, Cashier.class);
+    }
+
+    /**
+     * Update the placement preview that follows the mouse.
+     * Shows a translucent preview of the currently-selected unit and tints
+     * it green when placement is valid, red when invalid.
+     */
+    private void handlePlacementPreview() {
+        MouseInfo mouse = Greenfoot.getMouseInfo();
+        if (mouse == null) {
+            preview.hide();
+            return;
+        }
+
+        // Hide when over UI area
+        if (isClickOnUI(mouse)) {
+            preview.hide();
+            return;
+        }
+
+        int x = mouse.getX();
+        int y = mouse.getY();
+        if (gridMode) {
+            x = (x / GRID_SIZE) * GRID_SIZE;
+            y = (y / GRID_SIZE) * GRID_SIZE;
+        }
+
+        String typeName = DISPLAY_UNIT_TYPES[currentUnitIndex];
+        GreenfootImage unitImg = previewCache.get(typeName);
+        if (unitImg == null) {
+            try {
+                Class<?> clazz = Class.forName(typeName);
+                DisplayUnit unit = (DisplayUnit) clazz.getDeclaredConstructor().newInstance();
+                unitImg = new GreenfootImage(unit.getImage());
+                previewCache.put(typeName, unitImg);
+            } catch (Exception e) {
+                preview.hide();
+                return;
+            }
+        }
+
+        // Determine validity: not overlapping cashier, not intersecting nodes, and not overlapping existing units
+        boolean valid = true;
+        if (!getObjectsAt(x, y, DisplayUnit.class).isEmpty()) valid = false;
+        if (isOnCashier(x, y, 50)) valid = false;
+        if (doesImageIntersectAnyNodeWithImage(x, y, unitImg)) valid = false;
+
+        preview.setBaseImage(unitImg);
+        preview.applyTint(valid);
+        preview.setLocation(x, y);
     }
     
     /**
@@ -195,6 +253,7 @@ public class SettingWorld extends World
         
         handleUnitSelection();
         handleGridModeToggle();
+        handlePlacementPreview();
         handleUnitInspect();
         //handlePrintAllNodesKey();
         handleUnitPlacement();
