@@ -2,9 +2,7 @@ import greenfoot.*;
 import java.util.*;
 
 /**
- * An abstract customer that uses A* pathfinding to navigate the store.
- * Each customer has a shopping list, cart, and can find the shortest
- * path to each product's location before collecting it.
+ * Abstract Customer class
  *
  * @author Joe and saiful
  * @version November 2025
@@ -15,7 +13,7 @@ public abstract class Customer extends SuperSmoothMover
     private double movementSpeed;
     private double budget;
     
-    protected ArrayList<String> shoppingList = new ArrayList<>();
+    /*protected ArrayList<String> shoppingList = new ArrayList<>();
     protected ArrayList<String> shoppingListStore = new ArrayList<>();
     public final ArrayList<String> supermarketProductsList = new ArrayList<>(Arrays.asList(
         SimulationWorld.PRODUCT_COKE, 
@@ -40,21 +38,30 @@ public abstract class Customer extends SuperSmoothMover
         SimulationWorld.PRODUCT_RAW_BEEF, 
         SimulationWorld.PRODUCT_STEAK, 
         SimulationWorld.PRODUCT_DRUM_STICK       
-        ));
+        ));*/
     
-    private ArrayList<Product> cart;
     
-    private Node previousNode;
-    private Node currentNode;
-    private Node targetNode;
+    protected List<Product> shoppingList;
+    protected List<Product> cart;
     
-    private int pauseTimer = 0;
+    protected Node previousNode;
+    protected Node currentNode;
+    protected Node targetNode;
     
-    private Store store;
+    protected int pauseTimer = 0;
+    
+    protected Store store;
     
     public Customer() {}
     
-    public Customer(double movementSpeed, double budget, Node currentNode) {
+    /**
+     * Customer constructor
+     * 
+     * @param movementSpeed movement speed of the customer
+     * @param budget budget of the customer
+     * @param currentNode default node the customer spawns at
+     */
+    public Customer(double movementSpeed, double budget, Node currentNode, int maxShoppingListItems) {
         this.movementSpeed = movementSpeed;
         this.budget = budget;
         
@@ -64,12 +71,20 @@ public abstract class Customer extends SuperSmoothMover
         
         store = null;
         
-        createShoppingList(10);
+        shoppingList = new ArrayList<>();
+        shoppingList = generateShoppingList(maxShoppingListItems);
+        //createShoppingList(10);
         //owenTesting();
         //initiazlied cart      
         cart = new ArrayList();    
     }
     
+    /**
+     * Main act loop
+     * first chooses store if not done that
+     * then moves around the store and browses products
+     * finally checks out once all products are purchased
+     */
     public void act() {
         if (store == null) {
             chooseStore();
@@ -78,23 +93,45 @@ public abstract class Customer extends SuperSmoothMover
         retrieveProdcuts(); 
     }
     
+    /**
+     * Method to choose a store to go into
+     */
     protected void chooseStore() {
         List<Store> stores = getWorld().getObjects(Store.class);
         
         if (stores.isEmpty()) return;
         
-        int chosenStore;
-        if (shoppingListStore.get(0) == "butcher") chosenStore=0;
-        else chosenStore=1;
+        List<Product> storeOneShoppingList = new ArrayList<>();
+        List<Product> storeTwoShoppingList = new ArrayList<>();
         
-        Store s = stores.get(chosenStore);
+        for (Product p : shoppingList) {
+            if (SimulationWorld.storeOne.getAvailableProducts().contains(p)) {
+                storeOneShoppingList.add(p);
+            }
+            if (SimulationWorld.storeTwo.getAvailableProducts().contains(p)) {
+                storeTwoShoppingList.add(p);
+            }
+        }
+        
+        if (storeOneShoppingList.size() > storeTwoShoppingList.size()) {
+            store = SimulationWorld.storeOne;
+            shoppingList = storeOneShoppingList;
+        }
+        else if (storeOneShoppingList.size() < storeTwoShoppingList.size()){
+            store = SimulationWorld.storeTwo;
+            shoppingList = storeTwoShoppingList;
+        }
+        else {
+            int chosenStore = Greenfoot.getRandomNumber(stores.size());
+            store = stores.get(chosenStore);
+            shoppingList = store == SimulationWorld.storeOne ? storeOneShoppingList : storeTwoShoppingList;
+        }
 
-        targetNode = s.getEntranceNode();
-        store = s;
+        targetNode = store.getEntranceNode();
     }
     
-    protected void createShoppingList(int listLength){
-        for(int i = 0 ; i < listLength ; i++){
+    /*protected void createShoppingList(int listLength){
+        for(int i = 0 ; i < listLength ; i++) {
             int productStore = Greenfoot.getRandomNumber(2);
             int productListLength;
             String product;
@@ -110,8 +147,32 @@ public abstract class Customer extends SuperSmoothMover
             }
             shoppingList.add(product);
         }
+    }*/
+    
+    protected List<Product> generateShoppingList(int maxShoppingListItems) {
+        List<Product> items = new ArrayList<>();
+        
+        List<Product> availableItems = new ArrayList<>();
+        availableItems.addAll(SimulationWorld.storeOne.getAvailableProducts());
+        availableItems.addAll(SimulationWorld.storeTwo.getAvailableProducts());
+        
+        if (maxShoppingListItems <= 0) {
+            maxShoppingListItems = 1; 
+        }
+        
+        int numItems = 1 + Greenfoot.getRandomNumber(maxShoppingListItems);
+        
+        for (int i = 0 ; i < numItems ; i++) {
+            if (availableItems.size() > 0) {
+                Product item = availableItems.get(Greenfoot.getRandomNumber(availableItems.size()));
+                items.add(item);
+            }
+        }
+        
+        return items;
     }
-    private void owenTestng()
+    
+    /*private void owenTestng()
     {
         shoppingList.add(SimulationWorld.PRODUCT_COKE); 
         shoppingList.add(SimulationWorld.PRODUCT_LAYS);
@@ -131,7 +192,7 @@ public abstract class Customer extends SuperSmoothMover
         shoppingList.add(SimulationWorld.PRODUCT_STEAK);
         shoppingList.add(SimulationWorld.PRODUCT_RAW_BEEF);
         shoppingList.add(SimulationWorld.PRODUCT_DRUM_STICK);
-    }
+    }*/
     
     /*
      * Retrieve products in the shopping list

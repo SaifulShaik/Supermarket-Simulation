@@ -74,10 +74,8 @@ public class SettingWorld extends World
         originalLayout = DisplayUnitData.loadLayout();
         // Populate forbidden nodes from the store definitions so editor blocks placement on them
         try {
-            Store s1 = new Store("Store 1");
-            Store s2 = new Store("Store 2");
-            if (s1.getNodes() != null) forbiddenNodes.addAll(s1.getNodes());
-            if (s2.getNodes() != null) forbiddenNodes.addAll(s2.getNodes());
+            if (SimulationWorld.storeOne.getNodes() != null) forbiddenNodes.addAll(SimulationWorld.storeOne.getNodes());
+            if (SimulationWorld.storeTwo.getNodes() != null) forbiddenNodes.addAll(SimulationWorld.storeTwo.getNodes());
         } catch (Exception e) {
             System.err.println("Error initializing store nodes for editor: " + e.getMessage());
         }

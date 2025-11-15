@@ -42,6 +42,9 @@ public class SimulationWorld extends World
     
     private static final GreenfootImage bg = new GreenfootImage("background.png");
     
+    public static Store storeOne = new Store("Store 1"); 
+    public static Store storeTwo = new Store("Store 2");
+    
     private static List<Node> roadNodes;
     
     public SimulationWorld(){
@@ -55,11 +58,9 @@ public class SimulationWorld extends World
         Node entranceAccess = new Node(600, 400);
         roadSpawn.addNeighbouringNode(entranceAccess);
         
-        Store storeOne = new Store("Store 1");
         Node storeOneEntranceNode = storeOne.getEntranceNode();
         entranceAccess.addNeighbouringNode(storeOneEntranceNode);
         
-        Store storeTwo = new Store("Store 2");
         Node storeTwoEntranceNode = storeTwo.getEntranceNode();
         entranceAccess.addNeighbouringNode(storeTwoEntranceNode);
         
@@ -117,7 +118,7 @@ public class SimulationWorld extends World
     public static Node getStartNode() {
         return roadNodes.get(0);
     }
-
+    
     /** Add a NodeMarker that follows each DisplayUnit so nodes in front of
      * display units are visible while the simulation runs.
      */
