@@ -13,7 +13,7 @@ public abstract class Customer extends SuperSmoothMover
     private double movementSpeed;
     private double budget;
     
-    protected List<Product> shoppingList;
+    protected List<Class<? extends Product>> shoppingList;
     protected List<Product> cart;
     
     protected Node previousNode;
@@ -70,16 +70,28 @@ public abstract class Customer extends SuperSmoothMover
         
         if (stores.isEmpty()) return;
         
-        List<Product> storeOneShoppingList = new ArrayList<>();
-        List<Product> storeTwoShoppingList = new ArrayList<>();
+        List<Class<? extends Product>> storeOneShoppingList = new ArrayList<>();
+        List<Class<? extends Product>> storeTwoShoppingList = new ArrayList<>();
         
-        for (Product p : shoppingList) {
-            if (SimulationWorld.storeOne.getAvailableProducts().contains(p)) {
-                storeOneShoppingList.add(p);
+        for (Class<? extends Product> productClass : shoppingList) {
+            boolean inStoreOne = false;
+            for (Product p : SimulationWorld.storeOne.getAvailableProducts()) {
+                if (p.getClass() == productClass) {
+                    inStoreOne = true;
+                    break;
+                }
             }
-            if (SimulationWorld.storeTwo.getAvailableProducts().contains(p)) {
-                storeTwoShoppingList.add(p);
+    
+            boolean inStoreTwo = false;
+            for (Product p : SimulationWorld.storeTwo.getAvailableProducts()) {
+                if (p.getClass() == productClass) {
+                    inStoreTwo = true;
+                    break;
+                }
             }
+    
+            if (inStoreOne) storeOneShoppingList.add(productClass);
+            if (inStoreTwo) storeTwoShoppingList.add(productClass);
         }
         
         if (storeOneShoppingList.size() > storeTwoShoppingList.size()) {
@@ -99,12 +111,18 @@ public abstract class Customer extends SuperSmoothMover
         targetNode = store.getEntranceNode();
     }
     
-    protected List<Product> generateShoppingList(int maxShoppingListItems) {
-        List<Product> items = new ArrayList<>();
+    protected List<Class<? extends Product>> generateShoppingList(int maxShoppingListItems) {
+        List<Class<? extends Product>> items = new ArrayList<>();
         
-        List<Product> availableItems = new ArrayList<>();
-        availableItems.addAll(SimulationWorld.storeOne.getAvailableProducts());
-        availableItems.addAll(SimulationWorld.storeTwo.getAvailableProducts());
+        List<Class<? extends Product>> availableItemTypes = new ArrayList<>();
+        
+        for (Product p : SimulationWorld.storeOne.getAvailableProducts()) {
+            availableItemTypes.add(p.getClass());
+        }
+        
+        for (Product p : SimulationWorld.storeTwo.getAvailableProducts()) {
+            availableItemTypes.add(p.getClass());
+        }
         
         if (maxShoppingListItems <= 0) {
             maxShoppingListItems = 1; 
@@ -112,12 +130,13 @@ public abstract class Customer extends SuperSmoothMover
         
         int numItems = 1 + Greenfoot.getRandomNumber(maxShoppingListItems);
         
-        for (int i = 0 ; i < numItems ; i++) {
-            if (availableItems.size() > 0) {
-                Product item = availableItems.get(Greenfoot.getRandomNumber(availableItems.size()));
-                items.add(item);
+        for (int i = 0; i < numItems; i++) {
+            if (!availableItemTypes.isEmpty()) {
+                Class<? extends Product> itemClass = availableItemTypes.get(Greenfoot.getRandomNumber(availableItemTypes.size()));
+                items.add(itemClass);
             }
         }
+
         
         return items;
     }
@@ -138,31 +157,14 @@ public abstract class Customer extends SuperSmoothMover
             List<Product> stocked = u.getStockedItems();
             if (stocked == null || stocked.isEmpty()) continue;
             
-            for (Product p : stocked) {
-                Product wanted = findMatchingWantedByClass(p);
-                if (wanted == null) continue;
-                
-                Product retrieved = u.retrieve(p.getClass());
-                
+            for (Class<? extends Product> wantedClass : new ArrayList<>(shoppingList)) {
+                Product retrieved = u.retrieve(wantedClass);
                 if (retrieved != null) {
                     cart.add(retrieved);
-                    shoppingList.remove(wanted);
+                    shoppingList.remove(wantedClass);
                 }
             }
         }
-    }
-    
-    private Product findMatchingWantedByClass(Product shelfProduct) {
-        if (shelfProduct == null || shoppingList == null) return null;
-    
-        Class<?> shelfClass = shelfProduct.getClass();
-    
-        for (Product wanted : shoppingList) {
-            if (wanted != null && wanted.getClass() == shelfClass) {
-                return wanted;
-            }
-        }
-        return null;
     }
     
     /*
