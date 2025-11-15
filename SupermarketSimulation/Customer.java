@@ -2,9 +2,7 @@ import greenfoot.*;
 import java.util.*;
 
 /**
- * An abstract customer that uses A* pathfinding to navigate the store.
- * Each customer has a shopping list, cart, and can find the shortest
- * path to each product's location before collecting it.
+ * Abstract Customer class
  *
  * @author Joe and saiful
  * @version November 2025
@@ -15,46 +13,27 @@ public abstract class Customer extends SuperSmoothMover
     private double movementSpeed;
     private double budget;
     
-    protected ArrayList<String> shoppingList = new ArrayList<>();
-    protected ArrayList<String> shoppingListStore = new ArrayList<>();
-    public final ArrayList<String> supermarketProductsList = new ArrayList<>(Arrays.asList(
-        SimulationWorld.PRODUCT_COKE, 
-        SimulationWorld.PRODUCT_SPRITE, 
-        SimulationWorld.PRODUCT_FANTA, 
-        SimulationWorld.PRODUCT_WATER,
-        SimulationWorld.PRODUCT_CANDY, 
-        SimulationWorld.PRODUCT_LAYS, 
-        SimulationWorld.PRODUCT_RUFFLES, 
-        SimulationWorld.PRODUCT_LAYS, 
-        SimulationWorld.PRODUCT_DORITOS, 
-        SimulationWorld.PRODUCT_XING_RAMEN,
-        SimulationWorld.PRODUCT_NISSIN, 
-        SimulationWorld.PRODUCT_JIN_RAMEN, 
-        SimulationWorld.PRODUCT_SPRITE
-        ));
-    public final ArrayList<String> butcherProductsList = new ArrayList<>(Arrays.asList(
-        SimulationWorld.PRODUCT_APPLE, 
-        SimulationWorld.PRODUCT_ORANGE, 
-        SimulationWorld.PRODUCT_LETTUCE, 
-        SimulationWorld.PRODUCT_CARROT, 
-        SimulationWorld.PRODUCT_RAW_BEEF, 
-        SimulationWorld.PRODUCT_STEAK, 
-        SimulationWorld.PRODUCT_DRUM_STICK       
-        ));
+    protected List<Class<? extends Product>> shoppingList;
+    protected List<Product> cart;
     
-    private ArrayList<Product> cart;
+    protected Node previousNode;
+    protected Node currentNode;
+    protected Node targetNode;
     
-    private Node previousNode;
-    private Node currentNode;
-    private Node targetNode;
+    protected int pauseTimer = 0;
     
-    private int pauseTimer = 0;
-    
-    private Store store;
+    protected Store store;
     
     public Customer() {}
     
-    public Customer(double movementSpeed, double budget, Node currentNode) {
+    /**
+     * Customer constructor
+     * 
+     * @param movementSpeed movement speed of the customer
+     * @param budget budget of the customer
+     * @param currentNode default node the customer spawns at
+     */
+    public Customer(double movementSpeed, double budget, Node currentNode, int maxShoppingListItems) {
         this.movementSpeed = movementSpeed;
         this.budget = budget;
         
@@ -64,14 +43,17 @@ public abstract class Customer extends SuperSmoothMover
         
         store = null;
         
-        createShoppingList(10);
-        //owenTesting();
-        //initiazlied cart      
-        cart=new ArrayList();
-        
-        
+        shoppingList = new ArrayList<>();
+        shoppingList = generateShoppingList(maxShoppingListItems);
+        cart = new ArrayList();    
     }
     
+    /**
+     * Main act loop
+     * first chooses store if not done that
+     * then moves around the store and browses products
+     * finally checks out once all products are purchased
+     */
     public void act() {
         if (store == null) {
             chooseStore();
@@ -80,64 +62,109 @@ public abstract class Customer extends SuperSmoothMover
         retrieveProdcuts(); 
     }
     
+    /**
+     * Method to choose a store to go into
+     */
     protected void chooseStore() {
         List<Store> stores = getWorld().getObjects(Store.class);
         
-        if (stores.isEmpty()) { return; }
+        if (stores.isEmpty()) return;
         
-        int chosenStore;
-        if (shoppingListStore.get(0) == "butcher"){ chosenStore=0; }
-        else{ chosenStore=1; }
+        List<Class<? extends Product>> storeOneShoppingList = new ArrayList<>();
+        List<Class<? extends Product>> storeTwoShoppingList = new ArrayList<>();
         
-        System.out.println("Hi");
+        for (Class<? extends Product> productClass : shoppingList) {
+            boolean inStoreOne = false;
+            for (Product p : SimulationWorld.storeOne.getAvailableProducts()) {
+                if (p.getClass() == productClass) {
+                    inStoreOne = true;
+                    break;
+                }
+            }
+    
+            boolean inStoreTwo = false;
+            for (Product p : SimulationWorld.storeTwo.getAvailableProducts()) {
+                if (p.getClass() == productClass) {
+                    inStoreTwo = true;
+                    break;
+                }
+            }
+    
+            if (inStoreOne) storeOneShoppingList.add(productClass);
+            if (inStoreTwo) storeTwoShoppingList.add(productClass);
+        }
         
-        Store s = stores.get(chosenStore);
+        if (storeOneShoppingList.size() > storeTwoShoppingList.size()) {
+            store = SimulationWorld.storeOne;
+            shoppingList = storeOneShoppingList;
+        }
+        else if (storeOneShoppingList.size() < storeTwoShoppingList.size()){
+            store = SimulationWorld.storeTwo;
+            shoppingList = storeTwoShoppingList;
+        }
+        else {
+            int chosenStore = Greenfoot.getRandomNumber(stores.size());
+            store = stores.get(chosenStore);
+            shoppingList = store == SimulationWorld.storeOne ? storeOneShoppingList : storeTwoShoppingList;
+        }
 
-        targetNode = s.getEntranceNode();
-        store = s;
-        System.out.println("Heading to store entrance at: " 
-        + targetNode.getX() + "," + targetNode.getY());
+        targetNode = store.getEntranceNode();
     }
     
-    protected void createShoppingList(int listLength){
-        for(int i = 0 ; i < listLength ; i++){
-            int productStore = Greenfoot.getRandomNumber(2);
-            int productListLength;
-            String product;
-            if (productStore==0){ 
-                productListLength = supermarketProductsList.size();
-                product = supermarketProductsList.get(Greenfoot.getRandomNumber(productListLength));
-                shoppingListStore.add("supermarket");
-            }
-            else{
-                productListLength = butcherProductsList.size();
-                product = butcherProductsList.get(Greenfoot.getRandomNumber(productListLength));
-                shoppingListStore.add("butcher");
-            }
-            shoppingList.add(product);
+    protected List<Class<? extends Product>> generateShoppingList(int maxShoppingListItems) {
+        List<Class<? extends Product>> items = new ArrayList<>();
+        
+        List<Class<? extends Product>> availableItemTypes = new ArrayList<>();
+        
+        for (Product p : SimulationWorld.storeOne.getAvailableProducts()) {
+            availableItemTypes.add(p.getClass());
         }
-        //System.out.println("Going to " + shoppingListStore.get(0) + " for " + shoppingList.get(0));
+        
+        for (Product p : SimulationWorld.storeTwo.getAvailableProducts()) {
+            availableItemTypes.add(p.getClass());
+        }
+        
+        if (maxShoppingListItems <= 0) {
+            maxShoppingListItems = 1; 
+        }
+        
+        int numItems = 1 + Greenfoot.getRandomNumber(maxShoppingListItems);
+        
+        for (int i = 0; i < numItems; i++) {
+            if (!availableItemTypes.isEmpty()) {
+                Class<? extends Product> itemClass = availableItemTypes.get(Greenfoot.getRandomNumber(availableItemTypes.size()));
+                items.add(itemClass);
+            }
+        }
+
+        
+        return items;
     }
-    private void owenTestng()
-    {
-        shoppingList.add(SimulationWorld.PRODUCT_COKE); 
-        shoppingList.add(SimulationWorld.PRODUCT_LAYS);
-        shoppingList.add(SimulationWorld.PRODUCT_DORITOS);
-        shoppingList.add(SimulationWorld.PRODUCT_RUFFLES);
-        shoppingList.add(SimulationWorld.PRODUCT_XING_RAMEN);
-        shoppingList.add(SimulationWorld.PRODUCT_NISSIN);
-        shoppingList.add(SimulationWorld.PRODUCT_JIN_RAMEN);
-        shoppingList.add(SimulationWorld.PRODUCT_CANDY);
-        shoppingList.add(SimulationWorld.PRODUCT_SPRITE);
-        shoppingList.add(SimulationWorld.PRODUCT_FANTA);
-        shoppingList.add(SimulationWorld.PRODUCT_WATER);
-        shoppingList.add(SimulationWorld.PRODUCT_APPLE);
-        shoppingList.add(SimulationWorld.PRODUCT_ORANGE);
-        shoppingList.add(SimulationWorld.PRODUCT_LETTUCE);
-        shoppingList.add(SimulationWorld.PRODUCT_CARROT);
-        shoppingList.add(SimulationWorld.PRODUCT_STEAK);
-        shoppingList.add(SimulationWorld.PRODUCT_RAW_BEEF);
-        shoppingList.add(SimulationWorld.PRODUCT_DRUM_STICK);
+    
+    protected void retrieveProdcuts() {
+        if (store == null || currentNode == null || shoppingList == null || shoppingList.isEmpty() || getWorld() == null) return;
+        
+        List<DisplayUnit> units = store.getAvailableDisplayUnits();
+        if (units == null || units.isEmpty()) return;
+        
+        for (DisplayUnit u : units) {
+            if (u == null) continue;
+            
+            List<Node> accessNodes = u.getCustomerNodes();
+            
+            if (accessNodes == null || accessNodes.isEmpty() || !accessNodes.contains(currentNode)) continue;
+            
+            List<Product> stocked = u.getStockedItems();
+            if (stocked == null || stocked.isEmpty()) continue;
+            
+            for (Class<? extends Product> wantedClass : new ArrayList<>(shoppingList)) {
+                Product retrieved = u.retrieve(wantedClass);
+                if (retrieved != null) {
+                    cart.add(retrieved);
+                    shoppingList.remove(wantedClass);
+                }
+            }
+        }
     }
     
     /*
@@ -147,7 +174,7 @@ public abstract class Customer extends SuperSmoothMover
      * @author: Owen Kung
      * @version: Nov 2025
      */
-    protected void retrieveProdcuts()
+    /*protected void retrieveProdcuts()
     {
         //ArrayList<DisplayUnit> units= (ArrayList<DisplayUnit>)getIntersectingObjects(DisplayUnit.class);
         DisplayUnit unit=(DisplayUnit) getOneIntersectingObject(DisplayUnit.class);
@@ -286,8 +313,7 @@ public abstract class Customer extends SuperSmoothMover
                 shoppingList.remove(SimulationWorld.PRODUCT_RAW_BEEF);
             }
         }
-
-    }
+    }*/
     
     /*
      * Get the requested DisplayUnit with class type
@@ -297,7 +323,7 @@ public abstract class Customer extends SuperSmoothMover
      */
     private DisplayUnit getDisplayUnit(Class displayClass)
     {
-        ArrayList<DisplayUnit> units= (ArrayList<DisplayUnit>) getWorld().getObjects(DisplayUnit.class);
+        ArrayList<DisplayUnit> units = (ArrayList<DisplayUnit>) getWorld().getObjects(DisplayUnit.class);
         for(DisplayUnit u:units)
         {
             //return the requested disply unit
@@ -382,6 +408,12 @@ public abstract class Customer extends SuperSmoothMover
         }
         
         return total;
+    }
+    
+    public boolean ownsDIsplayUnit(DisplayUnit u) {
+        if (store == null) return false;
+        Store parent = u.getParentStore();
+        return parent != null && parent == store;
     }
 }
 

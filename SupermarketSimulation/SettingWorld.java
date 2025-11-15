@@ -14,15 +14,15 @@ public class SettingWorld extends World
 {
     private static final GreenfootImage bg = new GreenfootImage("background.png");
     
-    // Cashier positions (hardcoded from SimulationWorld) - areas where display units cannot be placed
-    private static class CashierZone {
+    // restricted areas
+    private static class RestrictedArea {
         int x, y, width, height;
-        CashierZone(int x, int y, int w, int h) {
+        RestrictedArea(int x, int y, int w, int h) {
             this.x = x; this.y = y; this.width = w; this.height = h;
         }
     }
     
-    private List<CashierZone> cashierZones;
+    private List<RestrictedArea> restrictedAreas;
     
     // Available display unit types
     private static final String[] DISPLAY_UNIT_TYPES = {
@@ -48,13 +48,20 @@ public class SettingWorld extends World
     private List<DisplayUnit> placedUnits = new ArrayList<>();
     private ConfirmationDialog activeDialog = null;
     private List<DisplayUnitData> originalLayout = new ArrayList<>();
+    // Preview for placement (follows mouse)
+    private PlacementPreview preview;
+    private java.util.Map<String, GreenfootImage> previewCache = new java.util.HashMap<>();
     
     private LinkedList<Node> pathNodes = new LinkedList<>();
     private LinkedList<NodeMarker> nodeMarkers = new LinkedList<>();
+    
     // Nodes that are part of customer paths; editor should not allow placing objects here
     private List<Node> forbiddenNodes = new ArrayList<>();
+    
     // track N key edge for printing all units' node mapping
     private boolean lastNDown = false;
+    
+    private static final int accessRadius = 50;
     
     /**
      * Constructor for objects of class SettingWorld.
@@ -68,16 +75,14 @@ public class SettingWorld extends World
         DisplayUnit.setEnableStocking(false);
         
         // Define cashier zones (approximate positions based on SimulationWorld)
-        setupCashierZones();
+        setupRestrictedAreas();
         
         // Store original layout for reverting
         originalLayout = DisplayUnitData.loadLayout();
         // Populate forbidden nodes from the store definitions so editor blocks placement on them
         try {
-            Store s1 = new Store("Store 1");
-            Store s2 = new Store("Store 2");
-            if (s1.getNodes() != null) forbiddenNodes.addAll(s1.getNodes());
-            if (s2.getNodes() != null) forbiddenNodes.addAll(s2.getNodes());
+            if (SimulationWorld.storeOne.getNodes() != null) forbiddenNodes.addAll(SimulationWorld.storeOne.getNodes());
+            if (SimulationWorld.storeTwo.getNodes() != null) forbiddenNodes.addAll(SimulationWorld.storeTwo.getNodes());
         } catch (Exception e) {
             System.err.println("Error initializing store nodes for editor: " + e.getMessage());
         }
@@ -96,27 +101,35 @@ public class SettingWorld extends World
         }
         
         setupUI();
+        // Create placement preview actor (hidden until mouse is over world)
+        preview = new PlacementPreview();
+        addObject(preview, -100, -100);
         loadExistingLayout();
     }
     
     /**
      * Define restricted areas where cashiers are located
      */
-    private void setupCashierZones() {
-        cashierZones = new ArrayList<>();
-        int centerX = getWidth() / 2;
+    private void setupRestrictedAreas() {
+        restrictedAreas = new ArrayList<>();
+        
         int centerY = getHeight() / 2;
+        int centerX = getWidth() / 2;
         
-        // Store 1 cashiers (2 cashiers at x+200 and x+300, y is center)
-        // Covering area from x+175 to x+325, centered at y
-        cashierZones.add(new CashierZone(centerX + 250, centerY, 150, 60));
+        // left store
+        restrictedAreas.add(new RestrictedArea(300, 400, 350, 100)); // cashier areas
+        restrictedAreas.add(new RestrictedArea(0, centerY, 10, getHeight())); // left border
+        restrictedAreas.add(new RestrictedArea(300, 80, 400, 100)); // top of the store wall
+        restrictedAreas.add(new RestrictedArea(450, 150, 50, 125)); // right of the store empty area
         
-        // Store 2 cashiers (2 cashiers at x-230 and x-330, y+130)
-        // Covering area from x-355 to x-205, at y+130
-        cashierZones.add(new CashierZone(centerX - 280, centerY + 130, 150, 60));
+        // road
+        restrictedAreas.add(new RestrictedArea(centerX, centerY, 200, getHeight()));
         
-        // Butcher area (at x+380, y is center)
-        cashierZones.add(new CashierZone(centerX + 380, centerY, 80, 80));
+        // right store
+        restrictedAreas.add(new RestrictedArea(900, 100, 400, 100)); // top of the store wall
+        restrictedAreas.add(new RestrictedArea(getWidth(), centerY, 10, getHeight())); // right border
+        restrictedAreas.add(new RestrictedArea(getWidth()/2 - 280, getHeight()/2 + 130, 150, 60)); // store 2 cashier
+        restrictedAreas.add(new RestrictedArea(getWidth()/2 + 380, getHeight()/2, 80, 80)); // butcher area
     }
     
     /**
@@ -136,18 +149,71 @@ public class SettingWorld extends World
         // Unit selection buttons
         prevUnitButton = new Button("<", 50, 45);
         nextUnitButton = new Button(">", 50, 45);
-        addObject(prevUnitButton, 100, getHeight() - 50);
-        addObject(nextUnitButton, 300, getHeight() - 50);
+        addObject(prevUnitButton, getWidth() / 2 - 75, getHeight() - 80);
+        addObject(nextUnitButton, getWidth() / 2 + 125, getHeight() - 80);
         
         // Labels
         unitTypeLabel = new Label(DISPLAY_UNIT_TYPES[currentUnitIndex], 24);
-        addObject(unitTypeLabel, 200, getHeight() - 50);
+        addObject(unitTypeLabel, getWidth() / 2 + 25, getHeight() - 80);
         
-        instructionLabel = new Label("Click to place. Drag to move. Right-click to delete.", 18);
-        addObject(instructionLabel, getWidth() / 2, getHeight() - 30);
+        instructionLabel = new Label("Click to place. Drag to move. Right-click to delete.", 20);
+        addObject(instructionLabel, getWidth() / 2 + 25, getHeight() - 40);
         
         // Add visual indicators for cashier zones
         showCashierZones();
+        
+        // Ensure preview draws above other world objects
+        setPaintOrder(PlacementPreview.class, NodeMarker.class, DisplayUnit.class, Cashier.class);
+    }
+
+    /**
+     * Update the placement preview that follows the mouse.
+     * Shows a translucent preview of the currently-selected unit and tints
+     * it green when placement is valid, red when invalid.
+     */
+    private void handlePlacementPreview() {
+        MouseInfo mouse = Greenfoot.getMouseInfo();
+        if (mouse == null) {
+            preview.hide();
+            return;
+        }
+
+        // Hide when over UI area
+        if (isClickOnUI(mouse)) {
+            preview.hide();
+            return;
+        }
+
+        int x = mouse.getX();
+        int y = mouse.getY();
+        if (gridMode) {
+            x = (x / GRID_SIZE) * GRID_SIZE;
+            y = (y / GRID_SIZE) * GRID_SIZE;
+        }
+
+        String typeName = DISPLAY_UNIT_TYPES[currentUnitIndex];
+        GreenfootImage unitImg = previewCache.get(typeName);
+        if (unitImg == null) {
+            try {
+                Class<?> clazz = Class.forName(typeName);
+                DisplayUnit unit = (DisplayUnit) clazz.getDeclaredConstructor().newInstance();
+                unitImg = new GreenfootImage(unit.getImage());
+                previewCache.put(typeName, unitImg);
+            } catch (Exception e) {
+                preview.hide();
+                return;
+            }
+        }
+
+        // Determine validity: not overlapping cashier, not intersecting nodes, and not overlapping existing units
+        boolean valid = true;
+        if (!getObjectsAt(x, y, DisplayUnit.class).isEmpty()) valid = false;
+        if (isOnCashier(x, y, 50)) valid = false;
+        if (doesImageIntersectAnyNodeWithImage(x, y, unitImg)) valid = false;
+
+        preview.setBaseImage(unitImg);
+        preview.applyTint(valid);
+        preview.setLocation(x, y);
     }
     
     /**
@@ -157,11 +223,10 @@ public class SettingWorld extends World
         // Add actual cashier objects so you can see exactly where they are
         // add the Cashiers to store 1
         addObject(new Cashier(), getWidth()/2 + 200, getHeight()/2);
-        addObject(new Cashier(), getWidth()/2 + 300, getHeight()/2);
         
-        // add cashier to store 2
-        addObject(new Store2Cashier(), getWidth()/2-230, getHeight()/2+130);
-        addObject(new Store2Cashier(), getWidth()/2-330, getHeight()/2+130);
+        // add cashier to left store
+        addObject(new Store2Cashier(), getWidth()/2 - 250, getHeight() / 2 + 130);
+        addObject(new Store2Cashier(), getWidth()/2 - 425, getHeight() / 2 + 130);
         
         // add the butcher
         Butcher butcher = new Butcher();
@@ -176,15 +241,23 @@ public class SettingWorld extends World
         for (DisplayUnitData data : savedUnits) {
             DisplayUnit unit = data.createDisplayUnit();
             if (unit != null) {
-                    addObject(unit, data.getX(), data.getY());
-                    placedUnits.add(unit);
-                    // assign nearest node so customers will stop at the correct location
-                    Node nearest = findNearestNode(data.getX(), data.getY());
-                    if (nearest != null) {
-                        unit.setCustomerNode(nearest);
-                        System.out.println("Loaded DisplayUnit " + unit.getClass().getSimpleName() +
-                            " at (" + data.getX() + "," + data.getY() + ") -> Node(" + nearest.getX() + "," + nearest.getY() + ")");
+                addObject(unit, data.getX(), data.getY());
+                placedUnits.add(unit);
+                
+                List<Node> nearbyNodes = findNodesInRange(data.getX(), data.getY(), accessRadius);
+                unit.setCustomerNodes(nearbyNodes);
+                
+                for (Node n : nearbyNodes) {
+                    if (SimulationWorld.storeOne != null && SimulationWorld.storeTwo.ownsNode(n)) {
+                        SimulationWorld.storeOne.addDisplayUnit(unit);
+                        unit.setParentStore(SimulationWorld.storeOne);
+                        break;
+                    } else if (SimulationWorld.storeTwo != null && SimulationWorld.storeTwo.ownsNode(n)) {
+                        SimulationWorld.storeTwo.addDisplayUnit(unit);
+                        unit.setParentStore(SimulationWorld.storeTwo);
+                        break;
                     }
+                }
             }
         }
     }
@@ -197,34 +270,13 @@ public class SettingWorld extends World
         
         handleUnitSelection();
         handleGridModeToggle();
-        handleUnitInspect();
+        handlePlacementPreview();
         //handlePrintAllNodesKey();
         handleUnitPlacement();
         handleUnitDragging();
         handleUnitDeletion();
         handleSaveButton();
         handleBackButton();
-    }
-
-    /**
-     * If the user clicks an existing DisplayUnit, print its assigned customer node.
-     */
-    private void handleUnitInspect() {
-        if (Greenfoot.mouseClicked(null)) {
-            MouseInfo mouse = Greenfoot.getMouseInfo();
-            if (mouse == null) return;
-            List<DisplayUnit> units = getObjectsAt(mouse.getX(), mouse.getY(), DisplayUnit.class);
-            if (!units.isEmpty()) {
-                DisplayUnit u = units.get(0);
-                Node n = u.getCustomerNode();
-                String unitName = u.getClass().getSimpleName();
-                if (n != null) {
-                    System.out.println("DisplayUnit " + unitName + " at (" + u.getX() + "," + u.getY() + ") -> Node(" + n.getX() + "," + n.getY() + ")");
-                } else {
-                    System.out.println("DisplayUnit " + unitName + " at (" + u.getX() + "," + u.getY() + ") -> no node assigned");
-                }
-            }
-        }
     }
     
     /**
@@ -331,11 +383,25 @@ public class SettingWorld extends World
             placedUnits.add(unit);
             hasUnsavedChanges = true;
             // assign nearest node so customers will stop at the correct location
-            Node nearest = findNearestNode(x, y);
+            /*Node nearest = findNearestNode(x, y);
             if (nearest != null) {
                 unit.setCustomerNode(nearest);
                 System.out.println("Placed DisplayUnit " + unit.getClass().getSimpleName() +
                     " at (" + x + "," + y + ") -> Node(" + nearest.getX() + "," + nearest.getY() + ")");
+            }*/
+            List<Node> nearbyNodes = findNodesInRange(x, y, accessRadius);
+            unit.setCustomerNodes(nearbyNodes);
+            
+            for (Node n : nearbyNodes) {
+                if (SimulationWorld.storeOne != null && SimulationWorld.storeOne.ownsNode(n)) {
+                    SimulationWorld.storeOne.addDisplayUnit(unit);
+                    unit.setParentStore(SimulationWorld.storeOne);
+                    break;
+                } else if (SimulationWorld.storeTwo != null && SimulationWorld.storeTwo.ownsNode(n)) {
+                    SimulationWorld.storeTwo.addDisplayUnit(unit);
+                    unit.setParentStore(SimulationWorld.storeTwo);
+                    break;
+                }
             }
 
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException |
@@ -348,7 +414,7 @@ public class SettingWorld extends World
      * Check if a position overlaps with any cashier zone
      */
     private boolean isOnCashier(int x, int y, int radius) {
-        for (CashierZone zone : cashierZones) {
+        for (RestrictedArea zone : restrictedAreas) {
             // Check if the circle (x,y,radius) intersects with the rectangle zone
             int closestX = Math.max(zone.x - zone.width/2, Math.min(x, zone.x + zone.width/2));
             int closestY = Math.max(zone.y - zone.height/2, Math.min(y, zone.y + zone.height/2));
@@ -406,7 +472,7 @@ public class SettingWorld extends World
      * Find the nearest node (from forbiddenNodes) to the given world coordinate.
      * Returns null if there are no nodes.
      */
-    private Node findNearestNode(int x, int y) {
+    /*private Node findNearestNode(int x, int y) {
         Node best = null;
         double bestDist = Double.POSITIVE_INFINITY;
         for (Node n : forbiddenNodes) {
@@ -419,6 +485,30 @@ public class SettingWorld extends World
             }
         }
         return best;
+    }*/
+    
+    public static List<Node> findNodesInRange(int x, int y, int radius) {
+        List<Node> nodesInRange = new ArrayList<>();
+        int r2 = radius * radius;
+        
+        for (Node n : SimulationWorld.storeOne.getNodes()) {
+            int dx = x - n.getX();
+            int dy = y - n.getY();
+            
+            if (dx*dx + dy*dy <= r2) {
+                nodesInRange.add(n);
+            }
+        }
+        
+        for (Node n : SimulationWorld.storeTwo.getNodes()) {
+            int dx = x - n.getX();
+            int dy = y - n.getY();
+            
+            if (dx*dx + dy*dy <= r2) {
+                nodesInRange.add(n);
+            }
+        }
+        return nodesInRange;
     }
 
     /**
@@ -493,7 +583,7 @@ public class SettingWorld extends World
                 }
                 
                 // Check if new position would overlap with cashier or a node - silently block movement
-                GreenfootImage dimg = draggedUnit.getImage();
+                /*GreenfootImage dimg = draggedUnit.getImage();
                 if (!isOnCashier(newX, newY, 50) && !doesImageIntersectAnyNodeWithImage(newX, newY, dimg)) {
                     draggedUnit.setLocation(newX, newY);
                     // update customer node after moving
@@ -504,8 +594,7 @@ public class SettingWorld extends World
                             " to (" + newX + "," + newY + ") -> Node(" + nearest.getX() + "," + nearest.getY() + ")");
                     }
                     hasUnsavedChanges = true;
-                }
-                // If on cashier, just don't move it - no popup
+                }*/
             }
         }
         
@@ -608,25 +697,11 @@ public class SettingWorld extends World
      */
     private boolean isClickOnUI(MouseInfo mouse) {
         int y = mouse.getY();
+        int x = mouse.getX();
         
         // Check if click is on any button or label area
-        return y < 80 || y > getHeight() - 80;
+        return y < 80 || (y > getHeight() - 100 && x > getWidth() / 2 - 100 && x < getWidth() / 2 + 150) ;
     }
-    /*
-    private void createNode(int gridX, int gridY, boolean isBlocked, boolean isEntrance) {
-        Node previous = pathNodes.isEmpty() ? null : pathNodes.getLast();
-        Node node = new Node(gridX, gridY, previous, 0, 0, isBlocked, isEntrance);
-    
-        pathNodes.add(node);
-    
-        NodeMarker marker = new NodeMarker(node);
-        addObject(marker, node.getWorldX(), node.getWorldY());
-        nodeMarkers.add(marker);
-    
-        // Make sure markers are always drawn in front of display units and background
-        setPaintOrder(NodeMarker.class, DisplayUnit.class, Cashier.class);
-    }
-    */
 }
 
 

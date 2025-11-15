@@ -42,6 +42,9 @@ public class SimulationWorld extends World
     
     private static final GreenfootImage bg = new GreenfootImage("background.png");
     
+    public static Store storeOne = new Store("Store 1"); 
+    public static Store storeTwo = new Store("Store 2");
+    
     private static List<Node> roadNodes;
     
     public SimulationWorld(){
@@ -55,11 +58,9 @@ public class SimulationWorld extends World
         Node entranceAccess = new Node(600, 400);
         roadSpawn.addNeighbouringNode(entranceAccess);
         
-        Store storeOne = new Store("Store 1");
         Node storeOneEntranceNode = storeOne.getEntranceNode();
         entranceAccess.addNeighbouringNode(storeOneEntranceNode);
         
-        Store storeTwo = new Store("Store 2");
         Node storeTwoEntranceNode = storeTwo.getEntranceNode();
         entranceAccess.addNeighbouringNode(storeTwoEntranceNode);
         
@@ -78,13 +79,13 @@ public class SimulationWorld extends World
         //addObject(new Store(480, 480, 20, true), 480, 220); // x: 40 - 480 y: 220 - 480
         //addObject(new Store(360, 120, 20, false), getWidth() - 240, 360);
         
-        // add the Cashiers to store 1
+        // add the Cashiers to right store
         addObject(new Cashier(), getWidth()/2 + 200, getHeight()/2);
-        addObject(new Cashier(), getWidth()/2 + 300, getHeight()/2);
+        //addObject(new Cashier(), getWidth()/2 + 300, getHeight()/2);
         
-        // add cashier to store 2
-        addObject(new Store2Cashier(), getWidth()/2-230, getHeight()/2+130);
-        addObject(new Store2Cashier(), getWidth()/2-330, getHeight()/2+130);
+        // add cashier to left store
+        addObject(new Store2Cashier(), getWidth()/2 - 250, getHeight() / 2 + 130);
+        addObject(new Store2Cashier(), getWidth()/2 - 425, getHeight() / 2 + 130);
         
         // add the butcher
         addObject(new Butcher(), 975, 260);
@@ -117,7 +118,7 @@ public class SimulationWorld extends World
     public static Node getStartNode() {
         return roadNodes.get(0);
     }
-
+    
     /** Add a NodeMarker that follows each DisplayUnit so nodes in front of
      * display units are visible while the simulation runs.
      */
