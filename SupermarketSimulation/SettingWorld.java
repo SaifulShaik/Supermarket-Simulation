@@ -14,15 +14,15 @@ public class SettingWorld extends World
 {
     private static final GreenfootImage bg = new GreenfootImage("background.png");
     
-    // Cashier positions (hardcoded from SimulationWorld) - areas where display units cannot be placed
-    private static class CashierZone {
+    // restricted areas
+    private static class RestrictedArea {
         int x, y, width, height;
-        CashierZone(int x, int y, int w, int h) {
+        RestrictedArea(int x, int y, int w, int h) {
             this.x = x; this.y = y; this.width = w; this.height = h;
         }
     }
     
-    private List<CashierZone> cashierZones;
+    private List<RestrictedArea> restrictedAreas;
     
     // Available display unit types
     private static final String[] DISPLAY_UNIT_TYPES = {
@@ -71,7 +71,7 @@ public class SettingWorld extends World
         DisplayUnit.setEnableStocking(false);
         
         // Define cashier zones (approximate positions based on SimulationWorld)
-        setupCashierZones();
+        setupRestrictedAreas();
         
         // Store original layout for reverting
         originalLayout = DisplayUnitData.loadLayout();
@@ -106,21 +106,26 @@ public class SettingWorld extends World
     /**
      * Define restricted areas where cashiers are located
      */
-    private void setupCashierZones() {
-        cashierZones = new ArrayList<>();
-        int centerX = getWidth() / 2;
+    private void setupRestrictedAreas() {
+        restrictedAreas = new ArrayList<>();
+        
         int centerY = getHeight() / 2;
+        int centerX = getWidth() / 2;
         
-        // Store 1 cashiers (2 cashiers at x+200 and x+300, y is center)
-        // Covering area from x+175 to x+325, centered at y
-        cashierZones.add(new CashierZone(centerX + 250, centerY, 150, 60));
+        // left store
+        restrictedAreas.add(new RestrictedArea(300, 400, 350, 100)); // cashier areas
+        restrictedAreas.add(new RestrictedArea(0, centerY, 10, getHeight())); // left border
+        restrictedAreas.add(new RestrictedArea(300, 80, 400, 100)); // top of the store wall
+        restrictedAreas.add(new RestrictedArea(450, 150, 50, 125)); // right of the store empty area
         
-        // Store 2 cashiers (2 cashiers at x-230 and x-330, y+130)
-        // Covering area from x-355 to x-205, at y+130
-        cashierZones.add(new CashierZone(centerX - 280, centerY + 130, 150, 60));
+        // road
+        restrictedAreas.add(new RestrictedArea(centerX, centerY, 200, getHeight()));
         
-        // Butcher area (at x+380, y is center)
-        cashierZones.add(new CashierZone(centerX + 380, centerY, 80, 80));
+        // right store
+        restrictedAreas.add(new RestrictedArea(900, 100, 400, 100)); // top of the store wall
+        restrictedAreas.add(new RestrictedArea(getWidth(), centerY, 10, getHeight())); // right border
+        restrictedAreas.add(new RestrictedArea(getWidth()/2 - 280, getHeight()/2 + 130, 150, 60)); // store 2 cashier
+        restrictedAreas.add(new RestrictedArea(getWidth()/2 + 380, getHeight()/2, 80, 80)); // butcher area
     }
     
     /**
@@ -140,18 +145,19 @@ public class SettingWorld extends World
         // Unit selection buttons
         prevUnitButton = new Button("<", 50, 45);
         nextUnitButton = new Button(">", 50, 45);
-        addObject(prevUnitButton, 100, getHeight() - 50);
-        addObject(nextUnitButton, 300, getHeight() - 50);
+        addObject(prevUnitButton, getWidth() / 2 - 75, getHeight() - 80);
+        addObject(nextUnitButton, getWidth() / 2 + 125, getHeight() - 80);
         
         // Labels
         unitTypeLabel = new Label(DISPLAY_UNIT_TYPES[currentUnitIndex], 24);
-        addObject(unitTypeLabel, 200, getHeight() - 50);
+        addObject(unitTypeLabel, getWidth() / 2 + 25, getHeight() - 80);
         
-        instructionLabel = new Label("Click to place. Drag to move. Right-click to delete.", 18);
-        addObject(instructionLabel, getWidth() / 2, getHeight() - 30);
+        instructionLabel = new Label("Click to place. Drag to move. Right-click to delete.", 20);
+        addObject(instructionLabel, getWidth() / 2 + 25, getHeight() - 40);
         
         // Add visual indicators for cashier zones
         showCashierZones();
+        
         // Ensure preview draws above other world objects
         setPaintOrder(PlacementPreview.class, NodeMarker.class, DisplayUnit.class, Cashier.class);
     }
@@ -213,11 +219,10 @@ public class SettingWorld extends World
         // Add actual cashier objects so you can see exactly where they are
         // add the Cashiers to store 1
         addObject(new Cashier(), getWidth()/2 + 200, getHeight()/2);
-        addObject(new Cashier(), getWidth()/2 + 300, getHeight()/2);
         
-        // add cashier to store 2
-        addObject(new Store2Cashier(), getWidth()/2-230, getHeight()/2+130);
-        addObject(new Store2Cashier(), getWidth()/2-330, getHeight()/2+130);
+        // add cashier to left store
+        addObject(new Store2Cashier(), getWidth()/2 - 250, getHeight() / 2 + 130);
+        addObject(new Store2Cashier(), getWidth()/2 - 425, getHeight() / 2 + 130);
         
         // add the butcher
         Butcher butcher = new Butcher();
@@ -405,7 +410,7 @@ public class SettingWorld extends World
      * Check if a position overlaps with any cashier zone
      */
     private boolean isOnCashier(int x, int y, int radius) {
-        for (CashierZone zone : cashierZones) {
+        for (RestrictedArea zone : restrictedAreas) {
             // Check if the circle (x,y,radius) intersects with the rectangle zone
             int closestX = Math.max(zone.x - zone.width/2, Math.min(x, zone.x + zone.width/2));
             int closestY = Math.max(zone.y - zone.height/2, Math.min(y, zone.y + zone.height/2));
@@ -665,9 +670,10 @@ public class SettingWorld extends World
      */
     private boolean isClickOnUI(MouseInfo mouse) {
         int y = mouse.getY();
+        int x = mouse.getX();
         
         // Check if click is on any button or label area
-        return y < 80 || y > getHeight() - 80;
+        return y < 80 || (y > getHeight() - 100 && x > getWidth() / 2 - 100 && x < getWidth() / 2 + 150) ;
     }
     /*
     private void createNode(int gridX, int gridY, boolean isBlocked, boolean isEntrance) {

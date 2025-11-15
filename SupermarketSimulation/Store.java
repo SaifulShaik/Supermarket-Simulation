@@ -93,6 +93,9 @@ public class Store {
             Node n11 = new Node(200, 450);
             Node n12 = new Node(275, 450);
             
+            // extra nodes to prevent placement of display units
+            Node e0 = new Node(50, 425);
+            
             // handles node neighbouring
             n1.addNeighbouringNode(n2);
             n2.addNeighbouringNode(n3);
@@ -101,6 +104,7 @@ public class Store {
             
             n4a.addNeighbouringNode(n5a);
             n4a.addNeighbouringNode(n3);
+            n4a.addNeighbouringNode(n5b);
             
             n5a.addNeighbouringNode(n6a);
             n5a.addNeighbouringNode(n6b);
@@ -108,6 +112,7 @@ public class Store {
             
             n6a.addNeighbouringNode(n7a);
             n6a.addNeighbouringNode(n5a);
+            n6a.addNeighbouringNode(n7b);
             
             n7a.addNeighbouringNode(n6a);
             n7a.addNeighbouringNode(n8b);
@@ -117,6 +122,7 @@ public class Store {
             
             n5b.addNeighbouringNode(n6b);
             n5b.addNeighbouringNode(n4b);
+            n5b.addNeighbouringNode(n4a);
             
             n6b.addNeighbouringNode(n7b);
             n6b.addNeighbouringNode(n5b);
@@ -124,6 +130,7 @@ public class Store {
             
             n7b.addNeighbouringNode(n8b);
             n7b.addNeighbouringNode(n6b);
+            n7b.addNeighbouringNode(n6a);
             
             n8b.addNeighbouringNode(n7b);
             n8b.addNeighbouringNode(n7a);
@@ -141,15 +148,14 @@ public class Store {
             nodes.add(n5a);
             nodes.add(n6a);
             nodes.add(n7a);
-            
             nodes.add(n4b);
             nodes.add(n5b);
             nodes.add(n6b);
             nodes.add(n7b);
             nodes.add(n8b);
-            
             nodes.add(n11);
             nodes.add(n12);
+            nodes.add(e0);
         } 
         else if(name.equals("Store 2")) {
             Node n1 = new Node(750, 400); // entrance node
