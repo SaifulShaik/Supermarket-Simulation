@@ -50,7 +50,7 @@ public class Store {
     
     public void initializeNodes() {
         if (name.equals("Store 1")) {
-            Node n1 = new Node(425, 450);
+            Node n1 = new Node(425, 400);
             n1.setEntrance();
             Node n2 = new Node(425, 335);
             
@@ -66,11 +66,9 @@ public class Store {
             Node n7b = new Node(125, 250);
             Node n8b = new Node(50, 250);
             
-            Node n9 = new Node(50, 450);
-            
-            Node n10 = new Node(125, 450);
-            Node n11 = new Node(250, 450);
-            Node n12 = new Node(350, 450);
+            Node n1a = new Node(425, 450);
+            Node n11 = new Node(200, 450);
+            Node n12 = new Node(275, 450);
             
             n1.addNeighbouringNode(n2);
             n2.addNeighbouringNode(n3);
@@ -106,12 +104,12 @@ public class Store {
             n8b.addNeighbouringNode(n7b);
             n8b.addNeighbouringNode(n7a);
             
-            n9.addNeighbouringNode(n7a);
-            n10.addNeighbouringNode(n6a);
             n11.addNeighbouringNode(n5a);
             n12.addNeighbouringNode(n4a);
+            n12.addNeighbouringNode(n1a);
             
             nodes.add(n1);
+            nodes.add(n1a);
             nodes.add(n2);
             nodes.add(n3);
             nodes.add(n4a);
@@ -125,16 +123,14 @@ public class Store {
             nodes.add(n7b);
             nodes.add(n8b);
             
-            nodes.add(n9);
-            nodes.add(n10);
             nodes.add(n11);
             nodes.add(n12);
         } else if(name.equals("Store 2")) {
-            Node n1 = new Node(750, 425);
-            Node n2a = new Node(825, 425);
-            Node n3a = new Node(925, 425);
-            Node n4a = new Node(1000, 425);
-            Node n5a = new Node(1075, 425);
+            Node n1 = new Node(750, 400);
+            Node n2a = new Node(825, 400);
+            Node n3a = new Node(925, 400);
+            Node n4a = new Node(1000, 400);
+            Node n5a = new Node(1075, 400);
             
             Node n1b = new Node(750, 325);
             Node n2b = new Node(825, 325);

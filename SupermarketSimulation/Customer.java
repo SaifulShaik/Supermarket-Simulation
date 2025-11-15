@@ -67,9 +67,7 @@ public abstract class Customer extends SuperSmoothMover
         createShoppingList(10);
         //owenTesting();
         //initiazlied cart      
-        cart=new ArrayList();
-        
-        
+        cart = new ArrayList();    
     }
     
     public void act() {
@@ -83,20 +81,16 @@ public abstract class Customer extends SuperSmoothMover
     protected void chooseStore() {
         List<Store> stores = getWorld().getObjects(Store.class);
         
-        if (stores.isEmpty()) { return; }
+        if (stores.isEmpty()) return;
         
         int chosenStore;
-        if (shoppingListStore.get(0) == "butcher"){ chosenStore=0; }
-        else{ chosenStore=1; }
-        
-        System.out.println("Hi");
+        if (shoppingListStore.get(0) == "butcher") chosenStore=0;
+        else chosenStore=1;
         
         Store s = stores.get(chosenStore);
 
         targetNode = s.getEntranceNode();
         store = s;
-        System.out.println("Heading to store entrance at: " 
-        + targetNode.getX() + "," + targetNode.getY());
     }
     
     protected void createShoppingList(int listLength){
@@ -116,7 +110,6 @@ public abstract class Customer extends SuperSmoothMover
             }
             shoppingList.add(product);
         }
-        //System.out.println("Going to " + shoppingListStore.get(0) + " for " + shoppingList.get(0));
     }
     private void owenTestng()
     {
@@ -297,7 +290,7 @@ public abstract class Customer extends SuperSmoothMover
      */
     private DisplayUnit getDisplayUnit(Class displayClass)
     {
-        ArrayList<DisplayUnit> units= (ArrayList<DisplayUnit>) getWorld().getObjects(DisplayUnit.class);
+        ArrayList<DisplayUnit> units = (ArrayList<DisplayUnit>) getWorld().getObjects(DisplayUnit.class);
         for(DisplayUnit u:units)
         {
             //return the requested disply unit
