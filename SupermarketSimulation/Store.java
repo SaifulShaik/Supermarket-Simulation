@@ -127,7 +127,9 @@ public class Store {
             nodes.add(n12);
         } else if(name.equals("Store 2")) {
             Node n1 = new Node(750, 400);
+            Node n1e = new Node(750, 240); // exit node
             Node n2a = new Node(825, 400);
+            Node n2e = new Node(825, 240); // exit node
             Node n3a = new Node(925, 400);
             Node n4a = new Node(1000, 400);
             Node n5a = new Node(1075, 400);
@@ -164,7 +166,11 @@ public class Store {
             n5b.addNeighbouringNode(n5a);
             n5b.addNeighbouringNode(n4b);
             
+            n2e.addNeighbouringNode(n1e);
+            
+            nodes.add(n2e);
             nodes.add(n1);
+            nodes.add(n1e);
             nodes.add(n2a);
             nodes.add(n3a);
             nodes.add(n4a);
