@@ -38,7 +38,7 @@ public abstract class Product extends SuperSmoothMover
     
     protected void applyDiscount(double percent) {
         price *= (1 - (percent / 100));
-        isDiscounted=true;
+        isDiscounted = true;
     }
     
     protected int getStock() {

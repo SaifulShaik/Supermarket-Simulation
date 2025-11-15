@@ -13,34 +13,6 @@ public abstract class Customer extends SuperSmoothMover
     private double movementSpeed;
     private double budget;
     
-    /*protected ArrayList<String> shoppingList = new ArrayList<>();
-    protected ArrayList<String> shoppingListStore = new ArrayList<>();
-    public final ArrayList<String> supermarketProductsList = new ArrayList<>(Arrays.asList(
-        SimulationWorld.PRODUCT_COKE, 
-        SimulationWorld.PRODUCT_SPRITE, 
-        SimulationWorld.PRODUCT_FANTA, 
-        SimulationWorld.PRODUCT_WATER,
-        SimulationWorld.PRODUCT_CANDY, 
-        SimulationWorld.PRODUCT_LAYS, 
-        SimulationWorld.PRODUCT_RUFFLES, 
-        SimulationWorld.PRODUCT_LAYS, 
-        SimulationWorld.PRODUCT_DORITOS, 
-        SimulationWorld.PRODUCT_XING_RAMEN,
-        SimulationWorld.PRODUCT_NISSIN, 
-        SimulationWorld.PRODUCT_JIN_RAMEN, 
-        SimulationWorld.PRODUCT_SPRITE
-        ));
-    public final ArrayList<String> butcherProductsList = new ArrayList<>(Arrays.asList(
-        SimulationWorld.PRODUCT_APPLE, 
-        SimulationWorld.PRODUCT_ORANGE, 
-        SimulationWorld.PRODUCT_LETTUCE, 
-        SimulationWorld.PRODUCT_CARROT, 
-        SimulationWorld.PRODUCT_RAW_BEEF, 
-        SimulationWorld.PRODUCT_STEAK, 
-        SimulationWorld.PRODUCT_DRUM_STICK       
-        ));*/
-    
-    
     protected List<Product> shoppingList;
     protected List<Product> cart;
     
@@ -73,9 +45,6 @@ public abstract class Customer extends SuperSmoothMover
         
         shoppingList = new ArrayList<>();
         shoppingList = generateShoppingList(maxShoppingListItems);
-        //createShoppingList(10);
-        //owenTesting();
-        //initiazlied cart      
         cart = new ArrayList();    
     }
     
@@ -130,25 +99,6 @@ public abstract class Customer extends SuperSmoothMover
         targetNode = store.getEntranceNode();
     }
     
-    /*protected void createShoppingList(int listLength){
-        for(int i = 0 ; i < listLength ; i++) {
-            int productStore = Greenfoot.getRandomNumber(2);
-            int productListLength;
-            String product;
-            if (productStore==0){ 
-                productListLength = supermarketProductsList.size();
-                product = supermarketProductsList.get(Greenfoot.getRandomNumber(productListLength));
-                shoppingListStore.add("supermarket");
-            }
-            else{
-                productListLength = butcherProductsList.size();
-                product = butcherProductsList.get(Greenfoot.getRandomNumber(productListLength));
-                shoppingListStore.add("butcher");
-            }
-            shoppingList.add(product);
-        }
-    }*/
-    
     protected List<Product> generateShoppingList(int maxShoppingListItems) {
         List<Product> items = new ArrayList<>();
         
@@ -172,27 +122,48 @@ public abstract class Customer extends SuperSmoothMover
         return items;
     }
     
-    /*private void owenTestng()
-    {
-        shoppingList.add(SimulationWorld.PRODUCT_COKE); 
-        shoppingList.add(SimulationWorld.PRODUCT_LAYS);
-        shoppingList.add(SimulationWorld.PRODUCT_DORITOS);
-        shoppingList.add(SimulationWorld.PRODUCT_RUFFLES);
-        shoppingList.add(SimulationWorld.PRODUCT_XING_RAMEN);
-        shoppingList.add(SimulationWorld.PRODUCT_NISSIN);
-        shoppingList.add(SimulationWorld.PRODUCT_JIN_RAMEN);
-        shoppingList.add(SimulationWorld.PRODUCT_CANDY);
-        shoppingList.add(SimulationWorld.PRODUCT_SPRITE);
-        shoppingList.add(SimulationWorld.PRODUCT_FANTA);
-        shoppingList.add(SimulationWorld.PRODUCT_WATER);
-        shoppingList.add(SimulationWorld.PRODUCT_APPLE);
-        shoppingList.add(SimulationWorld.PRODUCT_ORANGE);
-        shoppingList.add(SimulationWorld.PRODUCT_LETTUCE);
-        shoppingList.add(SimulationWorld.PRODUCT_CARROT);
-        shoppingList.add(SimulationWorld.PRODUCT_STEAK);
-        shoppingList.add(SimulationWorld.PRODUCT_RAW_BEEF);
-        shoppingList.add(SimulationWorld.PRODUCT_DRUM_STICK);
-    }*/
+    protected void retrieveProdcuts() {
+        if (store == null || currentNode == null || shoppingList == null || shoppingList.isEmpty() || getWorld() == null) return;
+        
+        List<DisplayUnit> units = store.getAvailableDisplayUnits();
+        if (units == null || units.isEmpty()) return;
+        
+        for (DisplayUnit u : units) {
+            if (u == null) continue;
+            
+            List<Node> accessNodes = u.getCustomerNodes();
+            
+            if (accessNodes == null || accessNodes.isEmpty() || !accessNodes.contains(currentNode)) continue;
+            
+            List<Product> stocked = u.getStockedItems();
+            if (stocked == null || stocked.isEmpty()) continue;
+            
+            for (Product p : stocked) {
+                Product wanted = findMatchingWantedByClass(p);
+                if (wanted == null) continue;
+                
+                Product retrieved = u.retrieve(p.getClass());
+                
+                if (retrieved != null) {
+                    cart.add(retrieved);
+                    shoppingList.remove(wanted);
+                }
+            }
+        }
+    }
+    
+    private Product findMatchingWantedByClass(Product shelfProduct) {
+        if (shelfProduct == null || shoppingList == null) return null;
+    
+        Class<?> shelfClass = shelfProduct.getClass();
+    
+        for (Product wanted : shoppingList) {
+            if (wanted != null && wanted.getClass() == shelfClass) {
+                return wanted;
+            }
+        }
+        return null;
+    }
     
     /*
      * Retrieve products in the shopping list
@@ -201,7 +172,7 @@ public abstract class Customer extends SuperSmoothMover
      * @author: Owen Kung
      * @version: Nov 2025
      */
-    protected void retrieveProdcuts()
+    /*protected void retrieveProdcuts()
     {
         //ArrayList<DisplayUnit> units= (ArrayList<DisplayUnit>)getIntersectingObjects(DisplayUnit.class);
         DisplayUnit unit=(DisplayUnit) getOneIntersectingObject(DisplayUnit.class);
@@ -340,8 +311,7 @@ public abstract class Customer extends SuperSmoothMover
                 shoppingList.remove(SimulationWorld.PRODUCT_RAW_BEEF);
             }
         }
-
-    }
+    }*/
     
     /*
      * Get the requested DisplayUnit with class type
@@ -436,6 +406,12 @@ public abstract class Customer extends SuperSmoothMover
         }
         
         return total;
+    }
+    
+    public boolean ownsDIsplayUnit(DisplayUnit u) {
+        if (store == null) return false;
+        Store parent = u.getParentStore();
+        return parent != null && parent == store;
     }
 }
 

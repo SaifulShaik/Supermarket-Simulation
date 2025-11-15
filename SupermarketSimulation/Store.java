@@ -8,6 +8,7 @@ public class Store {
     String name;
     
     private List<Product> availableProducts;
+    private List<DisplayUnit> availableDisplayUnits;
     
     private List<Node> nodes;
     private boolean nodesVisible = true;
@@ -20,7 +21,11 @@ public class Store {
      */
     public Store(String name) {
         this.name = name;
+        
         this.nodes = new ArrayList<>();
+        this.availableDisplayUnits = new ArrayList<>();
+        this.availableProducts = new ArrayList<>();
+        
         initializeNodes();
     }
 
@@ -246,6 +251,19 @@ public class Store {
             }
         }
         return null;
+    }
+    
+    public boolean ownsNode(Node n) {
+        if (nodes.contains(n)) return true;
+        return false;
+    }
+    
+    public void addDisplayUnit(DisplayUnit d) {
+        availableDisplayUnits.add(d);
+    }
+    
+    public List<DisplayUnit> getAvailableDisplayUnits() {
+        return availableDisplayUnits;
     }
 }
 
