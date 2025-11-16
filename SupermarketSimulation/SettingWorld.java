@@ -582,20 +582,36 @@ public class SettingWorld extends World
                     newX = (newX / GRID_SIZE) * GRID_SIZE;
                     newY = (newY / GRID_SIZE) * GRID_SIZE;
                 }
-                
                 // Check if new position would overlap with cashier or a node - silently block movement
-                /*GreenfootImage dimg = draggedUnit.getImage();
+                GreenfootImage dimg = draggedUnit.getImage();
                 if (!isOnCashier(newX, newY, 50) && !doesImageIntersectAnyNodeWithImage(newX, newY, dimg)) {
                     draggedUnit.setLocation(newX, newY);
-                    // update customer node after moving
-                    Node nearest = findNearestNode(newX, newY);
-                    if (nearest != null) {
-                        draggedUnit.setCustomerNode(nearest);
-                        System.out.println("Moved DisplayUnit " + draggedUnit.getClass().getSimpleName() +
-                            " to (" + newX + "," + newY + ") -> Node(" + nearest.getX() + "," + nearest.getY() + ")");
+
+                    // update customer nodes after moving
+                    List<Node> nearby = findNodesInRange(newX, newY, accessRadius);
+                    draggedUnit.setCustomerNodes(nearby);
+
+                    // Reassign parent store if needed
+                    Store newParent = null;
+                    for (Node n : nearby) {
+                        if (SimulationWorld.storeOne != null && SimulationWorld.storeOne.ownsNode(n)) { newParent = SimulationWorld.storeOne; break; }
+                        if (SimulationWorld.storeTwo != null && SimulationWorld.storeTwo.ownsNode(n)) { newParent = SimulationWorld.storeTwo; break; }
                     }
+                    Store oldParent = draggedUnit.getParentStore();
+                    if (oldParent != null && oldParent != newParent) {
+                        // remove from old parent's display list if present
+                        try { oldParent.getAvailableDisplayUnits().remove(draggedUnit); } catch (Exception ignore) {}
+                    }
+                    if (newParent != null && (oldParent == null || oldParent != newParent)) {
+                        try { if (!newParent.getAvailableDisplayUnits().contains(draggedUnit)) newParent.addDisplayUnit(draggedUnit); } catch (Exception ignore) {}
+                        draggedUnit.setParentStore(newParent);
+                    } else if (newParent == null) {
+                        draggedUnit.setParentStore(null);
+                    }
+
+                    //System.out.println("Moved DisplayUnit " + draggedUnit.getClass().getSimpleName() + " to (" + newX + "," + newY + ")");
                     hasUnsavedChanges = true;
-                }*/
+                }
             }
         }
         

@@ -182,6 +182,7 @@ public class SimulationWorld extends World
      * Create the default display unit layout (original hardcoded positions)
      */
     private void createDefaultLayout() {
+        /**
         // add fridge to store 2
         addObject(new Fridge(),75,225);
         // add shelve next to fridge
@@ -197,6 +198,7 @@ public class SimulationWorld extends World
         addObject(new OrangeBin(),800,460);
         // add SteakHangers to store 1
         addObject(new RawBeefHangers(),935,147);
+        */
 
         // After adding the default layout units, assign them to stores and print their available products
         for (DisplayUnit unit : getObjects(DisplayUnit.class)) {

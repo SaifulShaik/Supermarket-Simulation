@@ -19,10 +19,16 @@ public abstract class Customer extends SuperSmoothMover
     protected Node previousNode;
     protected Node currentNode;
     protected Node targetNode;
+    // Debug: last node coords printed to avoid redundant logs
+    protected int _dbg_lastNodeX = Integer.MIN_VALUE;
+    protected int _dbg_lastNodeY = Integer.MIN_VALUE;
     
     protected int pauseTimer = 0;
     
     protected Store store;
+    // Debug: when true the customer will stop at the first product node after entering the store
+    protected boolean debugStoppedAtFirst = false;
+    protected Node debugTargetNode = null;
     
     public Customer() {
         this(2.0, 100.0, null, 5);
@@ -70,9 +76,44 @@ public abstract class Customer extends SuperSmoothMover
             chooseStore();
         }
         
+        // Debug behavior: if customer is at the store entrance, route to the first product node and stop once
+        if (!shoppingList.isEmpty() && store != null && currentNode != null && currentNode.checkIsEntrance() && !debugStoppedAtFirst) {
+            // Determine first wanted product and find a display unit that provides it
+            try {
+                Class<? extends Product> firstWanted = shoppingList.get(0);
+                for (DisplayUnit u : store.getAvailableDisplayUnits()) {
+                    if (u == null) continue;
+                    for (Product p : u.getStockedItems()) {
+                        if (p != null && firstWanted.isInstance(p)) {
+                            List<Node> accessNodes = u.getCustomerNodes();
+                            if (accessNodes != null && !accessNodes.isEmpty()) {
+                                debugTargetNode = accessNodes.get(0);
+                                targetNode = debugTargetNode;
+                                System.out.println("[Customer DEBUG] routing to first product node " + debugTargetNode.getX() + "," + debugTargetNode.getY());
+                                break;
+                            }
+                        }
+                    }
+                    if (debugTargetNode != null) break;
+                }
+            } catch (Exception e) {
+                // ignore debug failures
+            }
+        }
+
         if (!shoppingList.isEmpty()) {
             retrieveProdcuts(); 
             move();
+
+            // After moving, if we reached the debug target node, pause and mark debug stop done
+            if (debugTargetNode != null && currentNode != null) {
+                if (currentNode.getX() == debugTargetNode.getX() && currentNode.getY() == debugTargetNode.getY()) {
+                    debugStoppedAtFirst = true;
+                    pauseTimer = 50; // pause for a while for debugging
+                    System.out.println("[Customer DEBUG] stopped at first product node for inspection");
+                    debugTargetNode = null;
+                }
+            }
         }
         else {
             moveToExit();
@@ -165,17 +206,43 @@ public abstract class Customer extends SuperSmoothMover
     }
     
     protected void retrieveProdcuts() {
+        // Debug: print quick state to help investigate why customers aren't picking items
+        try {
+            System.out.println("[Customer] retrieveProdcuts() state: store=" + (store==null?"<null>":store.name) + 
+                ", currentNode=" + (currentNode==null?"<null>":"("+currentNode.getX()+","+currentNode.getY()+")") +
+                ", shoppingListSize=" + (shoppingList==null?0:shoppingList.size()) +
+                ", world=" + (getWorld()==null?"<null>":"present") );
+        } catch (Exception ignore) {}
+
         if (store == null || currentNode == null || shoppingList == null || shoppingList.isEmpty() || getWorld() == null) return;
         
         List<DisplayUnit> units = store.getAvailableDisplayUnits();
+        try {
+            System.out.println("[Customer] store has " + (units==null?0:units.size()) + " display units");
+        } catch (Exception ignore) {}
         if (units == null || units.isEmpty()) return;
         
         for (DisplayUnit u : units) {
             if (u == null) continue;
             
             List<Node> accessNodes = u.getCustomerNodes();
+            try {
+                StringBuilder sb = new StringBuilder();
+                if (accessNodes != null) {
+                    for (Node an : accessNodes) sb.append("(").append(an.getX()).append(",").append(an.getY()).append(") ");
+                }
+                System.out.println("[Customer] unit=" + u.getClass().getSimpleName() + " accessNodes=[" + sb.toString() + "] stocked=" + (u.getStockedItems()==null?0:u.getStockedItems().size()));
+            } catch (Exception ignore) {}
             
-            if (accessNodes == null || accessNodes.isEmpty() || !accessNodes.contains(currentNode)) continue;
+            // Accept match either by object identity or by coordinates (robust against different Node instances)
+            boolean accessMatch = false;
+            if (accessNodes != null) {
+                for (Node an : accessNodes) {
+                    if (an == currentNode) { accessMatch = true; break; }
+                    if (currentNode != null && an.getX() == currentNode.getX() && an.getY() == currentNode.getY()) { accessMatch = true; break; }
+                }
+            }
+            if (!accessMatch) continue;
             
             List<Product> stocked = u.getStockedItems();
             if (stocked == null || stocked.isEmpty()) continue;
@@ -196,6 +263,8 @@ public abstract class Customer extends SuperSmoothMover
                         String cartStr = cartSb.length() > 0 ? cartSb.substring(0, cartSb.length()-2) : "<empty>";
                         System.out.println("[Customer] picked " + retrieved.getClass().getSimpleName() + "; remaining: " + remStr + "; cart: " + cartStr);
                     } catch (Exception ignore) {}
+                    // Stop after picking one item so customer pauses and doesn't pick multiple items in one tick
+                    return;
                 }
             }
         }
@@ -421,6 +490,15 @@ public abstract class Customer extends SuperSmoothMover
             
             currentNode = n;
             targetNode = null;
+
+            // Debug: when node changes, print which display units expose this node
+            try {
+                if (currentNode != null && (currentNode.getX() != _dbg_lastNodeX || currentNode.getY() != _dbg_lastNodeY)) {
+                    _dbg_lastNodeX = currentNode.getX();
+                    _dbg_lastNodeY = currentNode.getY();
+                    debugPrintMatchingUnitsAtCurrentNode();
+                }
+            } catch (Exception ignore) {}
             
             return;
         }
@@ -431,6 +509,35 @@ public abstract class Customer extends SuperSmoothMover
         double newY = getY() + Math.sin(angle) * movementSpeed;
         
         setLocation(newX, newY);
+    }
+
+    /** Debug helper: prints display units in the current store whose access nodes match currentNode */
+    private void debugPrintMatchingUnitsAtCurrentNode() {
+        try {
+            if (store == null || currentNode == null) {
+                System.out.println("[Customer DEBUG] no store or currentNode to match");
+                return;
+            }
+            StringBuilder sb = new StringBuilder();
+            for (DisplayUnit u : store.getAvailableDisplayUnits()) {
+                if (u == null) continue;
+                List<Node> an = u.getCustomerNodes();
+                if (an == null) continue;
+                for (Node node : an) {
+                    if (node == currentNode || (node.getX() == currentNode.getX() && node.getY() == currentNode.getY())) {
+                        sb.append(u.getClass().getSimpleName()).append("(stocked=").append(u.getStockedItems()==null?0:u.getStockedItems().size()).append("), ");
+                        break;
+                    }
+                }
+            }
+            if (sb.length() == 0) {
+                System.out.println("[Customer DEBUG] arrived at node (" + currentNode.getX() + "," + currentNode.getY() + ") - no matching display units expose this node");
+            } else {
+                System.out.println("[Customer DEBUG] arrived at node (" + currentNode.getX() + "," + currentNode.getY() + ") - matching units: " + sb.toString());
+            }
+        } catch (Exception e) {
+            System.err.println("[Customer DEBUG] error in debugPrintMatchingUnitsAtCurrentNode: " + e.getMessage());
+        }
     }
     
     public void leaveStore() {
