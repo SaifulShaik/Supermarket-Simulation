@@ -100,10 +100,6 @@ public abstract class Customer extends SuperSmoothMover
                     String cartStr = cartContents.length() > 0 ? cartContents.substring(0, cartContents.length() - 2) : "<empty>";
                     System.out.println("[Customer] Shopping complete! Cart: [" + cartStr + "] | Total: $" + String.format("%.2f", total));
                     pauseTimer = 999999; // prevent repeated printing
-                    // Movement Towards cashier node
-                    // add to queue
-                    // move to other queue if lane is longer than the other lane.
-                    //cashierCheckOut(cart);
                 } catch (Exception ignore) {}
             }
             moveToExit();
