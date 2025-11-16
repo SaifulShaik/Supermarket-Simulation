@@ -48,6 +48,15 @@ public abstract class Customer extends SuperSmoothMover
         shoppingList = new ArrayList<>();
         shoppingList = generateShoppingList(maxShoppingListItems);
         cart = new ArrayList();    
+        // Debug: print the generated shopping list for this customer
+        try {
+            StringBuilder sb = new StringBuilder();
+            for (Class<? extends Product> c : shoppingList) {
+                sb.append(c.getSimpleName()).append(", ");
+            }
+            String listStr = sb.length() > 0 ? sb.substring(0, sb.length()-2) : "<empty>";
+            System.out.println("[Customer] spawned with shopping list: " + listStr);
+        } catch (Exception ignore) {}
     }
     
     /**
@@ -117,6 +126,13 @@ public abstract class Customer extends SuperSmoothMover
         }
 
         targetNode = store.getEntranceNode();
+        // Debug: print chosen store and final shopping list for this customer
+        try {
+            StringBuilder sb2 = new StringBuilder();
+            for (Class<? extends Product> c : shoppingList) sb2.append(c.getSimpleName()).append(", ");
+            String listStr2 = sb2.length() > 0 ? sb2.substring(0, sb2.length()-2) : "<empty>";
+            System.out.println("[Customer] chose " + (store == SimulationWorld.storeOne ? "Store 1" : "Store 2") + " with shopping list: " + listStr2);
+        } catch (Exception ignore) {}
     }
     
     protected List<Class<? extends Product>> generateShoppingList(int maxShoppingListItems) {
@@ -170,6 +186,16 @@ public abstract class Customer extends SuperSmoothMover
                     cart.add(retrieved);
                     shoppingList.remove(wantedClass);
                     pauseTimer = 5 + Greenfoot.getRandomNumber(11);
+                    // Debug: print what was picked and the remaining shopping list / cart
+                    try {
+                        StringBuilder rem = new StringBuilder();
+                        for (Class<? extends Product> c : shoppingList) rem.append(c.getSimpleName()).append(", ");
+                        String remStr = rem.length() > 0 ? rem.substring(0, rem.length()-2) : "<empty>";
+                        StringBuilder cartSb = new StringBuilder();
+                        for (Product cp : cart) cartSb.append(cp.getClass().getSimpleName()).append(", ");
+                        String cartStr = cartSb.length() > 0 ? cartSb.substring(0, cartSb.length()-2) : "<empty>";
+                        System.out.println("[Customer] picked " + retrieved.getClass().getSimpleName() + "; remaining: " + remStr + "; cart: " + cartStr);
+                    } catch (Exception ignore) {}
                 }
             }
         }
