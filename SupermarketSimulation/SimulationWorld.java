@@ -143,6 +143,8 @@ public class SimulationWorld extends World
                 DisplayUnit unit = data.createDisplayUnit();
                 if (unit != null) {
                     addObject(unit, data.getX(), data.getY());
+                    // attempt to stock immediately so stockedItems is populated for registration
+                    try { unit.stock(); } catch (Exception ignore) {}
                     // register and report available products for debugging
                     try {
                         java.util.List<Node> nearby = SettingWorld.findNodesInRange(data.getX(), data.getY(), 100);
@@ -201,6 +203,8 @@ public class SimulationWorld extends World
             try {
                 int ux = unit.getX();
                 int uy = unit.getY();
+                // attempt to stock default units so stockedItems is ready
+                try { unit.stock(); } catch (Exception ignore) {}
                 java.util.List<Node> nearby = SettingWorld.findNodesInRange(ux, uy, 100);
                 unit.setCustomerNodes(nearby);
                 Store parent = null;
