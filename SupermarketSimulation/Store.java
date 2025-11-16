@@ -9,6 +9,7 @@ public class Store {
     
     private List<Class<? extends Product>> availableProductTypes;
     private List<DisplayUnit> availableDisplayUnits;
+    private List<Cashier> cashiers;
     
     private List<Node> nodes;
     private boolean nodesVisible = true;
@@ -23,6 +24,7 @@ public class Store {
         this.name = name;
         
         this.nodes = new ArrayList<>();
+        this.cashiers = new ArrayList<>();
         this.availableDisplayUnits = new ArrayList<>();
         this.availableProductTypes = new ArrayList<>();
         
@@ -240,6 +242,11 @@ public class Store {
         return availableProductTypes;
     }
     
+    /**
+     * adds an available product class to the store's available products
+     * 
+     * @param c class of the product to be added
+     */
     public void addAvailableProductTypes(Class c) {
         availableProductTypes.add(c);
     }
@@ -258,6 +265,18 @@ public class Store {
         return null;
     }
     
+    /**
+     * gets a node at a specific x and y location
+     */
+    public Node getNode(int x, int y) {
+        for (Node n : nodes) {
+            if (n.getX() == x && n.getY() == y) {
+                return n;
+            }
+        }
+        return null;
+    }
+    
     public boolean ownsNode(Node n) {
         if (nodes.contains(n)) return true;
         return false;
@@ -265,6 +284,15 @@ public class Store {
     
     public void addDisplayUnit(DisplayUnit d) {
         availableDisplayUnits.add(d);
+    }
+    
+    public void addCashier(Cashier c) {
+        if (cashiers == null) cashiers = new ArrayList<>();
+        cashiers.add(c);
+    }
+    
+    public List<Cashier> getCashiers() {
+        return cashiers;
     }
     
     public List<DisplayUnit> getAvailableDisplayUnits() {

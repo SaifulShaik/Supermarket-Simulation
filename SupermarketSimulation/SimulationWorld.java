@@ -79,13 +79,22 @@ public class SimulationWorld extends World
         //addObject(new Store(480, 480, 20, true), 480, 220); // x: 40 - 480 y: 220 - 480
         //addObject(new Store(360, 120, 20, false), getWidth() - 240, 360);
         
-        // add the Cashiers to right store
-        addObject(new Cashier(), getWidth()/2 + 200, getHeight()/2);
-        //addObject(new Cashier(), getWidth()/2 + 300, getHeight()/2);
+        // add the Cashier to right store
+        Cashier rsCashier = new Cashier();
+        addObject(rsCashier, getWidth()/2 + 200, getHeight()/2);
+        rsCashier.setCustomerNode(storeTwo.getNode(825, 325));
+        storeTwo.addCashier(rsCashier);
         
         // add cashier to left store
-        addObject(new Store2Cashier(), getWidth()/2 - 250, getHeight() / 2 + 130);
-        addObject(new Store2Cashier(), getWidth()/2 - 425, getHeight() / 2 + 130);
+        Cashier lsLeftCashier = new Cashier();
+        Cashier lsRightCashier = new Cashier();
+        lsLeftCashier.setCustomerNode(storeOne.getNode(200, 335));
+        lsRightCashier.setCustomerNode(storeOne.getNode(275, 335));
+        addObject(lsLeftCashier, getWidth()/2 - 250, getHeight() / 2 + 130);
+        addObject(lsRightCashier, getWidth()/2 - 425, getHeight() / 2 + 130);
+        
+        storeOne.addCashier(lsLeftCashier);
+        storeOne.addCashier(lsRightCashier);
         
         // add the butcher
         addObject(new Butcher(), 975, 260);

@@ -16,9 +16,14 @@ public abstract class Customer extends SuperSmoothMover
     protected List<Class<? extends Product>> shoppingList;
     protected List<Product> cart;
     
+    protected List<Node> path;
+    protected Cashier targetCashier;
+    protected boolean hasCheckedOut;
+    
     protected Node previousNode;
     protected Node currentNode;
     protected Node targetNode;
+    
     // Debug: last node coords printed to avoid redundant logs
     protected int _dbg_lastNodeX = Integer.MIN_VALUE;
     protected int _dbg_lastNodeY = Integer.MIN_VALUE;
@@ -26,6 +31,7 @@ public abstract class Customer extends SuperSmoothMover
     protected int pauseTimer = 0;
     
     protected Store store;
+    
     // Debug: when true the customer will stop at the first product node after entering the store
     protected boolean debugStoppedAtFirst = false;
     protected Node debugTargetNode = null;
@@ -85,7 +91,16 @@ public abstract class Customer extends SuperSmoothMover
             retrieveProdcuts(); 
             move();
         }
-        else {
+        else if (!hasCheckedOut) {
+            if (targetCashier == null) {
+                chooseCashier();
+            }
+            else if (currentNode != targetCashier.getCustomerNode()) {
+                moveToCashier();
+            }
+            else {
+                leaveStore();
+            }
             // Shopping complete - print final cart and total
             if (cart != null && !cart.isEmpty() && pauseTimer <= 0) {
                 try {
@@ -102,7 +117,9 @@ public abstract class Customer extends SuperSmoothMover
                     pauseTimer = 999999; // prevent repeated printing
                 } catch (Exception ignore) {}
             }
-            moveToExit();
+        }
+        else {
+            leaveStore();
         }
     }
     
@@ -279,8 +296,119 @@ public abstract class Customer extends SuperSmoothMover
         }
     }
     
-    private void moveToExit() {
+    private void chooseCashier() {
+        Cashier best = null;
         
+        List<Cashier> cashiers = store.getCashiers();
+        
+        if (cashiers == null || cashiers.isEmpty()) {
+            System.out.println("[Cashier] no cashiers");
+            return;
+        }
+        
+        best = cashiers.get(0);
+        
+        for (Cashier c : cashiers) {
+            if (c.getQueueSize() < best.getQueueSize()) {
+                best = c;
+            }
+        }
+        
+        System.out.println("Chose cashier");
+        targetCashier = best;
+    }
+    
+    private void moveToCashier() {
+        Node cashierNode = targetCashier.getCustomerNode();
+        if (cashierNode == null) return;
+    
+        if (path == null || path.isEmpty()) {
+            path = findPath(cashierNode);
+    
+            if (path == null || path.isEmpty()) {
+                System.out.println("[Customer] No path to cashier found.");
+                return;
+            }
+    
+            Node first = path.get(0);
+            if (currentNode != null &&
+                (first == currentNode ||
+                 (first.getX() == currentNode.getX() && first.getY() == currentNode.getY()))) {
+                path.remove(0);
+            }
+        }
+    
+        if (currentNode != null &&
+            (currentNode == cashierNode ||
+             (currentNode.getX() == cashierNode.getX() && currentNode.getY() == cashierNode.getY()))) {
+                 targetCashier.addCustomerToQueue(this);
+            System.out.println("[Customer] Reached cashier node.");
+            return;
+        }
+    
+        if (targetNode != null) {
+            moveToNode(targetNode);
+            return;
+        }
+    
+        if (!path.isEmpty()) {
+            Node next = path.remove(0);
+            previousNode = currentNode;
+            targetNode = next;
+            moveToNode(next);
+        }
+    }
+    
+    private List<Node> findPath(Node goal) {
+        List<Node> result = new ArrayList<>();
+    
+        if (currentNode == null || goal == null) {
+            return result;
+        }
+    
+        Queue<Node> queue = new LinkedList<>();
+        Map<Node, Node> cameFrom = new HashMap<>();
+        Set<Node> visited = new HashSet<>();
+    
+        queue.add(currentNode);
+        visited.add(currentNode);
+        cameFrom.put(currentNode, null);
+    
+        while (!queue.isEmpty()) {
+            Node node = queue.poll();
+    
+            if (node == goal || (node.getX() == goal.getX() && node.getY() == goal.getY())) {
+                Node cur = node;
+                while (cur != null) {
+                    result.add(0, cur); 
+                    cur = cameFrom.get(cur);
+                }
+                return result;
+            }
+    
+            List<Node> neighbours = node.getNeighbouringNodes();
+            if (neighbours == null) continue;
+    
+            for (Node next : neighbours) {
+                if (visited.contains(next)) continue;
+                visited.add(next);
+                cameFrom.put(next, node);
+                queue.add(next);
+            }
+        }
+    
+        return result;
+    }
+    
+    /**
+     * Method for the customer to leave the store
+     */
+    public void leaveStore() {
+        // goes to the exit under the cashier's current node
+        // then walks back to the store entrance node
+        // then walks to the entrance access node
+        // make a new node in simulationworld where the customers move to when they are done shopping
+        // move to the worldExit and remove itself from the world
     }
     
     /**
@@ -410,10 +538,11 @@ public abstract class Customer extends SuperSmoothMover
         }
     }
     
-    public void leaveStore() {
-        getWorld().removeObject(this);
-    }
-    
+    /**
+     * Methods to calculate the total price of the customer's cart
+     * 
+     * @return a double representing the total price of the cart
+     */
     public double calculatePriceOfCart() {
         double total = 0;
         
