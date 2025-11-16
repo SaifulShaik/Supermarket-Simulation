@@ -99,7 +99,6 @@ public abstract class DisplayUnit extends SuperSmoothMover
                 stockedItems.remove(p);
                 
                 return p;//only return the first found
-               
             }
         }
 

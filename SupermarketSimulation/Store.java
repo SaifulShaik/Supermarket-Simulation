@@ -7,7 +7,7 @@ import java.util.*;
 public class Store {
     String name;
     
-    private List<Product> availableProducts;
+    private List<Class<? extends Product>> availableProductTypes;
     private List<DisplayUnit> availableDisplayUnits;
     
     private List<Node> nodes;
@@ -24,7 +24,7 @@ public class Store {
         
         this.nodes = new ArrayList<>();
         this.availableDisplayUnits = new ArrayList<>();
-        this.availableProducts = new ArrayList<>();
+        this.availableProductTypes = new ArrayList<>();
         
         initializeNodes();
     }
@@ -235,8 +235,12 @@ public class Store {
      * 
      * @return list of available products
      */
-    public List<Product> getAvailableProducts() {
-        return availableProducts;
+    public List<Class<? extends Product>> getAvailableProducts() {
+        return availableProductTypes;
+    }
+    
+    public void addAvailableProductTypes(Class c) {
+        availableProductTypes.add(c);
     }
     
     /**

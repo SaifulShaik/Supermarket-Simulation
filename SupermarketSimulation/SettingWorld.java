@@ -48,9 +48,10 @@ public class SettingWorld extends World
     private List<DisplayUnit> placedUnits = new ArrayList<>();
     private ConfirmationDialog activeDialog = null;
     private List<DisplayUnitData> originalLayout = new ArrayList<>();
+    
     // Preview for placement (follows mouse)
     private PlacementPreview preview;
-    private java.util.Map<String, GreenfootImage> previewCache = new java.util.HashMap<>();
+    private Map<String, GreenfootImage> previewCache = new HashMap<>();
     
     private LinkedList<Node> pathNodes = new LinkedList<>();
     private LinkedList<NodeMarker> nodeMarkers = new LinkedList<>();
@@ -61,7 +62,7 @@ public class SettingWorld extends World
     // track N key edge for printing all units' node mapping
     private boolean lastNDown = false;
     
-    private static final int accessRadius = 50;
+    private static final int accessRadius = 100;
     
     /**
      * Constructor for objects of class SettingWorld.

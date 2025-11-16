@@ -24,7 +24,9 @@ public abstract class Customer extends SuperSmoothMover
     
     protected Store store;
     
-    public Customer() {}
+    public Customer() {
+        this(2.0, 100.0, null, 5);
+    }
     
     /**
      * Customer constructor
@@ -58,8 +60,14 @@ public abstract class Customer extends SuperSmoothMover
         if (store == null) {
             chooseStore();
         }
-        move();
-        retrieveProdcuts(); 
+        
+        if (!shoppingList.isEmpty()) {
+            retrieveProdcuts(); 
+            move();
+        }
+        else {
+            moveToExit();
+        }
     }
     
     /**
@@ -75,16 +83,16 @@ public abstract class Customer extends SuperSmoothMover
         
         for (Class<? extends Product> productClass : shoppingList) {
             boolean inStoreOne = false;
-            for (Product p : SimulationWorld.storeOne.getAvailableProducts()) {
-                if (p.getClass() == productClass) {
+            for (Class<? extends Product> c : SimulationWorld.storeOne.getAvailableProducts()) {
+                if (c == productClass) {
                     inStoreOne = true;
                     break;
                 }
             }
     
             boolean inStoreTwo = false;
-            for (Product p : SimulationWorld.storeTwo.getAvailableProducts()) {
-                if (p.getClass() == productClass) {
+            for (Class<? extends Product> p : SimulationWorld.storeTwo.getAvailableProducts()) {
+                if (p == productClass) {
                     inStoreTwo = true;
                     break;
                 }
@@ -116,12 +124,12 @@ public abstract class Customer extends SuperSmoothMover
         
         List<Class<? extends Product>> availableItemTypes = new ArrayList<>();
         
-        for (Product p : SimulationWorld.storeOne.getAvailableProducts()) {
-            availableItemTypes.add(p.getClass());
+        for (Class<? extends Product> p : SimulationWorld.storeOne.getAvailableProducts()) {
+            availableItemTypes.add(p);
         }
         
-        for (Product p : SimulationWorld.storeTwo.getAvailableProducts()) {
-            availableItemTypes.add(p.getClass());
+        for (Class<? extends Product> p : SimulationWorld.storeTwo.getAvailableProducts()) {
+            availableItemTypes.add(p);
         }
         
         if (maxShoppingListItems <= 0) {
@@ -136,7 +144,6 @@ public abstract class Customer extends SuperSmoothMover
                 items.add(itemClass);
             }
         }
-
         
         return items;
     }
@@ -162,9 +169,14 @@ public abstract class Customer extends SuperSmoothMover
                 if (retrieved != null) {
                     cart.add(retrieved);
                     shoppingList.remove(wantedClass);
+                    pauseTimer = 5 + Greenfoot.getRandomNumber(11);
                 }
             }
         }
+    }
+    
+    private void moveToExit() {
+        
     }
     
     /*
@@ -321,7 +333,7 @@ public abstract class Customer extends SuperSmoothMover
      * @author:Owen Kung
      * @version: Nov 2025
      */
-    private DisplayUnit getDisplayUnit(Class displayClass)
+    /*private DisplayUnit getDisplayUnit(Class displayClass)
     {
         ArrayList<DisplayUnit> units = (ArrayList<DisplayUnit>) getWorld().getObjects(DisplayUnit.class);
         for(DisplayUnit u:units)
@@ -333,7 +345,7 @@ public abstract class Customer extends SuperSmoothMover
             }
         }
         return null;
-    }
+    }*/
     
     protected void move() {
         if (pauseTimer > 0) {
@@ -384,7 +396,6 @@ public abstract class Customer extends SuperSmoothMover
             currentNode = n;
             targetNode = null;
             
-            pauseTimer = 5 + Greenfoot.getRandomNumber(5);
             return;
         }
         
@@ -408,12 +419,6 @@ public abstract class Customer extends SuperSmoothMover
         }
         
         return total;
-    }
-    
-    public boolean ownsDIsplayUnit(DisplayUnit u) {
-        if (store == null) return false;
-        Store parent = u.getParentStore();
-        return parent != null && parent == store;
     }
 }
 
