@@ -63,5 +63,10 @@
     "displayUnitType": "RawBeefHangers",
     "x": 937,
     "y": 145
+  },
+  {
+    "displayUnitType": "OrangeBin",
+    "x": 780,
+    "y": 360
   }
 ]
