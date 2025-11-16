@@ -120,6 +120,13 @@ public abstract class DisplayUnit extends SuperSmoothMover
      */
     public void setCustomerNodes(List<Node> nodes) {
         this.customerNodes = nodes;
+        try {
+            StringBuilder sb = new StringBuilder();
+            if (nodes != null) {
+                for (Node n : nodes) sb.append("(").append(n.getX()).append(",").append(n.getY()).append(") ");
+            }
+            System.out.println("[DisplayUnit] " + getClass().getSimpleName() + " customerNodes set to: [" + (nodes == null ? "null" : sb.toString()) + "]");
+        } catch (Exception ignore) {}
     }
     
     /**

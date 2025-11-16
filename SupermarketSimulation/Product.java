@@ -20,7 +20,8 @@ public abstract class Product extends SuperSmoothMover
     protected String name;
     protected Node node;
     
-    protected DisplayUnit displayUnit; 
+    protected DisplayUnit displayUnit;
+    protected Store parentStore;
     
     public Product() 
     {
@@ -51,10 +52,22 @@ public abstract class Product extends SuperSmoothMover
     
     public void setDisplayUnit(DisplayUnit unit) {
         this.displayUnit = unit;
+        // Inherit parent store from display unit when assigned
+        if (unit != null) {
+            this.parentStore = unit.getParentStore();
+        }
     }
     
     public DisplayUnit getDisplayUnit() {
         return displayUnit;
+    }
+    
+    public Store getParentStore() {
+        return parentStore;
+    }
+    
+    public void setParentStore(Store store) {
+        this.parentStore = store;
     }
 }
 

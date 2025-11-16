@@ -124,12 +124,21 @@ public abstract class Customer extends SuperSmoothMover
      * Method to choose a store to go into
      */
     protected void chooseStore() {
+        // Debug: print store product lists to diagnose empty-store issue
+        try {
+            System.out.println("[Customer] chooseStore(): storeOne has " + SimulationWorld.storeOne.getAvailableProducts().size() + " products, storeTwo has " + SimulationWorld.storeTwo.getAvailableProducts().size() + " products");
+        } catch (Exception ignore) {}
+
         List<Store> stores = getWorld().getObjects(Store.class);
         
-        if (stores.isEmpty()) return;
+        if (stores.isEmpty()) {
+            System.out.println("[Customer] chooseStore(): no Store actors in world, using static references");
+        }
         
         List<Class<? extends Product>> storeOneShoppingList = new ArrayList<>();
         List<Class<? extends Product>> storeTwoShoppingList = new ArrayList<>();
+        
+        System.out.println("[Customer] chooseStore(): original shopping list has " + shoppingList.size() + " items");
         
         for (Class<? extends Product> productClass : shoppingList) {
             boolean inStoreOne = false;
@@ -152,6 +161,8 @@ public abstract class Customer extends SuperSmoothMover
             if (inStoreTwo) storeTwoShoppingList.add(productClass);
         }
         
+        System.out.println("[Customer] chooseStore(): after filtering - store1=" + storeOneShoppingList.size() + " items, store2=" + storeTwoShoppingList.size() + " items");
+        
         if (storeOneShoppingList.size() > storeTwoShoppingList.size()) {
             store = SimulationWorld.storeOne;
             shoppingList = storeOneShoppingList;
@@ -161,9 +172,15 @@ public abstract class Customer extends SuperSmoothMover
             shoppingList = storeTwoShoppingList;
         }
         else {
-            int chosenStore = Greenfoot.getRandomNumber(stores.size());
-            store = stores.get(chosenStore);
-            shoppingList = store == SimulationWorld.storeOne ? storeOneShoppingList : storeTwoShoppingList;
+            // Both lists same size (including both empty)
+            if (storeOneShoppingList.isEmpty() && storeTwoShoppingList.isEmpty()) {
+                System.out.println("[Customer] chooseStore(): BOTH stores have empty shopping lists - stores not populated! Picking store 1 anyway.");
+                store = SimulationWorld.storeOne; // fallback
+            } else {
+                int chosenStore = Greenfoot.getRandomNumber(2); // use 2 not stores.size() for static refs
+                store = (chosenStore == 0) ? SimulationWorld.storeOne : SimulationWorld.storeTwo;
+                shoppingList = store == SimulationWorld.storeOne ? storeOneShoppingList : storeTwoShoppingList;
+            }
         }
 
         targetNode = store.getEntranceNode();
@@ -193,15 +210,21 @@ public abstract class Customer extends SuperSmoothMover
             maxShoppingListItems = 1; 
         }
         
+        // Generate between 1 and maxShoppingListItems (inclusive)
         int numItems = 1 + Greenfoot.getRandomNumber(maxShoppingListItems);
+        
+        System.out.println("[Customer] generateShoppingList: maxItems=" + maxShoppingListItems + ", generating " + numItems + " items from " + availableItemTypes.size() + " available types");
         
         for (int i = 0; i < numItems; i++) {
             if (!availableItemTypes.isEmpty()) {
                 Class<? extends Product> itemClass = availableItemTypes.get(Greenfoot.getRandomNumber(availableItemTypes.size()));
                 items.add(itemClass);
+            } else {
+                System.out.println("[Customer] generateShoppingList: availableItemTypes is empty - stores not populated yet!");
             }
         }
         
+        System.out.println("[Customer] generateShoppingList: generated " + items.size() + " items total");
         return items;
     }
     

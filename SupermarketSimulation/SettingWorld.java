@@ -26,8 +26,9 @@ public class SettingWorld extends World
     
     // Available display unit types
     private static final String[] DISPLAY_UNIT_TYPES = {
-        "Fridge", "SnackShelf", "LettuceBin", "CarrotBin", 
-        "AppleBin", "OrangeBin", "SteakWarmer"
+        "Fridge", "FridgeOne", "FridgeTwo", "SnackShelf", "CupNoodleShelf",
+        "LettuceBin", "CarrotBin", "AppleBin", "OrangeBin", "CandyBin",
+        "SteakWarmer", "RawBeefHangers"
     };
     
     // UI Components

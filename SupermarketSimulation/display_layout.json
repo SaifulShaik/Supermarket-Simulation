@@ -6,13 +6,8 @@
   },
   {
     "displayUnitType": "SnackShelf",
-    "x": 323,
-    "y": 190
-  },
-  {
-    "displayUnitType": "SnackShelf",
-    "x": 199,
-    "y": 190
+    "x": 200,
+    "y": 180
   },
   {
     "displayUnitType": "LettuceBin",
@@ -58,5 +53,10 @@
     "displayUnitType": "CarrotBin",
     "x": 1046,
     "y": 441
+  },
+  {
+    "displayUnitType": "CupNoodleShelf",
+    "x": 320,
+    "y": 180
   }
 ]
