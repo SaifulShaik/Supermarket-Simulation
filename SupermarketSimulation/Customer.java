@@ -101,22 +101,6 @@ public abstract class Customer extends SuperSmoothMover
             else {
                 leaveStore();
             }
-            // Shopping complete - print final cart and total
-            if (cart != null && !cart.isEmpty() && pauseTimer <= 0) {
-                try {
-                    StringBuilder cartContents = new StringBuilder();
-                    double total = 0.0;
-                    for (Product p : cart) {
-                        if (p != null) {
-                            cartContents.append(p.getClass().getSimpleName()).append(" ($").append(String.format("%.2f", p.getPrice())).append("), ");
-                            total += p.getPrice();
-                        }
-                    }
-                    String cartStr = cartContents.length() > 0 ? cartContents.substring(0, cartContents.length() - 2) : "<empty>";
-                    System.out.println("[Customer] Shopping complete! Cart: [" + cartStr + "] | Total: $" + String.format("%.2f", total));
-                    pauseTimer = 999999; // prevent repeated printing
-                } catch (Exception ignore) {}
-            }
         }
         else {
             leaveStore();
