@@ -240,10 +240,7 @@ public class Store {
     }
     
     public void addAvailableProductTypes(Class c) {
-        if (c == null) return;
-        if (!availableProductTypes.contains(c)) {
-            availableProductTypes.add(c);
-        }
+        availableProductTypes.add(c);
     }
     
     /**
@@ -266,10 +263,7 @@ public class Store {
     }
     
     public void addDisplayUnit(DisplayUnit d) {
-        if (d == null) return;
-        if (!availableDisplayUnits.contains(d)) {
-            availableDisplayUnits.add(d);
-        }
+        availableDisplayUnits.add(d);
     }
     
     public List<DisplayUnit> getAvailableDisplayUnits() {

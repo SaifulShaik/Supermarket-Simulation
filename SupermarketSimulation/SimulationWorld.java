@@ -143,49 +143,6 @@ public class SimulationWorld extends World
                 DisplayUnit unit = data.createDisplayUnit();
                 if (unit != null) {
                     addObject(unit, data.getX(), data.getY());
-                    // Register unit with the appropriate store so stores know available units/products
-                    try {
-                        int ux = data.getX();
-                        int uy = data.getY();
-                        // check store one nodes
-                        boolean registered = false;
-                        for (Node n : storeOne.getNodes()) {
-                            int dx = ux - n.getX();
-                            int dy = uy - n.getY();
-                            if (dx*dx + dy*dy <= 100*100) {
-                                storeOne.addDisplayUnit(unit);
-                                unit.setParentStore(storeOne);
-                                // try to register its product type
-                                try {
-                                    java.lang.reflect.Method m = unit.getClass().getDeclaredMethod("itemToFill");
-                                    m.setAccessible(true);
-                                    Object prod = m.invoke(unit);
-                                    if (prod instanceof Product) storeOne.addAvailableProductTypes(prod.getClass());
-                                } catch (Exception ex) { }
-                                registered = true;
-                                break;
-                            }
-                        }
-                        if (!registered) {
-                            for (Node n : storeTwo.getNodes()) {
-                                int dx = ux - n.getX();
-                                int dy = uy - n.getY();
-                                if (dx*dx + dy*dy <= 100*100) {
-                                    storeTwo.addDisplayUnit(unit);
-                                    unit.setParentStore(storeTwo);
-                                    try {
-                                        java.lang.reflect.Method m = unit.getClass().getDeclaredMethod("itemToFill");
-                                        m.setAccessible(true);
-                                        Object prod = m.invoke(unit);
-                                        if (prod instanceof Product) storeTwo.addAvailableProductTypes(prod.getClass());
-                                    } catch (Exception ex) { }
-                                    break;
-                                }
-                            }
-                        }
-                    } catch (Exception e) {
-                        // non-fatal
-                    }
                 }
             }
         } else {
