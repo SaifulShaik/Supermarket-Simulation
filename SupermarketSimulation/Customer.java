@@ -76,44 +76,9 @@ public abstract class Customer extends SuperSmoothMover
             chooseStore();
         }
         
-        // Debug behavior: if customer is at the store entrance, route to the first product node and stop once
-        if (!shoppingList.isEmpty() && store != null && currentNode != null && currentNode.checkIsEntrance() && !debugStoppedAtFirst) {
-            // Determine first wanted product and find a display unit that provides it
-            try {
-                Class<? extends Product> firstWanted = shoppingList.get(0);
-                for (DisplayUnit u : store.getAvailableDisplayUnits()) {
-                    if (u == null) continue;
-                    for (Product p : u.getStockedItems()) {
-                        if (p != null && firstWanted.isInstance(p)) {
-                            List<Node> accessNodes = u.getCustomerNodes();
-                            if (accessNodes != null && !accessNodes.isEmpty()) {
-                                debugTargetNode = accessNodes.get(0);
-                                targetNode = debugTargetNode;
-                                System.out.println("[Customer DEBUG] routing to first product node " + debugTargetNode.getX() + "," + debugTargetNode.getY());
-                                break;
-                            }
-                        }
-                    }
-                    if (debugTargetNode != null) break;
-                }
-            } catch (Exception e) {
-                // ignore debug failures
-            }
-        }
-
         if (!shoppingList.isEmpty()) {
             retrieveProdcuts(); 
             move();
-
-            // After moving, if we reached the debug target node, pause and mark debug stop done
-            if (debugTargetNode != null && currentNode != null) {
-                if (currentNode.getX() == debugTargetNode.getX() && currentNode.getY() == debugTargetNode.getY()) {
-                    debugStoppedAtFirst = true;
-                    pauseTimer = 50; // pause for a while for debugging
-                    System.out.println("[Customer DEBUG] stopped at first product node for inspection");
-                    debugTargetNode = null;
-                }
-            }
         }
         else {
             moveToExit();
