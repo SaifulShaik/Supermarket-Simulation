@@ -249,17 +249,41 @@ public class SettingWorld extends World
                 unit.setCustomerNodes(nearbyNodes);
                 
                 for (Node n : nearbyNodes) {
-                    if (SimulationWorld.storeOne != null && SimulationWorld.storeTwo.ownsNode(n)) {
-                        SimulationWorld.storeOne.addDisplayUnit(unit);
-                        unit.setParentStore(SimulationWorld.storeOne);
+                    if (SimulationWorld.storeOne != null && SimulationWorld.storeOne.ownsNode(n)) {
+                        registerUnitWithStore(SimulationWorld.storeOne, unit);
                         break;
                     } else if (SimulationWorld.storeTwo != null && SimulationWorld.storeTwo.ownsNode(n)) {
-                        SimulationWorld.storeTwo.addDisplayUnit(unit);
-                        unit.setParentStore(SimulationWorld.storeTwo);
+                        registerUnitWithStore(SimulationWorld.storeTwo, unit);
                         break;
                     }
                 }
             }
+        }
+    }
+
+    /**
+     * Register a display unit with a store and attempt to add its product types.
+     */
+    private void registerUnitWithStore(Store store, DisplayUnit unit) {
+        if (store == null || unit == null) return;
+        store.addDisplayUnit(unit);
+        unit.setParentStore(store);
+
+        // Best-effort: if the DisplayUnit exposes an "itemToFill" method, invoke
+        // it to discover the product class and register it with the store.
+        try {
+            java.lang.reflect.Method m = unit.getClass().getDeclaredMethod("itemToFill");
+            if (m != null) {
+                m.setAccessible(true);
+                Object prod = m.invoke(unit);
+                if (prod instanceof Product) {
+                    store.addAvailableProductTypes(prod.getClass());
+                }
+            }
+        } catch (NoSuchMethodException nsme) {
+            // Not all display units have itemToFill (e.g., shelves). Ignore.
+        } catch (Exception e) {
+            // ignore other reflection errors; this is best-effort
         }
     }
     
@@ -395,12 +419,10 @@ public class SettingWorld extends World
             
             for (Node n : nearbyNodes) {
                 if (SimulationWorld.storeOne != null && SimulationWorld.storeOne.ownsNode(n)) {
-                    SimulationWorld.storeOne.addDisplayUnit(unit);
-                    unit.setParentStore(SimulationWorld.storeOne);
+                    registerUnitWithStore(SimulationWorld.storeOne, unit);
                     break;
                 } else if (SimulationWorld.storeTwo != null && SimulationWorld.storeTwo.ownsNode(n)) {
-                    SimulationWorld.storeTwo.addDisplayUnit(unit);
-                    unit.setParentStore(SimulationWorld.storeTwo);
+                    registerUnitWithStore(SimulationWorld.storeTwo, unit);
                     break;
                 }
             }
