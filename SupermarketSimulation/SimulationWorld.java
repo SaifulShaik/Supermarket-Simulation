@@ -143,6 +143,31 @@ public class SimulationWorld extends World
                 DisplayUnit unit = data.createDisplayUnit();
                 if (unit != null) {
                     addObject(unit, data.getX(), data.getY());
+                    // register and report available products for debugging
+                    try {
+                        java.util.List<Node> nearby = SettingWorld.findNodesInRange(data.getX(), data.getY(), 100);
+                        unit.setCustomerNodes(nearby);
+                        Store parent = null;
+                        for (Node n : nearby) {
+                            if (storeOne.ownsNode(n)) { storeOne.addDisplayUnit(unit); unit.setParentStore(storeOne); parent = storeOne; break; }
+                            if (storeTwo.ownsNode(n)) { storeTwo.addDisplayUnit(unit); unit.setParentStore(storeTwo); parent = storeTwo; break; }
+                        }
+                            if (parent != null) {
+                                // Derive provided product classes from any already-stocked Product instances
+                                java.util.Set<Class<? extends Product>> provided = new java.util.HashSet<Class<? extends Product>>();
+                                for (Product p : unit.getStockedItems()) {
+                                    if (p != null) provided.add((Class<? extends Product>) p.getClass());
+                                }
+                                if (!provided.isEmpty()) {
+                                    for (Class<? extends Product> pc : provided) parent.addAvailableProductTypes(pc);
+                                }
+                                System.out.println("Added " + unit.getClass().getSimpleName() + " to " + (parent == storeOne ? "Store 1" : "Store 2") + " -> products: " + (provided.isEmpty() ? "<none yet>" : provided));
+                            } else {
+                                System.out.println("Added " + unit.getClass().getSimpleName() + " at (" + data.getX() + "," + data.getY() + ") but could not assign to a store");
+                            }
+                    } catch (Exception e) {
+                        System.err.println("Error registering display unit: " + e.getMessage());
+                    }
                 }
             }
         } else {
@@ -170,6 +195,36 @@ public class SimulationWorld extends World
         addObject(new OrangeBin(),800,460);
         // add SteakHangers to store 1
         addObject(new RawBeefHangers(),935,147);
+
+        // After adding the default layout units, assign them to stores and print their available products
+        for (DisplayUnit unit : getObjects(DisplayUnit.class)) {
+            try {
+                int ux = unit.getX();
+                int uy = unit.getY();
+                java.util.List<Node> nearby = SettingWorld.findNodesInRange(ux, uy, 100);
+                unit.setCustomerNodes(nearby);
+                Store parent = null;
+                for (Node n : nearby) {
+                    if (storeOne.ownsNode(n)) { storeOne.addDisplayUnit(unit); unit.setParentStore(storeOne); parent = storeOne; break; }
+                    if (storeTwo.ownsNode(n)) { storeTwo.addDisplayUnit(unit); unit.setParentStore(storeTwo); parent = storeTwo; break; }
+                }
+                if (parent != null) {
+                    // Derive provided product classes from any already-stocked Product instances
+                    java.util.Set<Class<? extends Product>> provided = new java.util.HashSet<Class<? extends Product>>();
+                    for (Product p : unit.getStockedItems()) {
+                        if (p != null) provided.add((Class<? extends Product>) p.getClass());
+                    }
+                    if (!provided.isEmpty()) {
+                        for (Class<? extends Product> pc : provided) parent.addAvailableProductTypes(pc);
+                    }
+                    System.out.println("Added " + unit.getClass().getSimpleName() + " to " + (parent == storeOne ? "Store 1" : "Store 2") + " -> products: " + (provided.isEmpty() ? "<none yet>" : provided));
+                } else {
+                    System.out.println("Added " + unit.getClass().getSimpleName() + " at (" + ux + "," + uy + ") but could not assign to a store");
+                }
+            } catch (Exception e) {
+                System.err.println("Error registering default display unit: " + e.getMessage());
+            }
+        }
     }
     
     public void act () 
