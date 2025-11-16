@@ -72,7 +72,12 @@ public abstract class Customer extends SuperSmoothMover
      * finally checks out once all products are purchased
      */
     public void act() {
-        if (store == null) {
+        // move to store entrance access node
+        if (SimulationWorld.getStartNode() == currentNode) {
+            move();
+        }
+        // choose store
+        else if (store == null) {
             chooseStore();
         }
         
@@ -278,220 +283,77 @@ public abstract class Customer extends SuperSmoothMover
         
     }
     
-    /*
-     * Retrieve products in the shopping list
-     * Add the product to the basket  - can later be used for checking out.
-     * 
-     * @author: Owen Kung
-     * @version: Nov 2025
+    /**
+     * Move method
+     * Handles selection of target nodes
      */
-    /*protected void retrieveProdcuts()
-    {
-        //ArrayList<DisplayUnit> units= (ArrayList<DisplayUnit>)getIntersectingObjects(DisplayUnit.class);
-        DisplayUnit unit=(DisplayUnit) getOneIntersectingObject(DisplayUnit.class);
-        if(isTouching(Butcher.class))
-        {
-            //go to butcher for RawBeef
-            unit=getDisplayUnit(RawBeefHangers.class);
-        }
-        if(unit==null)
-        {
-            return;
-        }
-
-        //Retrieve what's in fridge
-        if(unit.getClass().getSimpleName().equals("Fridge"))
-        {
-            if(shoppingList.contains(SimulationWorld.PRODUCT_COKE))
-            {
-                cart.add(unit.retrieve(Coke.class));
-                shoppingList.remove(SimulationWorld.PRODUCT_COKE);
-            }
-            if(shoppingList.contains(SimulationWorld.PRODUCT_SPRITE))
-            {
-                cart.add(unit.retrieve(Sprite.class));
-                shoppingList.remove(SimulationWorld.PRODUCT_SPRITE);
-            }
-            if(shoppingList.contains(SimulationWorld.PRODUCT_FANTA))
-            {
-                cart.add(unit.retrieve(Fanta.class));
-                shoppingList.remove(SimulationWorld.PRODUCT_FANTA);
-            }
-            if(shoppingList.contains(SimulationWorld.PRODUCT_WATER))
-            {
-                cart.add(unit.retrieve(Water.class));
-                shoppingList.remove(SimulationWorld.PRODUCT_WATER);
-            }
-           
-        }
-        //Retrieve what's in snack shelf
-        if(unit.getClass().getSimpleName().equals("SnackShelf"))
-        {
-            if(shoppingList.contains(SimulationWorld.PRODUCT_LAYS))
-            {
-                cart.add(unit.retrieve(Lays.class));
-                shoppingList.remove(SimulationWorld.PRODUCT_LAYS);
-            }
-            if(shoppingList.contains(SimulationWorld.PRODUCT_RUFFLES))
-            {
-                cart.add(unit.retrieve(Ruffles.class));
-                shoppingList.remove(SimulationWorld.PRODUCT_RUFFLES);
-            }
-            if(shoppingList.contains(SimulationWorld.PRODUCT_DORITOS))
-            {
-                cart.add(unit.retrieve(Doritos.class));
-                shoppingList.remove(SimulationWorld.PRODUCT_DORITOS);
-            }
-        }
-        //Retrieve what's in cup noodle shelf
-        if(unit.getClass().getSimpleName().equals("CupNoodleShelf"))
-        {
-            if(shoppingList.contains(SimulationWorld.PRODUCT_XING_RAMEN))
-            {
-                cart.add(unit.retrieve(XingRamen.class));
-                shoppingList.remove(SimulationWorld.PRODUCT_XING_RAMEN);
-            }
-            if(shoppingList.contains(SimulationWorld.PRODUCT_NISSIN))
-            {
-                cart.add(unit.retrieve(Nissin.class));
-                shoppingList.remove(SimulationWorld.PRODUCT_NISSIN);
-            }
-            if(shoppingList.contains(SimulationWorld.PRODUCT_JIN_RAMEN))
-            {
-                cart.add(unit.retrieve(JinRamen.class));
-                shoppingList.remove(SimulationWorld.PRODUCT_JIN_RAMEN);
-            }
-        }
-        //Retrieve what's in applebin
-        if(unit.getClass().getSimpleName().equals("CandyBin"))
-        {
-            if(shoppingList.contains(SimulationWorld.PRODUCT_CANDY))
-            {
-                cart.add(unit.retrieve(Candy.class));
-                shoppingList.remove(SimulationWorld.PRODUCT_CANDY);
-            }
-        }
-        if(unit.getClass().getSimpleName().equals("AppleBin"))
-        {
-            if(shoppingList.contains(SimulationWorld.PRODUCT_APPLE))
-            {
-                cart.add(unit.retrieve(Apple.class));
-                shoppingList.remove(SimulationWorld.PRODUCT_APPLE);
-            }
-        }
-        if(unit.getClass().getSimpleName().equals("OrangeBin"))
-        {
-            if(shoppingList.contains(SimulationWorld.PRODUCT_ORANGE))
-            {
-                cart.add(unit.retrieve(Orange.class));
-                shoppingList.remove(SimulationWorld.PRODUCT_ORANGE);
-            }
-        }
-        if(unit.getClass().getSimpleName().equals("LettuceBin"))
-        {
-            if(shoppingList.contains(SimulationWorld.PRODUCT_LETTUCE))
-            {
-                cart.add(unit.retrieve(Lettuce.class));
-                shoppingList.remove(SimulationWorld.PRODUCT_LETTUCE);
-            }
-        }
-        if(unit.getClass().getSimpleName().equals("CarrotBin"))
-        {
-            if(shoppingList.contains(SimulationWorld.PRODUCT_CARROT))
-            {
-                cart.add(unit.retrieve(Carrot.class));
-                shoppingList.remove(SimulationWorld.PRODUCT_CARROT);
-            }
-        }
-        if(unit.getClass().getSimpleName().equals("SteakWarmer"))
-        {
-            if(shoppingList.contains(SimulationWorld.PRODUCT_STEAK))
-            {
-                cart.add(unit.retrieve(Steak.class));
-                shoppingList.remove(SimulationWorld.PRODUCT_STEAK);
-            }
-            if(shoppingList.contains(SimulationWorld.PRODUCT_DRUM_STICK))
-            {
-                cart.add(unit.retrieve(DrumStick.class));
-                shoppingList.remove(SimulationWorld.PRODUCT_DRUM_STICK);
-            }
-        }
-        if(unit.getClass().getSimpleName().equals("RawBeefHangers"))
-        {
-            if(shoppingList.contains(SimulationWorld.PRODUCT_RAW_BEEF))
-            {
-                cart.add(unit.retrieve(RawBeef.class));
-                shoppingList.remove(SimulationWorld.PRODUCT_RAW_BEEF);
-            }
-        }
-    }*/
-    
-    /*
-     * Get the requested DisplayUnit with class type
-     * 
-     * @author:Owen Kung
-     * @version: Nov 2025
-     */
-    /*private DisplayUnit getDisplayUnit(Class displayClass)
-    {
-        ArrayList<DisplayUnit> units = (ArrayList<DisplayUnit>) getWorld().getObjects(DisplayUnit.class);
-        for(DisplayUnit u:units)
-        {
-            //return the requested disply unit
-            if (u.getClass()==displayClass) 
-            {
-                return u;
-            }
-        }
-        return null;
-    }*/
-    
     protected void move() {
+        // cannot move if paused
         if (pauseTimer > 0) {
             pauseTimer--;
             return;
         }
-
+        
+        // no need to reselect a new target node if already moving to one
         if (targetNode != null) {
             moveToNode(targetNode); 
             return;
         }
 
+        // gets neighbouring nodes
         List<Node> neighbouringNodes = currentNode.getNeighbouringNodes();
         
+        // cannot move if no neighbouring nodes
         if (neighbouringNodes.isEmpty() || neighbouringNodes == null) {
             return;
         }
         
+        // makes available nodes
         List<Node> availableNodes = new ArrayList<>();
         
+        // loops through all neighbouring nodes
         for (Node n : neighbouringNodes) {
-            if (n == previousNode) continue;
-            else {
+            // a node is 'available' if it wasn't the previous node (prevent back and forth movement)
+            if (n != previousNode) {
                 availableNodes.add(n);
             }
         }
         
+        // cannot move if no available nodes
         if (availableNodes.isEmpty() || availableNodes == null) {
             return;
         }
         
+        // randomly chooses next node
         Node nextNode = availableNodes.get(Greenfoot.getRandomNumber(availableNodes.size()));
+        
+        // updates previous node
         previousNode = currentNode;
+        
+        // sets target node
         targetNode = nextNode;
         
+        // start moving to next node
         moveToNode(nextNode);
     }
     
+    /**
+     * Method to move towards a Node
+     * 
+     * @param n node to move to
+     */
     protected void moveToNode(Node n) {
+        // calculates distance to the next node
         int dx = n.getX() - getX();
         int dy = n.getY() - getY();
-        
         double distance = Math.sqrt(dx * dx + dy * dy);
         
+        // finishes movement if almost there (1 act cycle would move too much to the distance)
         if (distance < movementSpeed) {
+            // snaps to the target location
             setLocation(n.getX(), n.getY());
             
+            // updates current and target node
             currentNode = n;
             targetNode = null;
 
@@ -504,14 +366,18 @@ public abstract class Customer extends SuperSmoothMover
                 }
             } catch (Exception ignore) {}
             
+            // don't move any further
             return;
         }
         
+        // calculates angle
         double angle = Math.atan2(dy, dx);
         
+        // updates x and y values
         double newX = getX() + Math.cos(angle) * movementSpeed;
         double newY = getY() + Math.sin(angle) * movementSpeed;
         
+        // updates location
         setLocation(newX, newY);
     }
 

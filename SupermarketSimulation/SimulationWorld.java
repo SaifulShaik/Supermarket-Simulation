@@ -5,7 +5,7 @@ import java.util.List;
 /**
  * Write a description of class MyWorld here.
  * 
- * @author Saiful Shaik, Owen Kung
+ * @author Saiful Shaik, Owen Kung, Joe Zhuo
  * @version Modified: Nov, 8, 2025
  */
 public class SimulationWorld extends World
