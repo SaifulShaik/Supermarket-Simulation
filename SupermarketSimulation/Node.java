@@ -18,12 +18,20 @@ public class Node
 
     private boolean isEntrance;
     private boolean hasCustomer;
+    private boolean isExit;
+    private boolean isEnd;
     
     public Node(int x, int y) {
+        this(x, y, false, false, false);
+    }
+    
+    public Node(int x, int y, boolean isEntrance, boolean isExit, boolean isEnd) {
         worldX = x;
         worldY = y;
-        isEntrance = false;
-        hasCustomer = false;
+        this.isEntrance = isEntrance;
+        this.hasCustomer = false;
+        this.isExit = isExit;
+        this.isEnd = isEnd;
         neighbouringNodes = new ArrayList<>();
     }
     
@@ -39,12 +47,16 @@ public class Node
         return worldY;
     }
     
+    public boolean checkIsEnd() {
+        return isEnd;
+    }
+    
     public boolean checkIsEntrance() {
         return isEntrance;
     }
     
-    public void setEntrance() {
-        isEntrance = true;
+    public boolean checkIsExit() {
+        return isExit;
     }
     
     public boolean checkHasCustomer() {

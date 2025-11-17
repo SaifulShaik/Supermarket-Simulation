@@ -10,9 +10,6 @@ import java.util.List;
  */
 public class SimulationWorld extends World
 {
-    //public static final int WORLD_WIDTH = 1048;
-    //public static final int WORLD_HEIGHT = 514;  
-    
     // Product name constants
     public static final String PRODUCT_APPLE = "Apple";
     public static final String PRODUCT_ORANGE = "Orange";
@@ -54,30 +51,22 @@ public class SimulationWorld extends World
         roadNodes = new ArrayList<>();
         
         Node roadSpawn = new Node(600, 100);
-        
         Node entranceAccess = new Node(600, 400);
-        roadSpawn.addNeighbouringNode(entranceAccess);
-        
         Node storeOneEntranceNode = storeOne.getEntranceNode();
+        Node storeTwoEntranceNode = storeTwo.getEntranceNode();
+        
+        roadSpawn.addNeighbouringNode(entranceAccess);
         entranceAccess.addNeighbouringNode(storeOneEntranceNode);
         
-        Node storeTwoEntranceNode = storeTwo.getEntranceNode();
         entranceAccess.addNeighbouringNode(storeTwoEntranceNode);
         
         roadNodes.add(roadSpawn);
-        roadNodes.add(entranceAccess);
-        
-        // Draw world-wide grid overlay
-        //drawWorldGrid();
         
         addObject(new CustomerSpawner(), 0, 0);
         addObject(new StoreUI(), getWidth()/2, 50);
         
         // Enable stocking in simulation mode
         DisplayUnit.setEnableStocking(true);
-        
-        //addObject(new Store(480, 480, 20, true), 480, 220); // x: 40 - 480 y: 220 - 480
-        //addObject(new Store(360, 120, 20, false), getWidth() - 240, 360);
         
         // add the Cashier to right store
         Cashier rsCashier = new Cashier();
@@ -93,6 +82,7 @@ public class SimulationWorld extends World
         addObject(lsLeftCashier, getWidth()/2 - 250, getHeight() / 2 + 130);
         addObject(lsRightCashier, getWidth()/2 - 425, getHeight() / 2 + 130);
         
+        // adds cashiers to store
         storeOne.addCashier(lsLeftCashier);
         storeOne.addCashier(lsRightCashier);
         
@@ -101,19 +91,6 @@ public class SimulationWorld extends World
         
         // Load display units from saved layout, or use default if no saved layout exists
         loadDisplayUnits();
-
-        // After display units are created and added to the world, update each DisplayUnit's
-        // customer node based on its world position
-        for (DisplayUnit unit : getObjects(DisplayUnit.class)) {
-            //unit.updateCustomerNode();
-        }
-
-        // After display units are created and added to the world, refresh
-        // all stores so they map product nodes from the actual display unit
-        // positions (instead of relying on hard-coded positions).
-        for (Store s : getObjects(Store.class)) {
-            //s.updateProductLocations();
-        }
 
         // Add visual markers for stores' nodes (stores manage their own node markers)
         storeOne.showNodesInWorld(this);
@@ -126,6 +103,10 @@ public class SimulationWorld extends World
     
     public static Node getStartNode() {
         return roadNodes.get(0);
+    }
+    
+    public static Node getExitNode() {
+        return roadNodes.get(roadNodes.size() - 1);
     }
     
     /** Add a NodeMarker that follows each DisplayUnit so nodes in front of

@@ -25,7 +25,7 @@ public class Cashier extends SuperSmoothMover
     private double totalEarnings;
     
     private int timer;
-    private int serviceSpeed; // acts required per product service
+    private double serviceSpeed; // final service speed = number of items * service speed
     
     private Node customerNode;
 
@@ -43,24 +43,7 @@ public class Cashier extends SuperSmoothMover
         setImage(frames[0]);
         
         queue = new LinkedList<>();
-        serviceSpeed = 180;
-    }
-    
-    /*
-     * Use specifiedfile for cashier images
-     */
-    public Cashier(String frame0, String frame1)
-    {
-        GreenfootImage frame0Image = new GreenfootImage(frame0);
-        GreenfootImage frame1Image = new GreenfootImage(frame1);
-        frame0Image.scale(frame0Image.getWidth()/6, frame0Image.getHeight()/6);
-        frame1Image.scale(frame1Image.getWidth()/6, frame1Image.getHeight()/6);
-
-        frames=new GreenfootImage[]{frame0Image, frame1Image};
-        setImage(frames[0]);
-        
-        queue = new LinkedList<Customer>();
-        serviceSpeed = 180;
+        this.serviceSpeed = 3.0;
     }
     
     public void act() 
@@ -73,17 +56,18 @@ public class Cashier extends SuperSmoothMover
             setImage(frames[frame]);
         }
         
-        if (currentCustomer != null) {
-            processCurrentCustomer();
-        } 
-        else if (!queue.isEmpty()) {
+        
+        if (currentCustomer == null && !queue.isEmpty()) {
             startNextCustomer();
         }
+        else {
+            processCurrentCustomer();
+        } 
     }
     
     private void startNextCustomer() {
         currentCustomer = queue.poll();
-        timer = serviceSpeed;
+        timer = (int) serviceSpeed * currentCustomer.getCartSize();
     }
     
     private void processCurrentCustomer() {
@@ -94,12 +78,13 @@ public class Cashier extends SuperSmoothMover
         if (timer <= 0) {
             totalEarnings = currentCustomer.calculatePriceOfCart();
             showEarnings();
-            currentCustomer.leaveStore();
+            currentCustomer.checkOut();
             currentCustomer = null;
         }
     }
     
     public void addCustomerToQueue(Customer c) {
+        if (c == null || c == currentCustomer || queue.contains(c)) return;
         queue.offer(c);
     }
     
