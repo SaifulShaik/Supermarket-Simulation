@@ -11,7 +11,7 @@ public class RegularShopper extends Customer
     GreenfootImage shopper = new GreenfootImage("maleShopper/left3.png");
     
     public RegularShopper(Node n) {
-        super(8, 100, n, 3); // 3 items
+        super((Greenfoot.getRandomNumber(6) + 1) * 0.5, 100, n, 5); // 5 max items, 0.5-3.0 speed
         shopper.scale(shopper.getWidth() / 8, shopper.getHeight() / 8);
 
         int w = shopper.getWidth();

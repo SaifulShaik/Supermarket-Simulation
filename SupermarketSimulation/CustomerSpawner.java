@@ -8,11 +8,9 @@ import java.util.ArrayList;
  * @version November 2025
  */
 
-
-
 public class CustomerSpawner extends Actor
 {
-    private final static int spawnRate = 20;
+    private final static int spawnRate = 150;
     
     public void act() {
         spawnCustomers();

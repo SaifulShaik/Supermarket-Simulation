@@ -24,17 +24,9 @@ public abstract class Customer extends SuperSmoothMover
     protected Node currentNode;
     protected Node targetNode;
     
-    // Debug: last node coords printed to avoid redundant logs
-    protected int _dbg_lastNodeX = Integer.MIN_VALUE;
-    protected int _dbg_lastNodeY = Integer.MIN_VALUE;
-    
     protected int pauseTimer = 0;
     
     protected Store store;
-    
-    // Debug: when true the customer will stop at the first product node after entering the store
-    protected boolean debugStoppedAtFirst = false;
-    protected Node debugTargetNode = null;
     
     public Customer() {
         this(2.0, 100.0, null, 5);
@@ -61,16 +53,7 @@ public abstract class Customer extends SuperSmoothMover
         
         shoppingList = new ArrayList<>();
         shoppingList = generateShoppingList(maxShoppingListItems);
-        cart = new ArrayList();    
-        // Debug: print the generated shopping list for this customer
-        try {
-            StringBuilder sb = new StringBuilder();
-            for (Class<? extends Product> c : shoppingList) {
-                sb.append(c.getSimpleName()).append(", ");
-            }
-            String listStr = sb.length() > 0 ? sb.substring(0, sb.length()-2) : "<empty>";
-            System.out.println("[Customer] spawned with shopping list: " + listStr);
-        } catch (Exception ignore) {}
+        cart = new ArrayList();
     }
     
     /**
@@ -89,18 +72,23 @@ public abstract class Customer extends SuperSmoothMover
             chooseStore();
         }
         
+        // take items while walking around if shopping list items aren't collected yet
         if (!shoppingList.isEmpty()) {
             retrieveProdcuts(); 
             move(false);
         }
+        // check out if the shopping list items are all collected
         else if (!hasCheckedOut) {
+            // chooses cashier first
             if (targetCashier == null) {
                 chooseCashier();
             }
+            // then moves to cashier
             else {
                 moveToCashier();
             }
         }
+        // leaves the store if everything has been done
         else {
             leaveStore();
         }
@@ -110,31 +98,23 @@ public abstract class Customer extends SuperSmoothMover
      * Method to choose a store to go into
      */
     protected void chooseStore() {
-        // Debug: print store product lists to diagnose empty-store issue
-        try {
-            System.out.println("[Customer] chooseStore(): storeOne has " + SimulationWorld.storeOne.getAvailableProducts().size() + " products, storeTwo has " + SimulationWorld.storeTwo.getAvailableProducts().size() + " products");
-        } catch (Exception ignore) {}
-
-        List<Store> stores = getWorld().getObjects(Store.class);
-        
-        if (stores.isEmpty()) {
-            System.out.println("[Customer] chooseStore(): no Store actors in world, using static references");
-        }
-        
+        // initializes shopping lists
         List<Class<? extends Product>> storeOneShoppingList = new ArrayList<>();
         List<Class<? extends Product>> storeTwoShoppingList = new ArrayList<>();
         
-        System.out.println("[Customer] chooseStore(): original shopping list has " + shoppingList.size() + " items");
-        
+        // checks if product is in store one or store two
         for (Class<? extends Product> productClass : shoppingList) {
             boolean inStoreOne = false;
+            
+            // checks if the product class belongs in the store one's available products
             for (Class<? extends Product> c : SimulationWorld.storeOne.getAvailableProducts()) {
                 if (c == productClass) {
                     inStoreOne = true;
                     break;
                 }
             }
-    
+            
+            // then checks if the product class belongs in the store two's available products
             boolean inStoreTwo = false;
             for (Class<? extends Product> p : SimulationWorld.storeTwo.getAvailableProducts()) {
                 if (p == productClass) {
@@ -143,12 +123,12 @@ public abstract class Customer extends SuperSmoothMover
                 }
             }
     
+            // adds the product to the store based shopping lists
             if (inStoreOne) storeOneShoppingList.add(productClass);
             if (inStoreTwo) storeTwoShoppingList.add(productClass);
         }
         
-        System.out.println("[Customer] chooseStore(): after filtering - store1=" + storeOneShoppingList.size() + " items, store2=" + storeTwoShoppingList.size() + " items");
-        
+        // compares store based shopping lists and goes to the store with more available items
         if (storeOneShoppingList.size() > storeTwoShoppingList.size()) {
             store = SimulationWorld.storeOne;
             shoppingList = storeOneShoppingList;
@@ -157,157 +137,158 @@ public abstract class Customer extends SuperSmoothMover
             store = SimulationWorld.storeTwo;
             shoppingList = storeTwoShoppingList;
         }
+        // if both lists are the same size or are both empty
         else {
-            // Both lists same size (including both empty)
+            // both lists are empty
             if (storeOneShoppingList.isEmpty() && storeTwoShoppingList.isEmpty()) {
-                System.out.println("[Customer] chooseStore(): BOTH stores have empty shopping lists - stores not populated! Picking store 1 anyway.");
-                store = SimulationWorld.storeOne; // fallback
-            } else {
-                int chosenStore = Greenfoot.getRandomNumber(2); // use 2 not stores.size() for static refs
+                store = SimulationWorld.storeOne; // defaults to store one 
+            } 
+            // both lists are the same size
+            else {
+                int chosenStore = Greenfoot.getRandomNumber(2);
                 store = (chosenStore == 0) ? SimulationWorld.storeOne : SimulationWorld.storeTwo;
                 shoppingList = store == SimulationWorld.storeOne ? storeOneShoppingList : storeTwoShoppingList;
             }
         }
 
+        // updates store entrance
         targetNode = store.getEntranceNode();
-        // Debug: print chosen store and final shopping list for this customer
-        try {
-            StringBuilder sb2 = new StringBuilder();
-            for (Class<? extends Product> c : shoppingList) sb2.append(c.getSimpleName()).append(", ");
-            String listStr2 = sb2.length() > 0 ? sb2.substring(0, sb2.length()-2) : "<empty>";
-            System.out.println("[Customer] chose " + (store == SimulationWorld.storeOne ? "Store 1" : "Store 2") + " with shopping list: " + listStr2);
-        } catch (Exception ignore) {}
     }
     
+    /**
+     * Method to generate a shopping list
+     * 
+     * @param maxShoppingListItems maximum number of shopping list items
+     * @return list of products generated
+     */
     protected List<Class<? extends Product>> generateShoppingList(int maxShoppingListItems) {
+        // initializes a list of items that are going to be in the cart
         List<Class<? extends Product>> items = new ArrayList<>();
         
+        // initializes a list of available items
         List<Class<? extends Product>> availableItemTypes = new ArrayList<>();
         
+        // adds available products from store one
         for (Class<? extends Product> p : SimulationWorld.storeOne.getAvailableProducts()) {
             availableItemTypes.add(p);
         }
         
+        // adds available products from store two
         for (Class<? extends Product> p : SimulationWorld.storeTwo.getAvailableProducts()) {
             availableItemTypes.add(p);
         }
         
+        // cannot have 0 or negative shopping lsit size
         if (maxShoppingListItems <= 0) {
             maxShoppingListItems = 1; 
         }
         
-        // Generate between 1 and maxShoppingListItems (inclusive)
+        // generate list size between 1 and maxShoppingListItems
         int numItems = 1 + Greenfoot.getRandomNumber(maxShoppingListItems);
         
-        System.out.println("[Customer] generateShoppingList: maxItems=" + maxShoppingListItems + ", generating " + numItems + " items from " + availableItemTypes.size() + " available types");
-        
+        // randomly selects items
         for (int i = 0; i < numItems; i++) {
             if (!availableItemTypes.isEmpty()) {
                 Class<? extends Product> itemClass = availableItemTypes.get(Greenfoot.getRandomNumber(availableItemTypes.size()));
                 items.add(itemClass);
-            } else {
-                System.out.println("[Customer] generateShoppingList: availableItemTypes is empty - stores not populated yet!");
-            }
+            } 
         }
         
-        System.out.println("[Customer] generateShoppingList: generated " + items.size() + " items total");
+        // returns the list
         return items;
     }
     
+    /**
+     * Method for the customer to retrieve products
+     */
     protected void retrieveProdcuts() {
-        // Debug: print quick state to help investigate why customers aren't picking items
-        try {
-            System.out.println("[Customer] retrieveProdcuts() state: store=" + (store==null?"<null>":store.name) + 
-                ", currentNode=" + (currentNode==null?"<null>":"("+currentNode.getX()+","+currentNode.getY()+")") +
-                ", shoppingListSize=" + (shoppingList==null?0:shoppingList.size()) +
-                ", world=" + (getWorld()==null?"<null>":"present") );
-        } catch (Exception ignore) {}
-
         if (store == null || currentNode == null || shoppingList == null || shoppingList.isEmpty() || getWorld() == null) return;
         
+        // gets the available display units in the store
         List<DisplayUnit> units = store.getAvailableDisplayUnits();
-        try {
-            System.out.println("[Customer] store has " + (units==null?0:units.size()) + " display units");
-        } catch (Exception ignore) {}
+        
+        // cannot get anyhting if there are no display units
         if (units == null || units.isEmpty()) return;
         
+        // loops through display units
         for (DisplayUnit u : units) {
             if (u == null) continue;
             
+            // gets the display unit's access nodes
             List<Node> accessNodes = u.getCustomerNodes();
-            try {
-                StringBuilder sb = new StringBuilder();
-                if (accessNodes != null) {
-                    for (Node an : accessNodes) sb.append("(").append(an.getX()).append(",").append(an.getY()).append(") ");
-                }
-                System.out.println("[Customer] unit=" + u.getClass().getSimpleName() + " accessNodes=[" + sb.toString() + "] stocked=" + (u.getStockedItems()==null?0:u.getStockedItems().size()));
-            } catch (Exception ignore) {}
             
-            // Accept match either by object identity or by coordinates (robust against different Node instances)
             boolean accessMatch = false;
+            
+            // checks if the customer can access the display unit
             if (accessNodes != null) {
                 for (Node an : accessNodes) {
-                    if (an == currentNode) { accessMatch = true; break; }
-                    if (currentNode != null && an.getX() == currentNode.getX() && an.getY() == currentNode.getY()) { accessMatch = true; break; }
+                    if (an == currentNode) { 
+                        accessMatch = true; 
+                        break; 
+                    }
+                    if (currentNode != null && an.getX() == currentNode.getX() && an.getY() == currentNode.getY()) { 
+                        accessMatch = true; 
+                        break; 
+                    }
                 }
             }
+            
+            // cannot retrieve item if not in range
             if (!accessMatch) continue;
             
+            // checks stocked items
             List<Product> stocked = u.getStockedItems();
             if (stocked == null || stocked.isEmpty()) continue;
             
+            // take item if in shopping list
             for (Class<? extends Product> wantedClass : new ArrayList<>(shoppingList)) {
                 Product retrieved = u.retrieve(wantedClass);
                 if (retrieved != null) {
+                    // adds to cart and removes from shopping list
                     cart.add(retrieved);
                     shoppingList.remove(wantedClass);
-                    pauseTimer = 5 + Greenfoot.getRandomNumber(11);
-                    // Debug: print what was picked and the remaining shopping list / cart
-                    try {
-                        StringBuilder rem = new StringBuilder();
-                        for (Class<? extends Product> c : shoppingList) rem.append(c.getSimpleName()).append(", ");
-                        String remStr = rem.length() > 0 ? rem.substring(0, rem.length()-2) : "<empty>";
-                        StringBuilder cartSb = new StringBuilder();
-                        for (Product cp : cart) cartSb.append(cp.getClass().getSimpleName()).append(", ");
-                        String cartStr = cartSb.length() > 0 ? cartSb.substring(0, cartSb.length()-2) : "<empty>";
-                        System.out.println("[Customer] picked " + retrieved.getClass().getSimpleName() + "; remaining: " + remStr + "; cart: " + cartStr);
-                    } catch (Exception ignore) {}
-                    // Stop after picking one item so customer pauses and doesn't pick multiple items in one tick
+                    pauseTimer = 10 + Greenfoot.getRandomNumber(21); // 10-30 act delay
                     return;
                 }
             }
         }
     }
     
+    /**
+     * Method to choose a cashier
+     */
     private void chooseCashier() {
-        Cashier best = null;
-        
+        // gets the store's cashiers
         List<Cashier> cashiers = store.getCashiers();
         
+        // cannot choose if no cashiers
         if (cashiers == null || cashiers.isEmpty()) {
-            System.out.println("[Cashier] no cashiers");
             return;
         }
         
-        best = cashiers.get(0);
+        // defaults to first cashier
+        Cashier best = cashiers.get(0);
         
+        // loops through cashiers
         for (Cashier c : cashiers) {
+            // compares queue size to the current best queue size
             if (c.getQueueSize() < best.getQueueSize()) {
                 best = c;
             }
         }
         
-        System.out.println("Chose cashier");
+        // updates target cashier
         targetCashier = best;
         
-        Node cashierNode = best.getCustomerNode();
-        
-        // creates path to the cashier
+        // finds a path to the cashier's node
         if (path == null || path.isEmpty()) {
-            path = findPath(cashierNode);
+            path = findPath(best.getCustomerNode());
         }
     }
     
+    /**
+     * Method to move to cashier
+     */
     private void moveToCashier() {
         Node cashierNode = targetCashier.getCustomerNode();
         if (cashierNode == null) return;
@@ -316,7 +297,6 @@ public abstract class Customer extends SuperSmoothMover
             (currentNode == cashierNode ||
              (currentNode.getX() == cashierNode.getX() && currentNode.getY() == cashierNode.getY()))) {
             targetCashier.addCustomerToQueue(this);
-            System.out.println("[Customer] Reached cashier node.");
             return;
         }
     
@@ -470,15 +450,6 @@ public abstract class Customer extends SuperSmoothMover
             // updates current and target node
             currentNode = n;
             targetNode = null;
-
-            // Debug: when node changes, print which display units expose this node
-            try {
-                if (currentNode != null && (currentNode.getX() != _dbg_lastNodeX || currentNode.getY() != _dbg_lastNodeY)) {
-                    _dbg_lastNodeX = currentNode.getX();
-                    _dbg_lastNodeY = currentNode.getY();
-                    debugPrintMatchingUnitsAtCurrentNode();
-                }
-            } catch (Exception ignore) {}
             
             // don't move any further
             return;
@@ -493,35 +464,6 @@ public abstract class Customer extends SuperSmoothMover
         
         // updates location
         setLocation(newX, newY);
-    }
-
-    /** Debug helper: prints display units in the current store whose access nodes match currentNode */
-    private void debugPrintMatchingUnitsAtCurrentNode() {
-        try {
-            if (store == null || currentNode == null) {
-                System.out.println("[Customer DEBUG] no store or currentNode to match");
-                return;
-            }
-            StringBuilder sb = new StringBuilder();
-            for (DisplayUnit u : store.getAvailableDisplayUnits()) {
-                if (u == null) continue;
-                List<Node> an = u.getCustomerNodes();
-                if (an == null) continue;
-                for (Node node : an) {
-                    if (node == currentNode || (node.getX() == currentNode.getX() && node.getY() == currentNode.getY())) {
-                        sb.append(u.getClass().getSimpleName()).append("(stocked=").append(u.getStockedItems()==null?0:u.getStockedItems().size()).append("), ");
-                        break;
-                    }
-                }
-            }
-            if (sb.length() == 0) {
-                System.out.println("[Customer DEBUG] arrived at node (" + currentNode.getX() + "," + currentNode.getY() + ") - no matching display units expose this node");
-            } else {
-                System.out.println("[Customer DEBUG] arrived at node (" + currentNode.getX() + "," + currentNode.getY() + ") - matching units: " + sb.toString());
-            }
-        } catch (Exception e) {
-            System.err.println("[Customer DEBUG] error in debugPrintMatchingUnitsAtCurrentNode: " + e.getMessage());
-        }
     }
     
     /**

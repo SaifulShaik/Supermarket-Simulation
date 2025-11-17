@@ -166,6 +166,8 @@ public class Store {
             nodes.add(n8b);
             nodes.add(n11);
             nodes.add(n12);
+            nodes.add(n13);
+            nodes.add(n14);
             nodes.add(e0);
         } 
         else if (name.equals("Store 2")) {
@@ -229,6 +231,8 @@ public class Store {
             nodes.add(n3b);
             nodes.add(n4b);
             nodes.add(n5b);
+            nodes.add(n6);
+            nodes.add(n7);
         }
     }
     
