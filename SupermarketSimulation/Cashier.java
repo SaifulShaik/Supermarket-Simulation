@@ -60,7 +60,7 @@ public class Cashier extends SuperSmoothMover
         setImage(frames[0]);
         
         queue = new LinkedList<Customer>();
-        serviceSpeed = 180;
+        serviceSpeed = 10;
     }
     
     public void act() 
@@ -73,33 +73,38 @@ public class Cashier extends SuperSmoothMover
             setImage(frames[frame]);
         }
         
-        if (currentCustomer != null) {
-            processCurrentCustomer();
-        } 
-        else if (!queue.isEmpty()) {
+        
+        if (currentCustomer == null && !queue.isEmpty()) {
             startNextCustomer();
         }
+        else {
+            processCurrentCustomer();
+        } 
     }
     
     private void startNextCustomer() {
+        System.out.println("Started handling new customer");
         currentCustomer = queue.poll();
         timer = serviceSpeed;
     }
     
     private void processCurrentCustomer() {
         if (currentCustomer == null) return;
+        System.out.println("Dealing with customer");
         
         timer--;
         
         if (timer <= 0) {
             totalEarnings = currentCustomer.calculatePriceOfCart();
             showEarnings();
-            currentCustomer.leaveStore();
+            currentCustomer.checkOut();
             currentCustomer = null;
+            System.out.println("[Cashier] customer has checked out");
         }
     }
     
     public void addCustomerToQueue(Customer c) {
+        if (c == null || c == currentCustomer || queue.contains(c)) return;
         queue.offer(c);
     }
     

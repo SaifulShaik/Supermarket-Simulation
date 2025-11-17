@@ -57,6 +57,8 @@ public abstract class Customer extends SuperSmoothMover
         
         store = null;
         
+        hasCheckedOut = false;
+        
         shoppingList = new ArrayList<>();
         shoppingList = generateShoppingList(maxShoppingListItems);
         cart = new ArrayList();    
@@ -80,7 +82,7 @@ public abstract class Customer extends SuperSmoothMover
     public void act() {
         // move to store entrance access node
         if (SimulationWorld.getStartNode() == currentNode) {
-            move();
+            move(false);
         }
         // choose store
         else if (store == null) {
@@ -89,17 +91,14 @@ public abstract class Customer extends SuperSmoothMover
         
         if (!shoppingList.isEmpty()) {
             retrieveProdcuts(); 
-            move();
+            move(false);
         }
         else if (!hasCheckedOut) {
             if (targetCashier == null) {
                 chooseCashier();
             }
-            else if (currentNode != targetCashier.getCustomerNode()) {
-                moveToCashier();
-            }
             else {
-                leaveStore();
+                moveToCashier();
             }
         }
         else {
@@ -300,32 +299,23 @@ public abstract class Customer extends SuperSmoothMover
         
         System.out.println("Chose cashier");
         targetCashier = best;
+        
+        Node cashierNode = best.getCustomerNode();
+        
+        // creates path to the cashier
+        if (path == null || path.isEmpty()) {
+            path = findPath(cashierNode);
+        }
     }
     
     private void moveToCashier() {
         Node cashierNode = targetCashier.getCustomerNode();
         if (cashierNode == null) return;
     
-        if (path == null || path.isEmpty()) {
-            path = findPath(cashierNode);
-    
-            if (path == null || path.isEmpty()) {
-                System.out.println("[Customer] No path to cashier found.");
-                return;
-            }
-    
-            Node first = path.get(0);
-            if (currentNode != null &&
-                (first == currentNode ||
-                 (first.getX() == currentNode.getX() && first.getY() == currentNode.getY()))) {
-                path.remove(0);
-            }
-        }
-    
         if (currentNode != null &&
             (currentNode == cashierNode ||
              (currentNode.getX() == cashierNode.getX() && currentNode.getY() == cashierNode.getY()))) {
-                 targetCashier.addCustomerToQueue(this);
+            targetCashier.addCustomerToQueue(this);
             System.out.println("[Customer] Reached cashier node.");
             return;
         }
@@ -388,18 +378,24 @@ public abstract class Customer extends SuperSmoothMover
      * Method for the customer to leave the store
      */
     public void leaveStore() {
-        // goes to the exit under the cashier's current node
-        // then walks back to the store entrance node
-        // then walks to the entrance access node
-        // make a new node in simulationworld where the customers move to when they are done shopping
-        // move to the worldExit and remove itself from the world
+        // cannot leave if didn't check out yet
+        if (!hasCheckedOut) return;
+        
+        Node worldExit = SimulationWorld.getExitNode();
+        
+        if (currentNode.checkIsEnd()) {
+            getWorld().removeObject(this);
+            return;
+        }
+        
+        move(true);
     }
     
     /**
      * Move method
      * Handles selection of target nodes
      */
-    protected void move() {
+    protected void move(boolean moveToExitNodes) {
         // cannot move if paused
         if (pauseTimer > 0) {
             pauseTimer--;
@@ -425,8 +421,14 @@ public abstract class Customer extends SuperSmoothMover
         
         // loops through all neighbouring nodes
         for (Node n : neighbouringNodes) {
+            if (n == previousNode) continue;
             // a node is 'available' if it wasn't the previous node (prevent back and forth movement)
-            if (n != previousNode) {
+            if (moveToExitNodes) {
+                if (n.checkIsExit()) {
+                    availableNodes.add(n);
+                }
+            }
+            else if (!n.checkIsExit()) {
                 availableNodes.add(n);
             }
         }
@@ -520,6 +522,13 @@ public abstract class Customer extends SuperSmoothMover
         } catch (Exception e) {
             System.err.println("[Customer DEBUG] error in debugPrintMatchingUnitsAtCurrentNode: " + e.getMessage());
         }
+    }
+    
+    /**
+     * Method to set the customer's check out flag to true
+     */
+    public void checkOut() {
+        this.hasCheckedOut = true;
     }
     
     /**

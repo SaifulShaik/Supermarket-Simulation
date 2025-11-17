@@ -80,8 +80,7 @@ public class Store {
     public void initializeNodes() {
         // Left store
         if (name.equals("Store 1")) {
-            Node n1 = new Node(425, 400); // entrance node
-            n1.setEntrance();
+            Node n1 = new Node(425, 400, true, true, false); // entrance node
             Node n2 = new Node(425, 335); // 
             
             Node n3 = new Node(350, 335); // bottom right
@@ -97,14 +96,22 @@ public class Store {
             Node n8b = new Node(50, 250); // upper left
             
             // exit nodes
-            Node n1a = new Node(425, 450);
-            Node n11 = new Node(200, 450);
-            Node n12 = new Node(275, 450);
+            Node n1a = new Node(425, 450, false, true, false);
+            Node n11 = new Node(200, 450, false, true, false);
+            Node n12 = new Node(275, 450, false, true, false);
+            Node n13 = new Node(550, 400, false, true, false);
+            Node n14 = new Node(550, 500, false, true, true);
             
             // extra nodes to prevent placement of display units
             Node e0 = new Node(50, 425);
             
             // handles node neighbouring
+            n11.addNeighbouringNode(n12);
+            n12.addNeighbouringNode(n1a);
+            n1a.addNeighbouringNode(n1);
+            n1.addNeighbouringNode(n13);
+            n13.addNeighbouringNode(n14);
+            
             n1.addNeighbouringNode(n2);
             n2.addNeighbouringNode(n3);
             n3.addNeighbouringNode(n4a);
@@ -112,15 +119,15 @@ public class Store {
             
             n4a.addNeighbouringNode(n5a);
             n4a.addNeighbouringNode(n3);
-            //n4a.addNeighbouringNode(n5b);
+            n4a.addNeighbouringNode(n12);
             
             n5a.addNeighbouringNode(n6a);
             n5a.addNeighbouringNode(n6b);
             n5a.addNeighbouringNode(n4a);
+            n5a.addNeighbouringNode(n11);
             
             n6a.addNeighbouringNode(n7a);
             n6a.addNeighbouringNode(n5a);
-            //n6a.addNeighbouringNode(n7b);
             
             n7a.addNeighbouringNode(n6a);
             n7a.addNeighbouringNode(n8b);
@@ -143,10 +150,6 @@ public class Store {
             n8b.addNeighbouringNode(n7b);
             n8b.addNeighbouringNode(n7a);
             
-            n11.addNeighbouringNode(n5a);
-            n12.addNeighbouringNode(n4a);
-            n12.addNeighbouringNode(n1a);
-            
             // adds nodes to list
             nodes.add(n1);
             nodes.add(n1a);
@@ -165,12 +168,11 @@ public class Store {
             nodes.add(n12);
             nodes.add(e0);
         } 
-        else if(name.equals("Store 2")) {
-            Node n1 = new Node(750, 400); // entrance node
-            n1.setEntrance();
-            Node n1e = new Node(750, 240); // exit node
+        else if (name.equals("Store 2")) {
+            Node n1 = new Node(750, 400, true, false, false); // entrance node
+            Node n1e = new Node(750, 240, false, true, false); // exit node
             Node n2a = new Node(825, 400);
-            Node n2e = new Node(825, 240); // exit node
+            Node n2e = new Node(825, 240, false, true, false); // exit node
             Node n3a = new Node(925, 400);
             Node n4a = new Node(1000, 400);
             Node n5a = new Node(1075, 400);
@@ -180,6 +182,9 @@ public class Store {
             Node n3b = new Node(925, 325);
             Node n4b = new Node(1000,325);
             Node n5b = new Node(1075, 325);
+            
+            Node n6 = new Node(650, 240, false, true, false);
+            Node n7 = new Node(650, 500, false, true, true); 
             
             // handles neighbouring nodes
             n1.addNeighbouringNode(n2a);
@@ -197,6 +202,7 @@ public class Store {
             n1b.addNeighbouringNode(n2b);
             n1b.addNeighbouringNode(n1);
             n2b.addNeighbouringNode(n3b);
+            n2b.addNeighbouringNode(n2e);
             n2b.addNeighbouringNode(n1b);
             n3b.addNeighbouringNode(n4b);
             n3b.addNeighbouringNode(n2b);
@@ -207,6 +213,8 @@ public class Store {
             n5b.addNeighbouringNode(n4b);
             
             n2e.addNeighbouringNode(n1e);
+            n1e.addNeighbouringNode(n6);
+            n6.addNeighbouringNode(n7);
             
             // adds nodes to list
             nodes.add(n2e);

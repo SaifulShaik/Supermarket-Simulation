@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 public class CustomerSpawner extends Actor
 {
-    private final static int spawnRate = 150;
+    private final static int spawnRate = 20;
     
     public void act() {
         spawnCustomers();

@@ -45,6 +45,8 @@ public class SimulationWorld extends World
     public static Store storeOne = new Store("Store 1"); 
     public static Store storeTwo = new Store("Store 2");
     
+    //public static Node exitAccess = new Node(600, 400);
+    
     private static List<Node> roadNodes;
     
     public SimulationWorld(){
@@ -54,18 +56,25 @@ public class SimulationWorld extends World
         roadNodes = new ArrayList<>();
         
         Node roadSpawn = new Node(600, 100);
-        
         Node entranceAccess = new Node(600, 400);
-        roadSpawn.addNeighbouringNode(entranceAccess);
-        
         Node storeOneEntranceNode = storeOne.getEntranceNode();
+        Node storeTwoEntranceNode = storeTwo.getEntranceNode();
+        
+        roadSpawn.addNeighbouringNode(entranceAccess);
         entranceAccess.addNeighbouringNode(storeOneEntranceNode);
         
-        Node storeTwoEntranceNode = storeTwo.getEntranceNode();
         entranceAccess.addNeighbouringNode(storeTwoEntranceNode);
         
+        //exitAccess.setExit();
+        
+        //Node worldExit = new Node(600, getHeight() - 10);
+        //worldExit.setExit();
+        //exitAccess.addNeighbouringNode(worldExit);
+        
+        //roadNodes.add(exitAccess);
         roadNodes.add(roadSpawn);
-        roadNodes.add(entranceAccess);
+        //roadNodes.add(entranceAccess);
+        //roadNodes.add(worldExit);
         
         // Draw world-wide grid overlay
         //drawWorldGrid();
@@ -126,6 +135,10 @@ public class SimulationWorld extends World
     
     public static Node getStartNode() {
         return roadNodes.get(0);
+    }
+    
+    public static Node getExitNode() {
+        return roadNodes.get(roadNodes.size() - 1);
     }
     
     /** Add a NodeMarker that follows each DisplayUnit so nodes in front of
