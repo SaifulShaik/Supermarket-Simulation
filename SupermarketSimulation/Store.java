@@ -7,8 +7,9 @@ import java.util.*;
 public class Store {
     String name;
     
-    private List<Product> availableProducts;
+    private List<Class<? extends Product>> availableProductTypes;
     private List<DisplayUnit> availableDisplayUnits;
+    private List<Cashier> cashiers;
     
     private List<Node> nodes;
     private boolean nodesVisible = true;
@@ -23,8 +24,9 @@ public class Store {
         this.name = name;
         
         this.nodes = new ArrayList<>();
+        this.cashiers = new ArrayList<>();
         this.availableDisplayUnits = new ArrayList<>();
-        this.availableProducts = new ArrayList<>();
+        this.availableProductTypes = new ArrayList<>();
         
         initializeNodes();
     }
@@ -76,22 +78,23 @@ public class Store {
      * Method that adds all the hard-coded nodes to the world and initializes the neighbouring system used for pathfinding
      */
     public void initializeNodes() {
+        // Left store
         if (name.equals("Store 1")) {
             Node n1 = new Node(425, 400); // entrance node
             n1.setEntrance();
-            Node n2 = new Node(425, 335);
+            Node n2 = new Node(425, 335); // 
             
-            Node n3 = new Node(350, 335);
-            Node n4a = new Node(275, 335);
-            Node n5a = new Node(200, 335);
-            Node n6a = new Node(125, 335);
-            Node n7a = new Node(50, 335);
+            Node n3 = new Node(350, 335); // bottom right
+            Node n4a = new Node(275, 335); // 2 right bottom
+            Node n5a = new Node(200, 335); // mid bottom
+            Node n6a = new Node(125, 335); // 2 bottom left
+            Node n7a = new Node(50, 335); // bottom left
             
-            Node n4b = new Node(350, 250);
-            Node n5b = new Node(275, 250);
-            Node n6b = new Node(200, 250);
-            Node n7b = new Node(125, 250);
-            Node n8b = new Node(50, 250);
+            Node n4b = new Node(350, 250); // upper right
+            Node n5b = new Node(275, 250); // 2 upper right
+            Node n6b = new Node(200, 250); // mid top
+            Node n7b = new Node(125, 250); // 2 upper left
+            Node n8b = new Node(50, 250); // upper left
             
             // exit nodes
             Node n1a = new Node(425, 450);
@@ -109,7 +112,7 @@ public class Store {
             
             n4a.addNeighbouringNode(n5a);
             n4a.addNeighbouringNode(n3);
-            n4a.addNeighbouringNode(n5b);
+            //n4a.addNeighbouringNode(n5b);
             
             n5a.addNeighbouringNode(n6a);
             n5a.addNeighbouringNode(n6b);
@@ -117,7 +120,7 @@ public class Store {
             
             n6a.addNeighbouringNode(n7a);
             n6a.addNeighbouringNode(n5a);
-            n6a.addNeighbouringNode(n7b);
+            //n6a.addNeighbouringNode(n7b);
             
             n7a.addNeighbouringNode(n6a);
             n7a.addNeighbouringNode(n8b);
@@ -127,7 +130,7 @@ public class Store {
             
             n5b.addNeighbouringNode(n6b);
             n5b.addNeighbouringNode(n4b);
-            n5b.addNeighbouringNode(n4a);
+            //n5b.addNeighbouringNode(n4a);
             
             n6b.addNeighbouringNode(n7b);
             n6b.addNeighbouringNode(n5b);
@@ -135,7 +138,7 @@ public class Store {
             
             n7b.addNeighbouringNode(n8b);
             n7b.addNeighbouringNode(n6b);
-            n7b.addNeighbouringNode(n6a);
+            //n7b.addNeighbouringNode(n6a);
             
             n8b.addNeighbouringNode(n7b);
             n8b.addNeighbouringNode(n7a);
@@ -235,8 +238,17 @@ public class Store {
      * 
      * @return list of available products
      */
-    public List<Product> getAvailableProducts() {
-        return availableProducts;
+    public List<Class<? extends Product>> getAvailableProducts() {
+        return availableProductTypes;
+    }
+    
+    /**
+     * adds an available product class to the store's available products
+     * 
+     * @param c class of the product to be added
+     */
+    public void addAvailableProductTypes(Class c) {
+        availableProductTypes.add(c);
     }
     
     /**
@@ -253,6 +265,18 @@ public class Store {
         return null;
     }
     
+    /**
+     * gets a node at a specific x and y location
+     */
+    public Node getNode(int x, int y) {
+        for (Node n : nodes) {
+            if (n.getX() == x && n.getY() == y) {
+                return n;
+            }
+        }
+        return null;
+    }
+    
     public boolean ownsNode(Node n) {
         if (nodes.contains(n)) return true;
         return false;
@@ -260,6 +284,15 @@ public class Store {
     
     public void addDisplayUnit(DisplayUnit d) {
         availableDisplayUnits.add(d);
+    }
+    
+    public void addCashier(Cashier c) {
+        if (cashiers == null) cashiers = new ArrayList<>();
+        cashiers.add(c);
+    }
+    
+    public List<Cashier> getCashiers() {
+        return cashiers;
     }
     
     public List<DisplayUnit> getAvailableDisplayUnits() {

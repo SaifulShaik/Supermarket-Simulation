@@ -26,8 +26,9 @@ public class SettingWorld extends World
     
     // Available display unit types
     private static final String[] DISPLAY_UNIT_TYPES = {
-        "Fridge", "SnackShelf", "LettuceBin", "CarrotBin", 
-        "AppleBin", "OrangeBin", "SteakWarmer"
+        "Fridge", "FridgeOne", "FridgeTwo", "SnackShelf", "CupNoodleShelf",
+        "LettuceBin", "CarrotBin", "AppleBin", "OrangeBin", "CandyBin",
+        "SteakWarmer", "RawBeefHangers"
     };
     
     // UI Components
@@ -48,9 +49,10 @@ public class SettingWorld extends World
     private List<DisplayUnit> placedUnits = new ArrayList<>();
     private ConfirmationDialog activeDialog = null;
     private List<DisplayUnitData> originalLayout = new ArrayList<>();
+    
     // Preview for placement (follows mouse)
     private PlacementPreview preview;
-    private java.util.Map<String, GreenfootImage> previewCache = new java.util.HashMap<>();
+    private Map<String, GreenfootImage> previewCache = new HashMap<>();
     
     private LinkedList<Node> pathNodes = new LinkedList<>();
     private LinkedList<NodeMarker> nodeMarkers = new LinkedList<>();
@@ -61,7 +63,7 @@ public class SettingWorld extends World
     // track N key edge for printing all units' node mapping
     private boolean lastNDown = false;
     
-    private static final int accessRadius = 50;
+    private static final int accessRadius = 100;
     
     /**
      * Constructor for objects of class SettingWorld.
@@ -581,20 +583,36 @@ public class SettingWorld extends World
                     newX = (newX / GRID_SIZE) * GRID_SIZE;
                     newY = (newY / GRID_SIZE) * GRID_SIZE;
                 }
-                
                 // Check if new position would overlap with cashier or a node - silently block movement
-                /*GreenfootImage dimg = draggedUnit.getImage();
+                GreenfootImage dimg = draggedUnit.getImage();
                 if (!isOnCashier(newX, newY, 50) && !doesImageIntersectAnyNodeWithImage(newX, newY, dimg)) {
                     draggedUnit.setLocation(newX, newY);
-                    // update customer node after moving
-                    Node nearest = findNearestNode(newX, newY);
-                    if (nearest != null) {
-                        draggedUnit.setCustomerNode(nearest);
-                        System.out.println("Moved DisplayUnit " + draggedUnit.getClass().getSimpleName() +
-                            " to (" + newX + "," + newY + ") -> Node(" + nearest.getX() + "," + nearest.getY() + ")");
+
+                    // update customer nodes after moving
+                    List<Node> nearby = findNodesInRange(newX, newY, accessRadius);
+                    draggedUnit.setCustomerNodes(nearby);
+
+                    // Reassign parent store if needed
+                    Store newParent = null;
+                    for (Node n : nearby) {
+                        if (SimulationWorld.storeOne != null && SimulationWorld.storeOne.ownsNode(n)) { newParent = SimulationWorld.storeOne; break; }
+                        if (SimulationWorld.storeTwo != null && SimulationWorld.storeTwo.ownsNode(n)) { newParent = SimulationWorld.storeTwo; break; }
                     }
+                    Store oldParent = draggedUnit.getParentStore();
+                    if (oldParent != null && oldParent != newParent) {
+                        // remove from old parent's display list if present
+                        try { oldParent.getAvailableDisplayUnits().remove(draggedUnit); } catch (Exception ignore) {}
+                    }
+                    if (newParent != null && (oldParent == null || oldParent != newParent)) {
+                        try { if (!newParent.getAvailableDisplayUnits().contains(draggedUnit)) newParent.addDisplayUnit(draggedUnit); } catch (Exception ignore) {}
+                        draggedUnit.setParentStore(newParent);
+                    } else if (newParent == null) {
+                        draggedUnit.setParentStore(null);
+                    }
+
+                    //System.out.println("Moved DisplayUnit " + draggedUnit.getClass().getSimpleName() + " to (" + newX + "," + newY + ")");
                     hasUnsavedChanges = true;
-                }*/
+                }
             }
         }
         

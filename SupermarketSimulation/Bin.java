@@ -73,12 +73,14 @@ public abstract class Bin extends DisplayUnit
     
                 Product item = itemToFill();
                 item.setRotation(Greenfoot.getRandomNumber(90) - 40); //randomized the rotation
+                item.setDisplayUnit(this); // link product to this display unit
                 stockedItems.add(item);//add to stocked list
                 getWorld().addObject(item, x, y);
             }
         }
         
         stocked=true;
+        System.out.println("[Bin] " + getClass().getSimpleName() + " stocked " + stockedItems.size() + " items, parent store: " + (parentStore == null ? "<null>" : parentStore.name));
     }  
 
 }

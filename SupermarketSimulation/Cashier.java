@@ -26,6 +26,8 @@ public class Cashier extends SuperSmoothMover
     
     private int timer;
     private int serviceSpeed; // acts required per product service
+    
+    private Node customerNode;
 
     /*
      * Use default images for cashier if not file name specified
@@ -99,6 +101,18 @@ public class Cashier extends SuperSmoothMover
     
     public void addCustomerToQueue(Customer c) {
         queue.offer(c);
+    }
+    
+    public void setCustomerNode(Node n) {
+        this.customerNode = n;
+    }
+    
+    public Node getCustomerNode() {
+        return customerNode;
+    }
+    
+    public int getQueueSize() {
+        return queue.size();
     }
     
     public void showEarnings() {

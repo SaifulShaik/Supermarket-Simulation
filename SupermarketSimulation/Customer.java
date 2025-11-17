@@ -16,15 +16,29 @@ public abstract class Customer extends SuperSmoothMover
     protected List<Class<? extends Product>> shoppingList;
     protected List<Product> cart;
     
+    protected List<Node> path;
+    protected Cashier targetCashier;
+    protected boolean hasCheckedOut;
+    
     protected Node previousNode;
     protected Node currentNode;
     protected Node targetNode;
+    
+    // Debug: last node coords printed to avoid redundant logs
+    protected int _dbg_lastNodeX = Integer.MIN_VALUE;
+    protected int _dbg_lastNodeY = Integer.MIN_VALUE;
     
     protected int pauseTimer = 0;
     
     protected Store store;
     
-    public Customer() {}
+    // Debug: when true the customer will stop at the first product node after entering the store
+    protected boolean debugStoppedAtFirst = false;
+    protected Node debugTargetNode = null;
+    
+    public Customer() {
+        this(2.0, 100.0, null, 5);
+    }
     
     /**
      * Customer constructor
@@ -46,6 +60,15 @@ public abstract class Customer extends SuperSmoothMover
         shoppingList = new ArrayList<>();
         shoppingList = generateShoppingList(maxShoppingListItems);
         cart = new ArrayList();    
+        // Debug: print the generated shopping list for this customer
+        try {
+            StringBuilder sb = new StringBuilder();
+            for (Class<? extends Product> c : shoppingList) {
+                sb.append(c.getSimpleName()).append(", ");
+            }
+            String listStr = sb.length() > 0 ? sb.substring(0, sb.length()-2) : "<empty>";
+            System.out.println("[Customer] spawned with shopping list: " + listStr);
+        } catch (Exception ignore) {}
     }
     
     /**
@@ -55,36 +78,67 @@ public abstract class Customer extends SuperSmoothMover
      * finally checks out once all products are purchased
      */
     public void act() {
-        if (store == null) {
+        // move to store entrance access node
+        if (SimulationWorld.getStartNode() == currentNode) {
+            move();
+        }
+        // choose store
+        else if (store == null) {
             chooseStore();
         }
-        move();
-        retrieveProdcuts(); 
+        
+        if (!shoppingList.isEmpty()) {
+            retrieveProdcuts(); 
+            move();
+        }
+        else if (!hasCheckedOut) {
+            if (targetCashier == null) {
+                chooseCashier();
+            }
+            else if (currentNode != targetCashier.getCustomerNode()) {
+                moveToCashier();
+            }
+            else {
+                leaveStore();
+            }
+        }
+        else {
+            leaveStore();
+        }
     }
     
     /**
      * Method to choose a store to go into
      */
     protected void chooseStore() {
+        // Debug: print store product lists to diagnose empty-store issue
+        try {
+            System.out.println("[Customer] chooseStore(): storeOne has " + SimulationWorld.storeOne.getAvailableProducts().size() + " products, storeTwo has " + SimulationWorld.storeTwo.getAvailableProducts().size() + " products");
+        } catch (Exception ignore) {}
+
         List<Store> stores = getWorld().getObjects(Store.class);
         
-        if (stores.isEmpty()) return;
+        if (stores.isEmpty()) {
+            System.out.println("[Customer] chooseStore(): no Store actors in world, using static references");
+        }
         
         List<Class<? extends Product>> storeOneShoppingList = new ArrayList<>();
         List<Class<? extends Product>> storeTwoShoppingList = new ArrayList<>();
         
+        System.out.println("[Customer] chooseStore(): original shopping list has " + shoppingList.size() + " items");
+        
         for (Class<? extends Product> productClass : shoppingList) {
             boolean inStoreOne = false;
-            for (Product p : SimulationWorld.storeOne.getAvailableProducts()) {
-                if (p.getClass() == productClass) {
+            for (Class<? extends Product> c : SimulationWorld.storeOne.getAvailableProducts()) {
+                if (c == productClass) {
                     inStoreOne = true;
                     break;
                 }
             }
     
             boolean inStoreTwo = false;
-            for (Product p : SimulationWorld.storeTwo.getAvailableProducts()) {
-                if (p.getClass() == productClass) {
+            for (Class<? extends Product> p : SimulationWorld.storeTwo.getAvailableProducts()) {
+                if (p == productClass) {
                     inStoreTwo = true;
                     break;
                 }
@@ -93,6 +147,8 @@ public abstract class Customer extends SuperSmoothMover
             if (inStoreOne) storeOneShoppingList.add(productClass);
             if (inStoreTwo) storeTwoShoppingList.add(productClass);
         }
+        
+        System.out.println("[Customer] chooseStore(): after filtering - store1=" + storeOneShoppingList.size() + " items, store2=" + storeTwoShoppingList.size() + " items");
         
         if (storeOneShoppingList.size() > storeTwoShoppingList.size()) {
             store = SimulationWorld.storeOne;
@@ -103,12 +159,25 @@ public abstract class Customer extends SuperSmoothMover
             shoppingList = storeTwoShoppingList;
         }
         else {
-            int chosenStore = Greenfoot.getRandomNumber(stores.size());
-            store = stores.get(chosenStore);
-            shoppingList = store == SimulationWorld.storeOne ? storeOneShoppingList : storeTwoShoppingList;
+            // Both lists same size (including both empty)
+            if (storeOneShoppingList.isEmpty() && storeTwoShoppingList.isEmpty()) {
+                System.out.println("[Customer] chooseStore(): BOTH stores have empty shopping lists - stores not populated! Picking store 1 anyway.");
+                store = SimulationWorld.storeOne; // fallback
+            } else {
+                int chosenStore = Greenfoot.getRandomNumber(2); // use 2 not stores.size() for static refs
+                store = (chosenStore == 0) ? SimulationWorld.storeOne : SimulationWorld.storeTwo;
+                shoppingList = store == SimulationWorld.storeOne ? storeOneShoppingList : storeTwoShoppingList;
+            }
         }
 
         targetNode = store.getEntranceNode();
+        // Debug: print chosen store and final shopping list for this customer
+        try {
+            StringBuilder sb2 = new StringBuilder();
+            for (Class<? extends Product> c : shoppingList) sb2.append(c.getSimpleName()).append(", ");
+            String listStr2 = sb2.length() > 0 ? sb2.substring(0, sb2.length()-2) : "<empty>";
+            System.out.println("[Customer] chose " + (store == SimulationWorld.storeOne ? "Store 1" : "Store 2") + " with shopping list: " + listStr2);
+        } catch (Exception ignore) {}
     }
     
     protected List<Class<? extends Product>> generateShoppingList(int maxShoppingListItems) {
@@ -116,43 +185,74 @@ public abstract class Customer extends SuperSmoothMover
         
         List<Class<? extends Product>> availableItemTypes = new ArrayList<>();
         
-        for (Product p : SimulationWorld.storeOne.getAvailableProducts()) {
-            availableItemTypes.add(p.getClass());
+        for (Class<? extends Product> p : SimulationWorld.storeOne.getAvailableProducts()) {
+            availableItemTypes.add(p);
         }
         
-        for (Product p : SimulationWorld.storeTwo.getAvailableProducts()) {
-            availableItemTypes.add(p.getClass());
+        for (Class<? extends Product> p : SimulationWorld.storeTwo.getAvailableProducts()) {
+            availableItemTypes.add(p);
         }
         
         if (maxShoppingListItems <= 0) {
             maxShoppingListItems = 1; 
         }
         
+        // Generate between 1 and maxShoppingListItems (inclusive)
         int numItems = 1 + Greenfoot.getRandomNumber(maxShoppingListItems);
+        
+        System.out.println("[Customer] generateShoppingList: maxItems=" + maxShoppingListItems + ", generating " + numItems + " items from " + availableItemTypes.size() + " available types");
         
         for (int i = 0; i < numItems; i++) {
             if (!availableItemTypes.isEmpty()) {
                 Class<? extends Product> itemClass = availableItemTypes.get(Greenfoot.getRandomNumber(availableItemTypes.size()));
                 items.add(itemClass);
+            } else {
+                System.out.println("[Customer] generateShoppingList: availableItemTypes is empty - stores not populated yet!");
             }
         }
-
         
+        System.out.println("[Customer] generateShoppingList: generated " + items.size() + " items total");
         return items;
     }
     
     protected void retrieveProdcuts() {
+        // Debug: print quick state to help investigate why customers aren't picking items
+        try {
+            System.out.println("[Customer] retrieveProdcuts() state: store=" + (store==null?"<null>":store.name) + 
+                ", currentNode=" + (currentNode==null?"<null>":"("+currentNode.getX()+","+currentNode.getY()+")") +
+                ", shoppingListSize=" + (shoppingList==null?0:shoppingList.size()) +
+                ", world=" + (getWorld()==null?"<null>":"present") );
+        } catch (Exception ignore) {}
+
         if (store == null || currentNode == null || shoppingList == null || shoppingList.isEmpty() || getWorld() == null) return;
         
         List<DisplayUnit> units = store.getAvailableDisplayUnits();
+        try {
+            System.out.println("[Customer] store has " + (units==null?0:units.size()) + " display units");
+        } catch (Exception ignore) {}
         if (units == null || units.isEmpty()) return;
         
         for (DisplayUnit u : units) {
             if (u == null) continue;
             
             List<Node> accessNodes = u.getCustomerNodes();
+            try {
+                StringBuilder sb = new StringBuilder();
+                if (accessNodes != null) {
+                    for (Node an : accessNodes) sb.append("(").append(an.getX()).append(",").append(an.getY()).append(") ");
+                }
+                System.out.println("[Customer] unit=" + u.getClass().getSimpleName() + " accessNodes=[" + sb.toString() + "] stocked=" + (u.getStockedItems()==null?0:u.getStockedItems().size()));
+            } catch (Exception ignore) {}
             
-            if (accessNodes == null || accessNodes.isEmpty() || !accessNodes.contains(currentNode)) continue;
+            // Accept match either by object identity or by coordinates (robust against different Node instances)
+            boolean accessMatch = false;
+            if (accessNodes != null) {
+                for (Node an : accessNodes) {
+                    if (an == currentNode) { accessMatch = true; break; }
+                    if (currentNode != null && an.getX() == currentNode.getX() && an.getY() == currentNode.getY()) { accessMatch = true; break; }
+                }
+            }
+            if (!accessMatch) continue;
             
             List<Product> stocked = u.getStockedItems();
             if (stocked == null || stocked.isEmpty()) continue;
@@ -162,244 +262,271 @@ public abstract class Customer extends SuperSmoothMover
                 if (retrieved != null) {
                     cart.add(retrieved);
                     shoppingList.remove(wantedClass);
+                    pauseTimer = 5 + Greenfoot.getRandomNumber(11);
+                    // Debug: print what was picked and the remaining shopping list / cart
+                    try {
+                        StringBuilder rem = new StringBuilder();
+                        for (Class<? extends Product> c : shoppingList) rem.append(c.getSimpleName()).append(", ");
+                        String remStr = rem.length() > 0 ? rem.substring(0, rem.length()-2) : "<empty>";
+                        StringBuilder cartSb = new StringBuilder();
+                        for (Product cp : cart) cartSb.append(cp.getClass().getSimpleName()).append(", ");
+                        String cartStr = cartSb.length() > 0 ? cartSb.substring(0, cartSb.length()-2) : "<empty>";
+                        System.out.println("[Customer] picked " + retrieved.getClass().getSimpleName() + "; remaining: " + remStr + "; cart: " + cartStr);
+                    } catch (Exception ignore) {}
+                    // Stop after picking one item so customer pauses and doesn't pick multiple items in one tick
+                    return;
                 }
             }
         }
     }
     
-    /*
-     * Retrieve products in the shopping list
-     * Add the product to the basket  - can later be used for checking out.
-     * 
-     * @author: Owen Kung
-     * @version: Nov 2025
-     */
-    /*protected void retrieveProdcuts()
-    {
-        //ArrayList<DisplayUnit> units= (ArrayList<DisplayUnit>)getIntersectingObjects(DisplayUnit.class);
-        DisplayUnit unit=(DisplayUnit) getOneIntersectingObject(DisplayUnit.class);
-        if(isTouching(Butcher.class))
-        {
-            //go to butcher for RawBeef
-            unit=getDisplayUnit(RawBeefHangers.class);
-        }
-        if(unit==null)
-        {
+    private void chooseCashier() {
+        Cashier best = null;
+        
+        List<Cashier> cashiers = store.getCashiers();
+        
+        if (cashiers == null || cashiers.isEmpty()) {
+            System.out.println("[Cashier] no cashiers");
             return;
         }
-
-        //Retrieve what's in fridge
-        if(unit.getClass().getSimpleName().equals("Fridge"))
-        {
-            if(shoppingList.contains(SimulationWorld.PRODUCT_COKE))
-            {
-                cart.add(unit.retrieve(Coke.class));
-                shoppingList.remove(SimulationWorld.PRODUCT_COKE);
-            }
-            if(shoppingList.contains(SimulationWorld.PRODUCT_SPRITE))
-            {
-                cart.add(unit.retrieve(Sprite.class));
-                shoppingList.remove(SimulationWorld.PRODUCT_SPRITE);
-            }
-            if(shoppingList.contains(SimulationWorld.PRODUCT_FANTA))
-            {
-                cart.add(unit.retrieve(Fanta.class));
-                shoppingList.remove(SimulationWorld.PRODUCT_FANTA);
-            }
-            if(shoppingList.contains(SimulationWorld.PRODUCT_WATER))
-            {
-                cart.add(unit.retrieve(Water.class));
-                shoppingList.remove(SimulationWorld.PRODUCT_WATER);
-            }
-           
-        }
-        //Retrieve what's in snack shelf
-        if(unit.getClass().getSimpleName().equals("SnackShelf"))
-        {
-            if(shoppingList.contains(SimulationWorld.PRODUCT_LAYS))
-            {
-                cart.add(unit.retrieve(Lays.class));
-                shoppingList.remove(SimulationWorld.PRODUCT_LAYS);
-            }
-            if(shoppingList.contains(SimulationWorld.PRODUCT_RUFFLES))
-            {
-                cart.add(unit.retrieve(Ruffles.class));
-                shoppingList.remove(SimulationWorld.PRODUCT_RUFFLES);
-            }
-            if(shoppingList.contains(SimulationWorld.PRODUCT_DORITOS))
-            {
-                cart.add(unit.retrieve(Doritos.class));
-                shoppingList.remove(SimulationWorld.PRODUCT_DORITOS);
+        
+        best = cashiers.get(0);
+        
+        for (Cashier c : cashiers) {
+            if (c.getQueueSize() < best.getQueueSize()) {
+                best = c;
             }
         }
-        //Retrieve what's in cup noodle shelf
-        if(unit.getClass().getSimpleName().equals("CupNoodleShelf"))
-        {
-            if(shoppingList.contains(SimulationWorld.PRODUCT_XING_RAMEN))
-            {
-                cart.add(unit.retrieve(XingRamen.class));
-                shoppingList.remove(SimulationWorld.PRODUCT_XING_RAMEN);
-            }
-            if(shoppingList.contains(SimulationWorld.PRODUCT_NISSIN))
-            {
-                cart.add(unit.retrieve(Nissin.class));
-                shoppingList.remove(SimulationWorld.PRODUCT_NISSIN);
-            }
-            if(shoppingList.contains(SimulationWorld.PRODUCT_JIN_RAMEN))
-            {
-                cart.add(unit.retrieve(JinRamen.class));
-                shoppingList.remove(SimulationWorld.PRODUCT_JIN_RAMEN);
-            }
-        }
-        //Retrieve what's in applebin
-        if(unit.getClass().getSimpleName().equals("CandyBin"))
-        {
-            if(shoppingList.contains(SimulationWorld.PRODUCT_CANDY))
-            {
-                cart.add(unit.retrieve(Candy.class));
-                shoppingList.remove(SimulationWorld.PRODUCT_CANDY);
-            }
-        }
-        if(unit.getClass().getSimpleName().equals("AppleBin"))
-        {
-            if(shoppingList.contains(SimulationWorld.PRODUCT_APPLE))
-            {
-                cart.add(unit.retrieve(Apple.class));
-                shoppingList.remove(SimulationWorld.PRODUCT_APPLE);
-            }
-        }
-        if(unit.getClass().getSimpleName().equals("OrangeBin"))
-        {
-            if(shoppingList.contains(SimulationWorld.PRODUCT_ORANGE))
-            {
-                cart.add(unit.retrieve(Orange.class));
-                shoppingList.remove(SimulationWorld.PRODUCT_ORANGE);
-            }
-        }
-        if(unit.getClass().getSimpleName().equals("LettuceBin"))
-        {
-            if(shoppingList.contains(SimulationWorld.PRODUCT_LETTUCE))
-            {
-                cart.add(unit.retrieve(Lettuce.class));
-                shoppingList.remove(SimulationWorld.PRODUCT_LETTUCE);
-            }
-        }
-        if(unit.getClass().getSimpleName().equals("CarrotBin"))
-        {
-            if(shoppingList.contains(SimulationWorld.PRODUCT_CARROT))
-            {
-                cart.add(unit.retrieve(Carrot.class));
-                shoppingList.remove(SimulationWorld.PRODUCT_CARROT);
-            }
-        }
-        if(unit.getClass().getSimpleName().equals("SteakWarmer"))
-        {
-            if(shoppingList.contains(SimulationWorld.PRODUCT_STEAK))
-            {
-                cart.add(unit.retrieve(Steak.class));
-                shoppingList.remove(SimulationWorld.PRODUCT_STEAK);
-            }
-            if(shoppingList.contains(SimulationWorld.PRODUCT_DRUM_STICK))
-            {
-                cart.add(unit.retrieve(DrumStick.class));
-                shoppingList.remove(SimulationWorld.PRODUCT_DRUM_STICK);
-            }
-        }
-        if(unit.getClass().getSimpleName().equals("RawBeefHangers"))
-        {
-            if(shoppingList.contains(SimulationWorld.PRODUCT_RAW_BEEF))
-            {
-                cart.add(unit.retrieve(RawBeef.class));
-                shoppingList.remove(SimulationWorld.PRODUCT_RAW_BEEF);
-            }
-        }
-    }*/
-    
-    /*
-     * Get the requested DisplayUnit with class type
-     * 
-     * @author:Owen Kung
-     * @version: Nov 2025
-     */
-    private DisplayUnit getDisplayUnit(Class displayClass)
-    {
-        ArrayList<DisplayUnit> units = (ArrayList<DisplayUnit>) getWorld().getObjects(DisplayUnit.class);
-        for(DisplayUnit u:units)
-        {
-            //return the requested disply unit
-            if (u.getClass()==displayClass) 
-            {
-                return u;
-            }
-        }
-        return null;
+        
+        System.out.println("Chose cashier");
+        targetCashier = best;
     }
     
+    private void moveToCashier() {
+        Node cashierNode = targetCashier.getCustomerNode();
+        if (cashierNode == null) return;
+    
+        if (path == null || path.isEmpty()) {
+            path = findPath(cashierNode);
+    
+            if (path == null || path.isEmpty()) {
+                System.out.println("[Customer] No path to cashier found.");
+                return;
+            }
+    
+            Node first = path.get(0);
+            if (currentNode != null &&
+                (first == currentNode ||
+                 (first.getX() == currentNode.getX() && first.getY() == currentNode.getY()))) {
+                path.remove(0);
+            }
+        }
+    
+        if (currentNode != null &&
+            (currentNode == cashierNode ||
+             (currentNode.getX() == cashierNode.getX() && currentNode.getY() == cashierNode.getY()))) {
+                 targetCashier.addCustomerToQueue(this);
+            System.out.println("[Customer] Reached cashier node.");
+            return;
+        }
+    
+        if (targetNode != null) {
+            moveToNode(targetNode);
+            return;
+        }
+    
+        if (!path.isEmpty()) {
+            Node next = path.remove(0);
+            previousNode = currentNode;
+            targetNode = next;
+            moveToNode(next);
+        }
+    }
+    
+    private List<Node> findPath(Node goal) {
+        List<Node> result = new ArrayList<>();
+    
+        if (currentNode == null || goal == null) {
+            return result;
+        }
+    
+        Queue<Node> queue = new LinkedList<>();
+        Map<Node, Node> cameFrom = new HashMap<>();
+        Set<Node> visited = new HashSet<>();
+    
+        queue.add(currentNode);
+        visited.add(currentNode);
+        cameFrom.put(currentNode, null);
+    
+        while (!queue.isEmpty()) {
+            Node node = queue.poll();
+    
+            if (node == goal || (node.getX() == goal.getX() && node.getY() == goal.getY())) {
+                Node cur = node;
+                while (cur != null) {
+                    result.add(0, cur); 
+                    cur = cameFrom.get(cur);
+                }
+                return result;
+            }
+    
+            List<Node> neighbours = node.getNeighbouringNodes();
+            if (neighbours == null) continue;
+    
+            for (Node next : neighbours) {
+                if (visited.contains(next)) continue;
+                visited.add(next);
+                cameFrom.put(next, node);
+                queue.add(next);
+            }
+        }
+    
+        return result;
+    }
+    
+    /**
+     * Method for the customer to leave the store
+     */
+    public void leaveStore() {
+        // goes to the exit under the cashier's current node
+        // then walks back to the store entrance node
+        // then walks to the entrance access node
+        // make a new node in simulationworld where the customers move to when they are done shopping
+        // move to the worldExit and remove itself from the world
+    }
+    
+    /**
+     * Move method
+     * Handles selection of target nodes
+     */
     protected void move() {
+        // cannot move if paused
         if (pauseTimer > 0) {
             pauseTimer--;
             return;
         }
-
+        
+        // no need to reselect a new target node if already moving to one
         if (targetNode != null) {
             moveToNode(targetNode); 
             return;
         }
 
+        // gets neighbouring nodes
         List<Node> neighbouringNodes = currentNode.getNeighbouringNodes();
         
+        // cannot move if no neighbouring nodes
         if (neighbouringNodes.isEmpty() || neighbouringNodes == null) {
             return;
         }
         
+        // makes available nodes
         List<Node> availableNodes = new ArrayList<>();
         
+        // loops through all neighbouring nodes
         for (Node n : neighbouringNodes) {
-            if (n == previousNode) continue;
-            else {
+            // a node is 'available' if it wasn't the previous node (prevent back and forth movement)
+            if (n != previousNode) {
                 availableNodes.add(n);
             }
         }
         
+        // cannot move if no available nodes
         if (availableNodes.isEmpty() || availableNodes == null) {
             return;
         }
         
+        // randomly chooses next node
         Node nextNode = availableNodes.get(Greenfoot.getRandomNumber(availableNodes.size()));
+        
+        // updates previous node
         previousNode = currentNode;
+        
+        // sets target node
         targetNode = nextNode;
         
+        // start moving to next node
         moveToNode(nextNode);
     }
     
+    /**
+     * Method to move towards a Node
+     * 
+     * @param n node to move to
+     */
     protected void moveToNode(Node n) {
+        // calculates distance to the next node
         int dx = n.getX() - getX();
         int dy = n.getY() - getY();
-        
         double distance = Math.sqrt(dx * dx + dy * dy);
         
+        // finishes movement if almost there (1 act cycle would move too much to the distance)
         if (distance < movementSpeed) {
+            // snaps to the target location
             setLocation(n.getX(), n.getY());
             
+            // updates current and target node
             currentNode = n;
             targetNode = null;
+
+            // Debug: when node changes, print which display units expose this node
+            try {
+                if (currentNode != null && (currentNode.getX() != _dbg_lastNodeX || currentNode.getY() != _dbg_lastNodeY)) {
+                    _dbg_lastNodeX = currentNode.getX();
+                    _dbg_lastNodeY = currentNode.getY();
+                    debugPrintMatchingUnitsAtCurrentNode();
+                }
+            } catch (Exception ignore) {}
             
-            pauseTimer = 5 + Greenfoot.getRandomNumber(5);
+            // don't move any further
             return;
         }
         
+        // calculates angle
         double angle = Math.atan2(dy, dx);
         
+        // updates x and y values
         double newX = getX() + Math.cos(angle) * movementSpeed;
         double newY = getY() + Math.sin(angle) * movementSpeed;
         
+        // updates location
         setLocation(newX, newY);
     }
-    
-    public void leaveStore() {
-        getWorld().removeObject(this);
+
+    /** Debug helper: prints display units in the current store whose access nodes match currentNode */
+    private void debugPrintMatchingUnitsAtCurrentNode() {
+        try {
+            if (store == null || currentNode == null) {
+                System.out.println("[Customer DEBUG] no store or currentNode to match");
+                return;
+            }
+            StringBuilder sb = new StringBuilder();
+            for (DisplayUnit u : store.getAvailableDisplayUnits()) {
+                if (u == null) continue;
+                List<Node> an = u.getCustomerNodes();
+                if (an == null) continue;
+                for (Node node : an) {
+                    if (node == currentNode || (node.getX() == currentNode.getX() && node.getY() == currentNode.getY())) {
+                        sb.append(u.getClass().getSimpleName()).append("(stocked=").append(u.getStockedItems()==null?0:u.getStockedItems().size()).append("), ");
+                        break;
+                    }
+                }
+            }
+            if (sb.length() == 0) {
+                System.out.println("[Customer DEBUG] arrived at node (" + currentNode.getX() + "," + currentNode.getY() + ") - no matching display units expose this node");
+            } else {
+                System.out.println("[Customer DEBUG] arrived at node (" + currentNode.getX() + "," + currentNode.getY() + ") - matching units: " + sb.toString());
+            }
+        } catch (Exception e) {
+            System.err.println("[Customer DEBUG] error in debugPrintMatchingUnitsAtCurrentNode: " + e.getMessage());
+        }
     }
     
+    /**
+     * Methods to calculate the total price of the customer's cart
+     * 
+     * @return a double representing the total price of the cart
+     */
     public double calculatePriceOfCart() {
         double total = 0;
         
@@ -408,12 +535,6 @@ public abstract class Customer extends SuperSmoothMover
         }
         
         return total;
-    }
-    
-    public boolean ownsDIsplayUnit(DisplayUnit u) {
-        if (store == null) return false;
-        Store parent = u.getParentStore();
-        return parent != null && parent == store;
     }
 }
 

@@ -5,7 +5,7 @@ import java.util.List;
 /**
  * Write a description of class MyWorld here.
  * 
- * @author Saiful Shaik, Owen Kung
+ * @author Saiful Shaik, Owen Kung, Joe Zhuo
  * @version Modified: Nov, 8, 2025
  */
 public class SimulationWorld extends World
@@ -79,13 +79,22 @@ public class SimulationWorld extends World
         //addObject(new Store(480, 480, 20, true), 480, 220); // x: 40 - 480 y: 220 - 480
         //addObject(new Store(360, 120, 20, false), getWidth() - 240, 360);
         
-        // add the Cashiers to right store
-        addObject(new Cashier(), getWidth()/2 + 200, getHeight()/2);
-        //addObject(new Cashier(), getWidth()/2 + 300, getHeight()/2);
+        // add the Cashier to right store
+        Cashier rsCashier = new Cashier();
+        addObject(rsCashier, getWidth()/2 + 200, getHeight()/2);
+        rsCashier.setCustomerNode(storeTwo.getNode(825, 325));
+        storeTwo.addCashier(rsCashier);
         
         // add cashier to left store
-        addObject(new Store2Cashier(), getWidth()/2 - 250, getHeight() / 2 + 130);
-        addObject(new Store2Cashier(), getWidth()/2 - 425, getHeight() / 2 + 130);
+        Cashier lsLeftCashier = new Cashier();
+        Cashier lsRightCashier = new Cashier();
+        lsLeftCashier.setCustomerNode(storeOne.getNode(200, 335));
+        lsRightCashier.setCustomerNode(storeOne.getNode(275, 335));
+        addObject(lsLeftCashier, getWidth()/2 - 250, getHeight() / 2 + 130);
+        addObject(lsRightCashier, getWidth()/2 - 425, getHeight() / 2 + 130);
+        
+        storeOne.addCashier(lsLeftCashier);
+        storeOne.addCashier(lsRightCashier);
         
         // add the butcher
         addObject(new Butcher(), 975, 260);
@@ -143,6 +152,41 @@ public class SimulationWorld extends World
                 DisplayUnit unit = data.createDisplayUnit();
                 if (unit != null) {
                     addObject(unit, data.getX(), data.getY());
+                    
+                    // register and report available products for debugging
+                    try {
+                        java.util.List<Node> nearby = SettingWorld.findNodesInRange(data.getX(), data.getY(), 100);
+                        unit.setCustomerNodes(nearby);
+                        Store parent = null;
+                        for (Node n : nearby) {
+                            if (storeOne.ownsNode(n)) { storeOne.addDisplayUnit(unit); unit.setParentStore(storeOne); parent = storeOne; break; }
+                            if (storeTwo.ownsNode(n)) { storeTwo.addDisplayUnit(unit); unit.setParentStore(storeTwo); parent = storeTwo; break; }
+                        }
+                        
+                        // Stock AFTER parent store is assigned so products inherit store reference
+                        try { 
+                            unit.stock(); 
+                        } catch (Exception stockEx) {
+                            System.err.println("Error stocking " + unit.getClass().getSimpleName() + ": " + stockEx.getMessage());
+                        }
+                        
+                        if (parent != null) {
+                            // Derive provided product classes from any already-stocked Product instances
+                            java.util.Set<Class<? extends Product>> provided = new java.util.HashSet<Class<? extends Product>>();
+                            for (Product p : unit.getStockedItems()) {
+                                if (p != null) provided.add((Class<? extends Product>) p.getClass());
+                            }
+                            if (!provided.isEmpty()) {
+                                for (Class<? extends Product> pc : provided) parent.addAvailableProductTypes(pc);
+                            }
+                            System.out.println("Added " + unit.getClass().getSimpleName() + " to " + (parent == storeOne ? "Store 1" : "Store 2") + " -> products: " + (provided.isEmpty() ? "<none yet>" : provided));
+                        } else {
+                            System.out.println("Added " + unit.getClass().getSimpleName() + " at (" + data.getX() + "," + data.getY() + ") but could not assign to a store");
+                        }
+                    } catch (Exception e) {
+                        System.err.println("Error registering display unit: " + e.getMessage());
+                        e.printStackTrace();
+                    }
                 }
             }
         } else {
@@ -155,6 +199,7 @@ public class SimulationWorld extends World
      * Create the default display unit layout (original hardcoded positions)
      */
     private void createDefaultLayout() {
+        /**
         // add fridge to store 2
         addObject(new Fridge(),75,225);
         // add shelve next to fridge
@@ -170,6 +215,39 @@ public class SimulationWorld extends World
         addObject(new OrangeBin(),800,460);
         // add SteakHangers to store 1
         addObject(new RawBeefHangers(),935,147);
+        */
+
+        // After adding the default layout units, assign them to stores and print their available products
+        for (DisplayUnit unit : getObjects(DisplayUnit.class)) {
+            try {
+                int ux = unit.getX();
+                int uy = unit.getY();
+                // attempt to stock default units so stockedItems is ready
+                try { unit.stock(); } catch (Exception ignore) {}
+                java.util.List<Node> nearby = SettingWorld.findNodesInRange(ux, uy, 100);
+                unit.setCustomerNodes(nearby);
+                Store parent = null;
+                for (Node n : nearby) {
+                    if (storeOne.ownsNode(n)) { storeOne.addDisplayUnit(unit); unit.setParentStore(storeOne); parent = storeOne; break; }
+                    if (storeTwo.ownsNode(n)) { storeTwo.addDisplayUnit(unit); unit.setParentStore(storeTwo); parent = storeTwo; break; }
+                }
+                if (parent != null) {
+                    // Derive provided product classes from any already-stocked Product instances
+                    java.util.Set<Class<? extends Product>> provided = new java.util.HashSet<Class<? extends Product>>();
+                    for (Product p : unit.getStockedItems()) {
+                        if (p != null) provided.add((Class<? extends Product>) p.getClass());
+                    }
+                    if (!provided.isEmpty()) {
+                        for (Class<? extends Product> pc : provided) parent.addAvailableProductTypes(pc);
+                    }
+                    System.out.println("Added " + unit.getClass().getSimpleName() + " to " + (parent == storeOne ? "Store 1" : "Store 2") + " -> products: " + (provided.isEmpty() ? "<none yet>" : provided));
+                } else {
+                    System.out.println("Added " + unit.getClass().getSimpleName() + " at (" + ux + "," + uy + ") but could not assign to a store");
+                }
+            } catch (Exception e) {
+                System.err.println("Error registering default display unit: " + e.getMessage());
+            }
+        }
     }
     
     public void act () 

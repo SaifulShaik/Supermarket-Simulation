@@ -6,62 +6,57 @@
   },
   {
     "displayUnitType": "SnackShelf",
-    "x": 198,
-    "y": 194
+    "x": 200,
+    "y": 180
+  },
+  {
+    "displayUnitType": "LettuceBin",
+    "x": 160,
+    "y": 295
+  },
+  {
+    "displayUnitType": "CarrotBin",
+    "x": 85,
+    "y": 297
+  },
+  {
+    "displayUnitType": "AppleBin",
+    "x": 240,
+    "y": 297
+  },
+  {
+    "displayUnitType": "OrangeBin",
+    "x": 318,
+    "y": 296
+  },
+  {
+    "displayUnitType": "SteakWarmer",
+    "x": 1070,
+    "y": 255
+  },
+  {
+    "displayUnitType": "CarrotBin",
+    "x": 785,
+    "y": 440
+  },
+  {
+    "displayUnitType": "CarrotBin",
+    "x": 878,
+    "y": 439
+  },
+  {
+    "displayUnitType": "CarrotBin",
+    "x": 967,
+    "y": 438
+  },
+  {
+    "displayUnitType": "CarrotBin",
+    "x": 1046,
+    "y": 441
   },
   {
     "displayUnitType": "CupNoodleShelf",
     "x": 320,
-    "y": 195
-  },
-  {
-    "displayUnitType": "CandyBin",
-    "x": 780,
-    "y": 440
-  },
-  {
-    "displayUnitType": "SteakWarmer",
-    "x": 1065,
-    "y": 250
-  },
-  {
-    "displayUnitType": "AppleBin",
-    "x": 140,
-    "y": 300
-  },
-  {
-    "displayUnitType": "LettuceBin",
-    "x": 220,
-    "y": 300
-  },
-  {
-    "displayUnitType": "CarrotBin",
-    "x": 300,
-    "y": 300
-  },
-  {
-    "displayUnitType": "OrangeBin",
-    "x": 60,
-    "y": 400
-  },
-  {
-    "displayUnitType": "LettuceBin",
-    "x": 880,
-    "y": 450
-  },
-  {
-    "displayUnitType": "CarrotBin",
-    "x": 960,
-    "y": 450
-  },
-  {
-    "displayUnitType": "AppleBin",
-    "x": 1040,
-    "y": 450
-  },
-  {
-    "displayUnitType": "RawBeefHangers",
-    "x": 937,
-    "y": 145
+    "y": 180
   }
 ]

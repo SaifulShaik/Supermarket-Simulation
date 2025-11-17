@@ -41,6 +41,7 @@ public abstract class MultiRowUnit extends DisplayUnit {
                     int itemX = topLeftX + LEFT_PAD + c * COL_GAP + item.getImage().getWidth()/2;
                     int itemY = topLeftY + TOP_PAD  + r * ROW_GAP + item.getImage().getHeight()/2;
 
+                    item.setDisplayUnit(this); // link product to this display unit
                     getWorld().addObject(item, itemX, itemY);
                     stockedItems.add(item);
                 }
@@ -48,6 +49,7 @@ public abstract class MultiRowUnit extends DisplayUnit {
             }
         }
         stocked=true;
+        System.out.println("[MultiRowUnit] " + getClass().getSimpleName() + " stocked " + stockedItems.size() + " items, parent store: " + (parentStore == null ? "<null>" : parentStore.name));
         
     }
     /*
