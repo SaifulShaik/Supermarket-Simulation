@@ -25,7 +25,7 @@ public class Cashier extends SuperSmoothMover
     private double totalEarnings;
     
     private int timer;
-    private int serviceSpeed; // acts required per product service
+    private double serviceSpeed; // final service speed = number of items * service speed
     
     private Node customerNode;
 
@@ -43,24 +43,7 @@ public class Cashier extends SuperSmoothMover
         setImage(frames[0]);
         
         queue = new LinkedList<>();
-        serviceSpeed = 180;
-    }
-    
-    /*
-     * Use specifiedfile for cashier images
-     */
-    public Cashier(String frame0, String frame1)
-    {
-        GreenfootImage frame0Image = new GreenfootImage(frame0);
-        GreenfootImage frame1Image = new GreenfootImage(frame1);
-        frame0Image.scale(frame0Image.getWidth()/6, frame0Image.getHeight()/6);
-        frame1Image.scale(frame1Image.getWidth()/6, frame1Image.getHeight()/6);
-
-        frames=new GreenfootImage[]{frame0Image, frame1Image};
-        setImage(frames[0]);
-        
-        queue = new LinkedList<Customer>();
-        serviceSpeed = 10;
+        this.serviceSpeed = 3.0;
     }
     
     public void act() 
@@ -83,14 +66,12 @@ public class Cashier extends SuperSmoothMover
     }
     
     private void startNextCustomer() {
-        System.out.println("Started handling new customer");
         currentCustomer = queue.poll();
-        timer = serviceSpeed;
+        timer = (int) serviceSpeed * currentCustomer.getCartSize();
     }
     
     private void processCurrentCustomer() {
         if (currentCustomer == null) return;
-        System.out.println("Dealing with customer");
         
         timer--;
         
@@ -99,7 +80,6 @@ public class Cashier extends SuperSmoothMover
             showEarnings();
             currentCustomer.checkOut();
             currentCustomer = null;
-            System.out.println("[Cashier] customer has checked out");
         }
     }
     

@@ -227,8 +227,8 @@ public class SettingWorld extends World
         addObject(new Cashier(), getWidth()/2 + 200, getHeight()/2);
         
         // add cashier to left store
-        addObject(new Store2Cashier(), getWidth()/2 - 250, getHeight() / 2 + 130);
-        addObject(new Store2Cashier(), getWidth()/2 - 425, getHeight() / 2 + 130);
+        addObject(new Cashier(), getWidth()/2 - 250, getHeight() / 2 + 130);
+        addObject(new Cashier(), getWidth()/2 - 425, getHeight() / 2 + 130);
         
         // add the butcher
         Butcher butcher = new Butcher();

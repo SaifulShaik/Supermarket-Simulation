@@ -29,7 +29,7 @@ public abstract class Customer extends SuperSmoothMover
     protected Store store;
     
     public Customer() {
-        this(2.0, 100.0, null, 5);
+        this(2.0, 100.0, null, 3, 2);
     }
     
     /**
@@ -38,8 +38,10 @@ public abstract class Customer extends SuperSmoothMover
      * @param movementSpeed movement speed of the customer
      * @param budget budget of the customer
      * @param currentNode default node the customer spawns at
+     * @param minShoppingListItems minimum number of shopping list items
+     * @param maxAdditionalRandomItems maximum number of additional shopping list items
      */
-    public Customer(double movementSpeed, double budget, Node currentNode, int maxShoppingListItems) {
+    public Customer(double movementSpeed, double budget, Node currentNode, int minShoppingListItems, int maxAdditionalRandomItems) {
         this.movementSpeed = movementSpeed;
         this.budget = budget;
         
@@ -52,7 +54,7 @@ public abstract class Customer extends SuperSmoothMover
         hasCheckedOut = false;
         
         shoppingList = new ArrayList<>();
-        shoppingList = generateShoppingList(maxShoppingListItems);
+        shoppingList = generateShoppingList(minShoppingListItems, maxAdditionalRandomItems);
         cart = new ArrayList();
     }
     
@@ -153,15 +155,16 @@ public abstract class Customer extends SuperSmoothMover
 
         // updates store entrance
         targetNode = store.getEntranceNode();
+        System.out.println("Chose Store");
     }
     
     /**
      * Method to generate a shopping list
      * 
-     * @param maxShoppingListItems maximum number of shopping list items
+     * @param minShoppingListItems minimum number of shopping list items
      * @return list of products generated
      */
-    protected List<Class<? extends Product>> generateShoppingList(int maxShoppingListItems) {
+    protected List<Class<? extends Product>> generateShoppingList(int minShoppingListItems, int maxAdditionalRandomItems) {
         // initializes a list of items that are going to be in the cart
         List<Class<? extends Product>> items = new ArrayList<>();
         
@@ -179,12 +182,12 @@ public abstract class Customer extends SuperSmoothMover
         }
         
         // cannot have 0 or negative shopping lsit size
-        if (maxShoppingListItems <= 0) {
-            maxShoppingListItems = 1; 
+        if (minShoppingListItems <= 0) {
+            minShoppingListItems = 1; 
         }
         
         // generate list size between 1 and maxShoppingListItems
-        int numItems = 1 + Greenfoot.getRandomNumber(maxShoppingListItems);
+        int numItems = minShoppingListItems + Greenfoot.getRandomNumber(maxAdditionalRandomItems + 1);
         
         // randomly selects items
         for (int i = 0; i < numItems; i++) {
@@ -486,6 +489,10 @@ public abstract class Customer extends SuperSmoothMover
         }
         
         return total;
+    }
+    
+    public int getCartSize() {
+        return cart.size();
     }
 }
 
