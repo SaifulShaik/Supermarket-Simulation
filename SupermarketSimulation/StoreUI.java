@@ -107,12 +107,12 @@ public class StoreUI extends Actor
         w.addObject(storeTwoMoneyBar, w.getWidth() / 2 + 250, getY());
         
         // Create labels with transparent backgrounds
-        storeOneProfitLabel = new Label("Profit: $" + String.format("%.2f", SimulationWorld.storeOne.getProfit()), 30);
-        storeOneProfitLabel.setLineColor(Color.WHITE);
+        storeOneProfitLabel = new Label("Profit: $" + String.format("%.2f", SimulationWorld.storeOne.getProfit()), 27);
+        storeOneProfitLabel.setLineColor(Color.BLACK);
         storeOneProfitLabel.setFillColor(new Color(255, 255, 255, 255)); // Transparent
         
-        storeTwoProfitLabel = new Label("Profit: $" + String.format("%.2f", SimulationWorld.storeTwo.getProfit()), 30);
-        storeTwoProfitLabel.setLineColor(Color.WHITE);
+        storeTwoProfitLabel = new Label("Profit: $" + String.format("%.2f", SimulationWorld.storeTwo.getProfit()), 27);
+        storeTwoProfitLabel.setLineColor(Color.BLACK);
         storeTwoProfitLabel.setFillColor(new Color(255, 255, 255, 255)); // Transparent
         
         // Add labels SECOND (so they're on top) - SAME Y position as bars

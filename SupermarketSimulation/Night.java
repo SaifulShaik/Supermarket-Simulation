@@ -3,7 +3,7 @@ import java.util.ArrayList;
 
 /**
  * This is the world wide effect that represents nighttime
- * By: Owen
+ * By: Owen L
  */
 public class Night extends Effect
 {
@@ -77,10 +77,10 @@ public class Night extends Effect
         int moonY;
         
         if (moonProgress < 0.5) {
-            // First half: going up (Y decreases as we go up the screen)
+            // First half: going up 
             moonY = (int)(startY - (startY - peakY) * (moonProgress / 0.5));
         } else {
-            // Second half: going down (Y increases)
+            // Second half: going down 
             moonY = (int)(peakY + (startY - peakY) * ((moonProgress - 0.5) / 0.5));
         }
         
@@ -94,7 +94,6 @@ public class Night extends Effect
         image.setColor(new Color(255, 255, 220));
         image.fillOval(moonX, moonY, moonSize, moonSize);
         
-        // Optional: Add stars
         drawStars();
         
         setImage(image);
@@ -102,7 +101,7 @@ public class Night extends Effect
     
     private void drawStars() {
         image.setColor(new Color(255, 255, 255, 200));
-        // Create random stars (use fixed seed for consistent positions)
+        // Create random stars 
         for (int i = 0; i < 50; i++) {
             int starX = (i * 127) % image.getWidth(); 
             int starY = (i * 73) % (image.getHeight() - 100);

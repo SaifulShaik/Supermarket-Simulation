@@ -68,5 +68,10 @@
     "displayUnitType": "OrangeBin",
     "x": 160,
     "y": 280
+  },
+  {
+    "displayUnitType": "FridgeOne",
+    "x": 880,
+    "y": 340
   }
 ]
