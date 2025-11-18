@@ -68,5 +68,10 @@
     "displayUnitType": "LettuceBin",
     "x": 320,
     "y": 280
+  },
+  {
+    "displayUnitType": "FridgeOne",
+    "x": 880,
+    "y": 340
   }
 ]

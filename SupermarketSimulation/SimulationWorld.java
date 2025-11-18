@@ -32,6 +32,7 @@ public class SimulationWorld extends World
     
     //for spawning truck
     private int truckDelay;
+    private int actCount;
     
     // Grid settings
     public static final int GRID_CELL_SIZE = 20; // pixels per cell
@@ -102,7 +103,7 @@ public class SimulationWorld extends World
        
         //Set Paint order
         //So customer, Product and Display units can present properly
-        setPaintOrder(Customer.class,FloatingText.class, Product.class,DisplayUnit.class);
+        setPaintOrder(Effect.class, Customer.class,FloatingText.class, Product.class,DisplayUnit.class);
     }
     
     public static Node getStartNode() {
@@ -239,18 +240,15 @@ public class SimulationWorld extends World
     {
         //use zSort
         zSort ((ArrayList<Actor>)(getObjects(Actor.class)), this);
+        actCount++;
         
-        //spawnRestockingTruck();
-    } 
-    private void spawnRestockingTruck()
-    {
-        truckDelay++;
-        if(truckDelay>=1200)
-        {
+        if (actCount % 2000 == 0){
             addObject(new RestockingTruck(),600,200);
-            truckDelay=0;
+            addObject(new Night(), getWidth()/2, getHeight()/2);
         }
-    }
+        
+    } 
+    
     /**
      * Z-sort so actors with higher Y (lower on screen) render in front.
      * Uses precise Y for SuperSmoothMover when available. Stable for ties.
