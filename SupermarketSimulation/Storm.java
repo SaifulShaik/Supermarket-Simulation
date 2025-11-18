@@ -2,7 +2,7 @@ import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 import java.util.ArrayList;
 
 /**
- * This is the world wide effect that appears when the world is on fire
+ *  By: Owen L
  */
 public class Storm extends Effect {
     private boolean firstAct;

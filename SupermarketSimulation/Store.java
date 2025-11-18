@@ -254,6 +254,14 @@ public class Store {
      * @return list of available products
      */
     public List<Class<? extends Product>> getAvailableProducts() {
+        List<Class<? extends Product>> availableProductTypes = new ArrayList<>();
+        
+        for (DisplayUnit u : availableDisplayUnits) {
+            for (Product p : u.getStockedItems()) {
+                availableProductTypes.add(p.getClass());
+            }
+        }
+        
         return availableProductTypes;
     }
     

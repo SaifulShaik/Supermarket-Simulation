@@ -32,6 +32,7 @@ public class SimulationWorld extends World
     
     //for spawning truck
     private int truckDelay;
+    private int actCount;
     
     // Grid settings
     public static final int GRID_CELL_SIZE = 20; // pixels per cell
@@ -73,14 +74,14 @@ public class SimulationWorld extends World
         // add the Cashier to right store
         Cashier rsCashier = new Cashier();
         addObject(rsCashier, getWidth()/2 + 200, getHeight()/2);
-        rsCashier.setCustomerNode(storeTwo.getNode(825, 325));
+        rsCashier.setCustomerNode(storeTwo.getNode(825, 240));
         storeTwo.addCashier(rsCashier);
         
         // add cashier to left store
         Cashier lsLeftCashier = new Cashier();
         Cashier lsRightCashier = new Cashier();
-        lsLeftCashier.setCustomerNode(storeOne.getNode(275, 335));
-        lsRightCashier.setCustomerNode(storeOne.getNode(200, 335));
+        lsLeftCashier.setCustomerNode(storeOne.getNode(275, 450));
+        lsRightCashier.setCustomerNode(storeOne.getNode(200, 450));
         addObject(lsLeftCashier, getWidth()/2 - 250, getHeight() / 2 + 130);
         addObject(lsRightCashier, getWidth()/2 - 425, getHeight() / 2 + 130);
         
@@ -102,7 +103,7 @@ public class SimulationWorld extends World
        
         //Set Paint order
         //So customer, Product and Display units can present properly
-        setPaintOrder(Customer.class,FloatingText.class, Product.class,DisplayUnit.class);
+        setPaintOrder(Effect.class, Customer.class,FloatingText.class, Product.class,DisplayUnit.class);
     }
     
     public static Node getStartNode() {
@@ -239,18 +240,15 @@ public class SimulationWorld extends World
     {
         //use zSort
         zSort ((ArrayList<Actor>)(getObjects(Actor.class)), this);
+        actCount++;
         
-        //spawnRestockingTruck();
-    } 
-    private void spawnRestockingTruck()
-    {
-        truckDelay++;
-        if(truckDelay>=1200)
-        {
+        if (actCount % 2000 == 0){
             addObject(new RestockingTruck(),600,200);
-            truckDelay=0;
+            addObject(new Night(), getWidth()/2, getHeight()/2);
         }
-    }
+        
+    } 
+    
     /**
      * Z-sort so actors with higher Y (lower on screen) render in front.
      * Uses precise Y for SuperSmoothMover when available. Stable for ties.

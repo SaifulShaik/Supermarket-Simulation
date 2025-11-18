@@ -28,8 +28,11 @@ public abstract class Customer extends SuperSmoothMover
     
     protected Store store;
     
+    protected int currentActCycles;
+    protected int maxActCycles;
+    
     public Customer() {
-        this(2.0, 100.0, null, 3, 2);
+        this(2.0, 100.0, null, 3, 2, 100);
     }
     
     /**
@@ -41,13 +44,16 @@ public abstract class Customer extends SuperSmoothMover
      * @param minShoppingListItems minimum number of shopping list items
      * @param maxAdditionalRandomItems maximum number of additional shopping list items
      */
-    public Customer(double movementSpeed, double budget, Node currentNode, int minShoppingListItems, int maxAdditionalRandomItems) {
+    public Customer(double movementSpeed, double budget, Node currentNode, int minShoppingListItems, int maxAdditionalRandomItems, int maxActCycles) {
         this.movementSpeed = movementSpeed;
         this.budget = budget;
         
         this.currentNode = currentNode;
         targetNode = null;
         previousNode = null;
+        
+        this.currentActCycles = 0;
+        this.maxActCycles = maxActCycles;
         
         store = null;
         
@@ -65,6 +71,8 @@ public abstract class Customer extends SuperSmoothMover
      * finally checks out once all products are purchased
      */
     public void act() {
+        currentActCycles++;
+        
         // move to target node if already set
         if (targetNode != null) {
             moveToNode(targetNode);
@@ -85,7 +93,7 @@ public abstract class Customer extends SuperSmoothMover
         }
         
         // take items while walking around if shopping list items aren't collected yet
-        if (!shoppingList.isEmpty()) {
+        if (!shoppingList.isEmpty() && currentActCycles < maxActCycles) {
             System.out.println("[Customer] walking around");
             retrieveProdcuts(); 
             move(false);
