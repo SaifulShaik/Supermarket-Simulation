@@ -14,7 +14,7 @@ public class Carrot extends Product
     public Carrot()
     {
         price=1.5;
-        name=SimulationWorld.PRODUCT_CARROT;
+        name="Carrot";
         image = new GreenfootImage("product/carrot.PNG");
         image.scale(image.getWidth()/2, image.getHeight()/2);
         //image.rotate(270);

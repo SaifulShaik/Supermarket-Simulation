@@ -13,7 +13,7 @@ public class Apple extends Product
     
     public Apple()
     {
-        name=SimulationWorld.PRODUCT_APPLE;
+        name="Apple";
         price=2.0;
         image = new GreenfootImage("product/Apple.PNG");
         image.scale(image.getWidth()/2, image.getHeight()/2);

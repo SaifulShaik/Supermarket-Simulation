@@ -10,25 +10,6 @@ import java.util.List;
  */
 public class SimulationWorld extends World
 {
-    // Product name constants
-    public static final String PRODUCT_APPLE = "Apple";
-    public static final String PRODUCT_ORANGE = "Orange";
-    public static final String PRODUCT_CARROT = "Carrot";
-    public static final String PRODUCT_LETTUCE = "Lettuce";
-    public static final String PRODUCT_COKE = "Coke";
-    public static final String PRODUCT_SPRITE = "Sprite";
-    public static final String PRODUCT_FANTA = "Fanta";
-    public static final String PRODUCT_WATER = "Water";
-    public static final String PRODUCT_DORITOS = "Doritos";
-    public static final String PRODUCT_LAYS = "Lays";
-    public static final String PRODUCT_RUFFLES = "Ruffles";
-    public static final String PRODUCT_STEAK = "Steak";
-    public static final String PRODUCT_RAW_BEEF = "Raw Beef";
-    public static final String PRODUCT_CANDY = "Candy";
-    public static final String PRODUCT_DRUM_STICK = "Drumstick";
-    public static final String PRODUCT_XING_RAMEN = "Xing Ramen";
-    public static final String PRODUCT_JIN_RAMEN = "Jin Ramen";
-    public static final String PRODUCT_NISSIN = "Raw Beef";
     
     //for spawning truck
     private int truckDelay;

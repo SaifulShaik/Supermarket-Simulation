@@ -14,7 +14,7 @@ public class Fanta extends Product
     public Fanta()
     {
         price=2.5;
-        name=SimulationWorld.PRODUCT_FANTA;
+        name="Fanta";
         image = new GreenfootImage("product/pop/Pop 1.PNG");
         image.scale(image.getWidth()/2, image.getHeight()/2);
         setImage(image);

@@ -14,7 +14,7 @@ public class Coke extends Product
     public Coke()
     {
         price=2.5;
-        name=SimulationWorld.PRODUCT_COKE;
+        name="Coke";
         image = new GreenfootImage("product/pop/Pop 3.PNG");
         image.scale(image.getWidth()/2, image.getHeight()/2);
         setImage(image);
