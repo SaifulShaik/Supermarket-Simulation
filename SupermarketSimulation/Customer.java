@@ -32,7 +32,7 @@ public abstract class Customer extends SuperSmoothMover
     protected int maxActCycles;
     
     public Customer() {
-        this(2.0, 100.0, null, 3, 2, 1000);
+        this(2.0, 100.0, null, 3, 2, 100);
     }
     
     /**
@@ -72,6 +72,7 @@ public abstract class Customer extends SuperSmoothMover
      */
     public void act() {
         currentActCycles++;
+        
         // move to target node if already set
         if (targetNode != null) {
             moveToNode(targetNode);

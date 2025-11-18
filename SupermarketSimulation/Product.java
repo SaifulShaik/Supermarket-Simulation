@@ -14,7 +14,6 @@ public abstract class Product extends SuperSmoothMover
     protected double price;
     protected int stock;
     
-    protected boolean isLocked;
     protected boolean isDiscounted = false;
     
     protected String name;
@@ -43,7 +42,7 @@ public abstract class Product extends SuperSmoothMover
         isDiscounted = true;
     }
     
-    protected int getStock() {
+    public int getStock() {
         return stock;
     }
     

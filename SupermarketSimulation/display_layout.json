@@ -56,17 +56,17 @@
   },
   {
     "displayUnitType": "LettuceBin",
-    "x": 160,
+    "x": 320,
     "y": 280
   },
   {
-    "displayUnitType": "LettuceBin",
+    "displayUnitType": "CarrotBin",
     "x": 240,
     "y": 280
   },
   {
-    "displayUnitType": "LettuceBin",
-    "x": 320,
+    "displayUnitType": "OrangeBin",
+    "x": 160,
     "y": 280
   },
   {
