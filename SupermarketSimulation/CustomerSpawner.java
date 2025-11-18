@@ -12,6 +12,10 @@ public class CustomerSpawner extends Actor
 {
     private final static int spawnRate = 150;
     
+    public CustomerSpawner() {
+        setImage((GreenfootImage) null);
+    }
+    
     public void act() {
         spawnCustomers();
     }

@@ -27,6 +27,9 @@ public class StoreUI extends Actor
     private boolean tested = false;
     
     public StoreUI() {
+        // no image
+        setImage((GreenfootImage) null);
+
         // Initialize rating arrays
         storeOneRatings = new ArrayList<Integer>();
         storeTwoRatings = new ArrayList<Integer>();

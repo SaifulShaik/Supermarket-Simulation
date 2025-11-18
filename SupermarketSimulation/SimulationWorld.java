@@ -44,6 +44,8 @@ public class SimulationWorld extends World
     
     private static List<Node> roadNodes;
     
+    private static final boolean showNodes = true;
+    
     public SimulationWorld(){
         super(bg.getWidth(), bg.getHeight(), 1);
         setBackground(bg); 
@@ -93,8 +95,10 @@ public class SimulationWorld extends World
         loadDisplayUnits();
 
         // Add visual markers for stores' nodes (stores manage their own node markers)
-        storeOne.showNodesInWorld(this);
-        storeTwo.showNodesInWorld(this);
+        if (showNodes) {
+            storeOne.showNodesInWorld(this);
+            storeTwo.showNodesInWorld(this);
+        }
        
         //Set Paint order
         //So customer, Product and Display units can present properly
