@@ -83,7 +83,7 @@ public class Store {
     public void initializeNodes() {
         // Left store
         if (name.equals("Store 1")) {
-            Node n1 = new Node(425, 400, true, true, false); // entrance node
+            Node n1 = new Node(425, 400, true, false, false); // entrance node
             Node n2 = new Node(425, 335); // 
             
             Node n3 = new Node(350, 335); // bottom right

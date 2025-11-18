@@ -399,6 +399,16 @@ public abstract class Customer extends SuperSmoothMover
             pauseTimer--;
             return;
         }
+
+        // DEBUG: print movement state
+        try {
+            String cur = (currentNode == null) ? "null" : currentNode.getX() + "," + currentNode.getY();
+            String prev = (previousNode == null) ? "null" : previousNode.getX() + "," + previousNode.getY();
+            String targ = (targetNode == null) ? "null" : targetNode.getX() + "," + targetNode.getY();
+            System.out.println("[Customer Debug] move() cur=" + cur + " prev=" + prev + " targ=" + targ + " moveToExitNodes=" + moveToExitNodes);
+        } catch (Exception e) {
+            System.out.println("[Customer Debug] move() printing failed: " + e.getMessage());
+        }
         
         // no need to reselect a new target node if already moving to one
         if (targetNode != null) {
@@ -410,7 +420,8 @@ public abstract class Customer extends SuperSmoothMover
         List<Node> neighbouringNodes = currentNode.getNeighbouringNodes();
         
         // cannot move if no neighbouring nodes
-        if (neighbouringNodes.isEmpty() || neighbouringNodes == null) {
+        if (neighbouringNodes == null || neighbouringNodes.isEmpty()) {
+            System.out.println("[Customer Debug] neighbouringNodes is null/empty for currentNode=" + (currentNode==null?"null":currentNode.getX()+","+currentNode.getY()));
             return;
         }
         
@@ -432,8 +443,30 @@ public abstract class Customer extends SuperSmoothMover
         }
         
         // cannot move if no available nodes
-        if (availableNodes.isEmpty() || availableNodes == null) {
-            return;
+        if (availableNodes == null || availableNodes.isEmpty()) {
+            // DEBUG: list neighbouring nodes and their exit flags
+            try {
+                System.out.print("[Customer Debug] No available nodes. neighbouring: ");
+                for (Node nn : neighbouringNodes) {
+                    System.out.print("(" + nn.getX() + "," + nn.getY() + ",exit=" + nn.checkIsExit() + ") ");
+                }
+                System.out.println();
+            } catch (Exception e) {}
+
+            // Fallback: allow moving back to previous node or any neighbour to avoid deadlock
+            try {
+                for (Node nn : neighbouringNodes) {
+                    if (nn != null) availableNodes.add(nn);
+                }
+                if (!availableNodes.isEmpty()) {
+                    System.out.println("[Customer Debug] Fallback: using all neighbouring nodes to continue movement.");
+                } else {
+                    System.out.println("[Customer Debug] Fallback failed: still no neighbouring nodes.");
+                    return;
+                }
+            } catch (Exception e) {
+                return;
+            }
         }
         
         // randomly chooses next node
@@ -456,13 +489,20 @@ public abstract class Customer extends SuperSmoothMover
      * @return whether the customer has arrived at the target node
      */
     protected boolean moveToNode(Node n) {
-        // calculates distance to the next node
-        int dx = n.getX() - getX();
-        int dy = n.getY() - getY();
+        // Use precise coordinates (double) to avoid rounding oscillation with Actor.getX()/getY()
+        double curX = (this instanceof SuperSmoothMover) ? ((SuperSmoothMover)this).getPreciseX() : getX();
+        double curY = (this instanceof SuperSmoothMover) ? ((SuperSmoothMover)this).getPreciseY() : getY();
+        double dx = n.getX() - curX;
+        double dy = n.getY() - curY;
         double distance = Math.sqrt(dx * dx + dy * dy);
+        // DEBUG: print distance to target
+        try {
+            System.out.println("[Customer Debug] moveToNode target=" + n.getX() + "," + n.getY() + " current=" + getX() + "," + getY() + " distance=" + distance + " speed=" + movementSpeed);
+        } catch (Exception e) {}
         
         // finishes movement if almost there (1 act cycle would move too much to the distance)
-        if (distance < movementSpeed) {
+        // snap when within one step (use <= to be robust)
+        if (distance <= movementSpeed) {
             // snaps to the target location
             setLocation(n.getX(), n.getY());
             
@@ -470,19 +510,23 @@ public abstract class Customer extends SuperSmoothMover
             currentNode = n;
             targetNode = null;
             
+            // DEBUG: arrived at node
+            System.out.println("[Customer Debug] Arrived at node " + n.getX() + "," + n.getY());
             // don't move any further
             return true;
         }
         
-        // calculates angle
+        // calculates angle using precise deltas
         double angle = Math.atan2(dy, dx);
-        
-        // updates x and y values
-        double newX = getX() + Math.cos(angle) * movementSpeed;
-        double newY = getY() + Math.sin(angle) * movementSpeed;
+
+        // updates x and y values using precise positions
+        double newX = curX + Math.cos(angle) * movementSpeed;
+        double newY = curY + Math.sin(angle) * movementSpeed;
         
         // updates location
         setLocation(newX, newY);
+        // DEBUG: moved to intermediate pos
+        try { System.out.println("[Customer Debug] Moved to " + newX + "," + newY); } catch (Exception e) {}
         return false;
     }
     
