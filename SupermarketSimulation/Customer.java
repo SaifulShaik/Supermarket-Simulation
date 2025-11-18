@@ -494,5 +494,9 @@ public abstract class Customer extends SuperSmoothMover
     public int getCartSize() {
         return cart.size();
     }
+    
+    public Store getStore() {
+        return store;
+    }
 }
 

@@ -3,14 +3,11 @@ import java.util.ArrayList;
 /**
  * Store UI
  * 
- * @author Joe
+ * @author Joe and Owen L
  * @version November 11, 2025
  */
 public class StoreUI extends Actor
 {   
-    private double storeOneEarnings;
-    private double storeTwoEarnings;
-    
     private Label storeOneProfitLabel;
     private Label storeTwoProfitLabel;
     
@@ -30,45 +27,18 @@ public class StoreUI extends Actor
     private boolean tested = false;
     
     public StoreUI() {
-        storeOneEarnings = 0;
-        storeTwoEarnings = 0;
-        
         // Initialize rating arrays
         storeOneRatings = new ArrayList<Integer>();
         storeTwoRatings = new ArrayList<Integer>();
     }
     
     public void act(){
-        if (!tested){
-            addEarnings(10, 1);
-            addEarnings(50, 2);
+        if (!tested) {
             addStar(4, 1);  // Test rating for store 1
             addStar(5, 2);  // Test rating for store 2
             tested = true;
         }
-    }
-    
-    public void addEarnings(double amount, int store) {
-        switch (store) {
-            case 1:
-                storeOneEarnings += amount;
-                updateDisplay();
-                break;
-            case 2:
-                storeTwoEarnings += amount;
-                updateDisplay();
-                break;
-        }
-    }
-    
-    public double getEarnings(int store) {
-        switch (store) {
-            case 1:
-                return storeOneEarnings;
-            case 2:
-                return storeTwoEarnings;
-        }
-        return -1;
+        updateDisplay();
     }
     
     /**
@@ -134,11 +104,11 @@ public class StoreUI extends Actor
         w.addObject(storeTwoMoneyBar, w.getWidth() / 2 + 250, getY());
         
         // Create labels with transparent backgrounds
-        storeOneProfitLabel = new Label("Profit: $" + String.format("%.2f", storeOneEarnings), 30);
+        storeOneProfitLabel = new Label("Profit: $" + String.format("%.2f", SimulationWorld.storeOne.getProfit()), 30);
         storeOneProfitLabel.setLineColor(Color.WHITE);
         storeOneProfitLabel.setFillColor(new Color(255, 255, 255, 255)); // Transparent
         
-        storeTwoProfitLabel = new Label("Profit: $" + String.format("%.2f", storeTwoEarnings), 30);
+        storeTwoProfitLabel = new Label("Profit: $" + String.format("%.2f", SimulationWorld.storeTwo.getProfit()), 30);
         storeTwoProfitLabel.setLineColor(Color.WHITE);
         storeTwoProfitLabel.setFillColor(new Color(255, 255, 255, 255)); // Transparent
         
@@ -187,8 +157,8 @@ public class StoreUI extends Actor
         if (storeOneProfitLabel == null || storeTwoProfitLabel == null) return;
         
         // Update labels
-        storeOneProfitLabel.setValue("Profit: $" + String.format("%.2f", storeOneEarnings));
-        storeTwoProfitLabel.setValue("Profit: $" + String.format("%.2f", storeTwoEarnings));
+        storeOneProfitLabel.setValue("Profit: $" + String.format("%.2f", SimulationWorld.storeOne.getProfit()));
+        storeTwoProfitLabel.setValue("Profit: $" + String.format("%.2f", SimulationWorld.storeTwo.getProfit()));
         
         // Remove old bars AND labels from world
         World w = getWorld();
@@ -206,11 +176,11 @@ public class StoreUI extends Actor
         }
         
         // Update money bars (capped at MAX_MONEY)
-        int storeOneBarValue = Math.min((int)Math.round(storeOneEarnings), MAX_MONEY);
-        int storeTwoBarValue = Math.min((int)Math.round(storeTwoEarnings), MAX_MONEY);
+        double storeOneBarValue = Math.min(SimulationWorld.storeOne.getProfit(), MAX_MONEY);
+        double storeTwoBarValue = Math.min(SimulationWorld.storeTwo.getProfit(), MAX_MONEY);
         
-        storeOneMoneyBar.update(storeOneBarValue);
-        storeTwoMoneyBar.update(storeTwoBarValue);
+        storeOneMoneyBar.update((int)(storeOneBarValue));
+        storeTwoMoneyBar.update((int)(storeTwoBarValue));
         
         // Add bars back FIRST (behind)
         if (w != null) {
