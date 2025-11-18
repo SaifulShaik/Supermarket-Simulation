@@ -240,7 +240,7 @@ public class SimulationWorld extends World
         //use zSort
         zSort ((ArrayList<Actor>)(getObjects(Actor.class)), this);
         
-        spawnRestockingTruck();
+        //spawnRestockingTruck();
     } 
     private void spawnRestockingTruck()
     {

@@ -65,9 +65,14 @@ public abstract class Customer extends SuperSmoothMover
      * finally checks out once all products are purchased
      */
     public void act() {
+        // move to target node if already set
+        if (targetNode != null) {
+            moveToNode(targetNode);
+            return;
+        }
+        
         // move to store entrance access node
-        if (SimulationWorld.getStartNode() == currentNode) {
-            System.out.println("[Customer] moving to store entrance");
+        if (SimulationWorld.getStartNode().equals(currentNode)) {
             move(false);
             return;
         }
@@ -76,12 +81,6 @@ public abstract class Customer extends SuperSmoothMover
         if (store == null) {
             System.out.println("[Customer] choosing store");
             chooseStore();
-            return;
-        }
-        
-        // move to target node if already set
-        if (targetNode != null) {
-            moveToNode(targetNode);
             return;
         }
         
@@ -246,7 +245,7 @@ public abstract class Customer extends SuperSmoothMover
                         accessMatch = true; 
                         break; 
                     }
-                    if (currentNode != null && an.getX() == currentNode.getX() && an.getY() == currentNode.getY()) { 
+                    if (currentNode.equals(an)) { 
                         accessMatch = true; 
                         break; 
                     }
@@ -326,7 +325,7 @@ public abstract class Customer extends SuperSmoothMover
             }
         }
 
-        if ((path == null || path.isEmpty()) && currentNode == cashierNode) {
+        if (path == null || path.isEmpty()) {
             targetCashier.addCustomerToQueue(this);
             targetNode = null;
         }
@@ -350,7 +349,7 @@ public abstract class Customer extends SuperSmoothMover
         while (!queue.isEmpty()) {
             Node node = queue.poll();
     
-            if (node == goal || (node.getX() == goal.getX() && node.getY() == goal.getY())) {
+            if (node.equals(goal)) {
                 Node cur = node;
                 while (cur != null) {
                     result.add(0, cur); 
@@ -420,7 +419,7 @@ public abstract class Customer extends SuperSmoothMover
         
         // loops through all neighbouring nodes
         for (Node n : neighbouringNodes) {
-            if (n == previousNode) continue;
+            if (n.equals(previousNode)) continue;
             // a node is 'available' if it wasn't the previous node (prevent back and forth movement)
             if (moveToExitNodes) {
                 if (n.checkIsExit()) {
