@@ -72,6 +72,7 @@ public abstract class Customer extends SuperSmoothMover
      */
     public void act() {
         currentActCycles++;
+        
         // move to target node if already set
         if (targetNode != null) {
             moveToNode(targetNode);
