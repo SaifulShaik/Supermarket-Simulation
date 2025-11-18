@@ -93,6 +93,17 @@ public class Cashier extends SuperSmoothMover
         queue.offer(c);
     }
     
+    public int getPositionInQueue(Customer c) {
+        int index = 0;
+        for (Customer cur : queue) {
+            if (cur == c) { 
+                return index; 
+            }
+            index++;
+        }
+        return -1; 
+    }
+    
     public void setCustomerNode(Node n) {
         this.customerNode = n;
     }
