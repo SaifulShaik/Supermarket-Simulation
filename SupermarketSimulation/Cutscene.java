@@ -13,6 +13,7 @@ public class Cutscene extends World
     private CutsceneImage text2;
     private boolean walkingDiagonal;
     private boolean walkingForward;
+    private Button skipButton = new Button("Skip Cutscene", 200, 30);
     /**
      * Constructor for objects of class Cutscene.
      * 
@@ -31,10 +32,19 @@ public class Cutscene extends World
         addObject(saiful, 650, 325);
         addObject(text1, 650, 330);
         setBackground(new GreenfootImage("Cutscene/Cutscene Background 1.PNG"));
+        
+        addObject(skipButton,120,570);
     }
     
     public void act(){
         timer++;
+        
+        if (skipButton != null && skipButton.wasClicked())
+        {
+            System.out.println("skipped");
+            transitionToSimulation();
+            return;
+        }
         
         if (timer==90){
             saiful.setImage(new GreenfootImage("Cutscene/Saiful/Saiful Aha.PNG"));

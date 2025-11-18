@@ -7,7 +7,7 @@
   {
     "displayUnitType": "CupNoodleShelf",
     "x": 320,
-    "y": 180
+    "y": 200
   },
   {
     "displayUnitType": "LettuceBin",
@@ -35,33 +35,8 @@
     "y": 440
   },
   {
-    "displayUnitType": "Fridge",
-    "x": 220,
-    "y": 180
-  },
-  {
-    "displayUnitType": "Fridge",
-    "x": 140,
-    "y": 180
-  },
-  {
-    "displayUnitType": "Fridge",
-    "x": 60,
-    "y": 180
-  },
-  {
     "displayUnitType": "LettuceBin",
     "x": 80,
-    "y": 280
-  },
-  {
-    "displayUnitType": "LettuceBin",
-    "x": 160,
-    "y": 280
-  },
-  {
-    "displayUnitType": "LettuceBin",
-    "x": 240,
     "y": 280
   },
   {
@@ -73,5 +48,10 @@
     "displayUnitType": "Fridge",
     "x": 880,
     "y": 360
+  },
+  {
+    "displayUnitType": "SnackShelf",
+    "x": 80,
+    "y": 180
   }
 ]
