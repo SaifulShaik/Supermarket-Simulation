@@ -23,15 +23,5 @@ public class Apple extends Product
         //whenever a Sprite is added to a shelve,
         //increase the stock#
         stock++;
-
-    }
-    public int getStock()
-    {
-        return stock;
-    }
-    //Return total number of stock in the store
-    public void setStock(int newStockCount)
-    {
-        stock=newStockCount;
     }
 }

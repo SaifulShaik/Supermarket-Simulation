@@ -69,11 +69,20 @@ public abstract class Customer extends SuperSmoothMover
         if (SimulationWorld.getStartNode() == currentNode) {
             System.out.println("[Customer] moving to store entrance");
             move(false);
+            return;
         }
+        
         // choose store
-        else if (store == null) {
+        if (store == null) {
             System.out.println("[Customer] choosing store");
             chooseStore();
+            return;
+        }
+        
+        // move to target node if already set
+        if (targetNode != null) {
+            moveToNode(targetNode);
+            return;
         }
         
         // take items while walking around if shopping list items aren't collected yet
@@ -81,9 +90,11 @@ public abstract class Customer extends SuperSmoothMover
             System.out.println("[Customer] walking around");
             retrieveProdcuts(); 
             move(false);
+            return;
         }
+        
         // check out if the shopping list items are all collected
-        else if (!hasCheckedOut) {
+        if (!hasCheckedOut) {
             // chooses cashier first
             if (targetCashier == null) {
                 System.out.println("[Customer] choosing cashier");
@@ -94,12 +105,12 @@ public abstract class Customer extends SuperSmoothMover
                 System.out.println("[Customer] moving to cashier");
                 moveToCashier();
             }
+            return;
         }
+        
         // leaves the store if everything has been done
-        else {
-            System.out.println("[Customer] leaving store");
-            leaveStore();
-        }
+        System.out.println("[Customer] leaving store");
+        leaveStore();
     }
     
     /**
@@ -301,24 +312,23 @@ public abstract class Customer extends SuperSmoothMover
     private void moveToCashier() {
         Node cashierNode = targetCashier.getCustomerNode();
         if (cashierNode == null) return;
+        
+        if (path == null || path.isEmpty()) {
+            path = findPath(cashierNode);
+        }
+
+        if (path != null && !path.isEmpty()) {
+            targetNode = path.get(0);
     
-        if (currentNode != null &&
-            (currentNode == cashierNode ||
-             (currentNode.getX() == cashierNode.getX() && currentNode.getY() == cashierNode.getY()))) {
+            if (moveToNode(targetNode)) {
+                path.remove(0);
+                targetNode = null;
+            }
+        }
+
+        if ((path == null || path.isEmpty()) && currentNode == cashierNode) {
             targetCashier.addCustomerToQueue(this);
-            return;
-        }
-    
-        if (targetNode != null) {
-            moveToNode(targetNode);
-            return;
-        }
-    
-        if (!path.isEmpty()) {
-            Node next = path.remove(0);
-            previousNode = currentNode;
-            targetNode = next;
-            moveToNode(next);
+            targetNode = null;
         }
     }
     
@@ -444,8 +454,9 @@ public abstract class Customer extends SuperSmoothMover
      * Method to move towards a Node
      * 
      * @param n node to move to
+     * @return whether the customer has arrived at the target node
      */
-    protected void moveToNode(Node n) {
+    protected boolean moveToNode(Node n) {
         // calculates distance to the next node
         int dx = n.getX() - getX();
         int dy = n.getY() - getY();
@@ -461,7 +472,7 @@ public abstract class Customer extends SuperSmoothMover
             targetNode = null;
             
             // don't move any further
-            return;
+            return true;
         }
         
         // calculates angle
@@ -473,6 +484,7 @@ public abstract class Customer extends SuperSmoothMover
         
         // updates location
         setLocation(newX, newY);
+        return false;
     }
     
     /**

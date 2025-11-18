@@ -15,7 +15,7 @@ public abstract class Product extends SuperSmoothMover
     protected int stock;
     
     protected boolean isLocked;
-    protected boolean isDiscounted=false;
+    protected boolean isDiscounted = false;
     
     protected String name;
     protected Node node;
@@ -28,6 +28,7 @@ public abstract class Product extends SuperSmoothMover
         price = 2.0 + (int)(Math.random() * 6); // $2 - $7
         stock = 1;
     }
+    
     public String getName()
     {
         return name;

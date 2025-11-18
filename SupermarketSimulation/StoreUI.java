@@ -23,7 +23,7 @@ public class StoreUI extends Actor
     private Label storeOneRatingLabel;
     private Label storeTwoRatingLabel;
     
-    private final int MAX_MONEY = 100;
+    private final int MAX_MONEY = 500;
     private boolean tested = false;
     
     public StoreUI() {
