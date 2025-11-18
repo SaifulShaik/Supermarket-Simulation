@@ -67,15 +67,18 @@ public abstract class Customer extends SuperSmoothMover
     public void act() {
         // move to store entrance access node
         if (SimulationWorld.getStartNode() == currentNode) {
+            System.out.println("[Customer] moving to store entrance");
             move(false);
         }
         // choose store
         else if (store == null) {
+            System.out.println("[Customer] choosing store");
             chooseStore();
         }
         
         // take items while walking around if shopping list items aren't collected yet
         if (!shoppingList.isEmpty()) {
+            System.out.println("[Customer] walking around");
             retrieveProdcuts(); 
             move(false);
         }
@@ -83,15 +86,18 @@ public abstract class Customer extends SuperSmoothMover
         else if (!hasCheckedOut) {
             // chooses cashier first
             if (targetCashier == null) {
+                System.out.println("[Customer] choosing cashier");
                 chooseCashier();
             }
             // then moves to cashier
             else {
+                System.out.println("[Customer] moving to cashier");
                 moveToCashier();
             }
         }
         // leaves the store if everything has been done
         else {
+            System.out.println("[Customer] leaving store");
             leaveStore();
         }
     }

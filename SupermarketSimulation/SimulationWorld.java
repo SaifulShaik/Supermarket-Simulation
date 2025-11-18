@@ -77,8 +77,8 @@ public class SimulationWorld extends World
         // add cashier to left store
         Cashier lsLeftCashier = new Cashier();
         Cashier lsRightCashier = new Cashier();
-        lsLeftCashier.setCustomerNode(storeOne.getNode(200, 335));
-        lsRightCashier.setCustomerNode(storeOne.getNode(275, 335));
+        lsLeftCashier.setCustomerNode(storeOne.getNode(275, 335));
+        lsRightCashier.setCustomerNode(storeOne.getNode(200, 335));
         addObject(lsLeftCashier, getWidth()/2 - 250, getHeight() / 2 + 130);
         addObject(lsRightCashier, getWidth()/2 - 425, getHeight() / 2 + 130);
         
