@@ -74,12 +74,17 @@ public class Cashier extends SuperSmoothMover
         if (currentCustomer == null) return;
         
         timer--;
-        
+        System.out.println("a");
         if (timer <= 0) {
             totalEarnings = currentCustomer.calculatePriceOfCart();
             showEarnings();
+            
+            currentCustomer.getStore().addProfit(totalEarnings);
+            
             currentCustomer.checkOut();
             currentCustomer = null;
+            
+            System.out.println("b");
         }
     }
     

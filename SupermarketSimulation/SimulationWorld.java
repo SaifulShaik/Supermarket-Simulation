@@ -44,6 +44,8 @@ public class SimulationWorld extends World
     
     private static List<Node> roadNodes;
     
+    private static final boolean showNodes = true;
+    
     public SimulationWorld(){
         super(bg.getWidth(), bg.getHeight(), 1);
         setBackground(bg); 
@@ -77,8 +79,8 @@ public class SimulationWorld extends World
         // add cashier to left store
         Cashier lsLeftCashier = new Cashier();
         Cashier lsRightCashier = new Cashier();
-        lsLeftCashier.setCustomerNode(storeOne.getNode(200, 335));
-        lsRightCashier.setCustomerNode(storeOne.getNode(275, 335));
+        lsLeftCashier.setCustomerNode(storeOne.getNode(275, 335));
+        lsRightCashier.setCustomerNode(storeOne.getNode(200, 335));
         addObject(lsLeftCashier, getWidth()/2 - 250, getHeight() / 2 + 130);
         addObject(lsRightCashier, getWidth()/2 - 425, getHeight() / 2 + 130);
         
@@ -93,8 +95,10 @@ public class SimulationWorld extends World
         loadDisplayUnits();
 
         // Add visual markers for stores' nodes (stores manage their own node markers)
-        storeOne.showNodesInWorld(this);
-        storeTwo.showNodesInWorld(this);
+        if (showNodes) {
+            storeOne.showNodesInWorld(this);
+            storeTwo.showNodesInWorld(this);
+        }
        
         //Set Paint order
         //So customer, Product and Display units can present properly
@@ -236,7 +240,7 @@ public class SimulationWorld extends World
         //use zSort
         zSort ((ArrayList<Actor>)(getObjects(Actor.class)), this);
         
-        spawnRestockingTruck();
+        //spawnRestockingTruck();
     } 
     private void spawnRestockingTruck()
     {

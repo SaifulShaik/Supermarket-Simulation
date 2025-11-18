@@ -35,6 +35,27 @@ public class Node
         neighbouringNodes = new ArrayList<>();
     }
     
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+    
+        Node other = (Node) obj;
+        
+        int tolerance = 1;
+    
+        return Math.abs(this.worldX - other.worldX) <= tolerance &&
+               Math.abs(this.worldY - other.worldY) <= tolerance;
+    }
+    
+    @Override
+    public int hashCode() {
+        int tolerance = 1;
+        int xHash = worldX / (tolerance + 1);
+        int yHash = worldY / (tolerance + 1);
+        return 31 * xHash + yHash;
+    }
+    
     public void addNeighbouringNode(Node n) {
         neighbouringNodes.add(n);
     }

@@ -1,62 +1,72 @@
 [
   {
-    "displayUnitType": "Fridge",
-    "x": 80,
-    "y": 180
-  },
-  {
-    "displayUnitType": "SnackShelf",
-    "x": 200,
-    "y": 180
-  },
-  {
-    "displayUnitType": "LettuceBin",
-    "x": 160,
-    "y": 295
-  },
-  {
-    "displayUnitType": "CarrotBin",
-    "x": 85,
-    "y": 297
-  },
-  {
-    "displayUnitType": "AppleBin",
-    "x": 240,
-    "y": 297
-  },
-  {
-    "displayUnitType": "OrangeBin",
-    "x": 318,
-    "y": 296
-  },
-  {
     "displayUnitType": "SteakWarmer",
     "x": 1070,
     "y": 255
   },
   {
-    "displayUnitType": "CarrotBin",
-    "x": 785,
+    "displayUnitType": "CupNoodleShelf",
+    "x": 320,
+    "y": 180
+  },
+  {
+    "displayUnitType": "LettuceBin",
+    "x": 1080,
     "y": 440
   },
   {
     "displayUnitType": "CarrotBin",
-    "x": 878,
-    "y": 439
+    "x": 1020,
+    "y": 440
   },
   {
-    "displayUnitType": "CarrotBin",
-    "x": 967,
-    "y": 438
+    "displayUnitType": "AppleBin",
+    "x": 960,
+    "y": 440
   },
   {
-    "displayUnitType": "CarrotBin",
-    "x": 1046,
-    "y": 441
+    "displayUnitType": "OrangeBin",
+    "x": 900,
+    "y": 440
   },
   {
-    "displayUnitType": "CupNoodleShelf",
-    "x": 320,
+    "displayUnitType": "CandyBin",
+    "x": 840,
+    "y": 440
+  },
+  {
+    "displayUnitType": "Fridge",
+    "x": 220,
     "y": 180
+  },
+  {
+    "displayUnitType": "Fridge",
+    "x": 140,
+    "y": 180
+  },
+  {
+    "displayUnitType": "Fridge",
+    "x": 60,
+    "y": 180
+  },
+  {
+    "displayUnitType": "LettuceBin",
+    "x": 80,
+    "y": 280
+  },
+  {
+    "displayUnitType": "LettuceBin",
+    "x": 160,
+    "y": 280
+  },
+  {
+    "displayUnitType": "LettuceBin",
+    "x": 240,
+    "y": 280
+  },
+  {
+    "displayUnitType": "LettuceBin",
+    "x": 320,
+    "y": 280
   }
 ]

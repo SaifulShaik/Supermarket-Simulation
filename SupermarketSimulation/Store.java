@@ -15,6 +15,8 @@ public class Store {
     private boolean nodesVisible = true;
     private List<NodeMarker> nodeMarkers = new ArrayList<>();
     
+    private double profit;
+    
     /**
      * Store constructor
      * 
@@ -22,6 +24,7 @@ public class Store {
      */
     public Store(String name) {
         this.name = name;
+        this.profit = 0;
         
         this.nodes = new ArrayList<>();
         this.cashiers = new ArrayList<>();
@@ -309,6 +312,14 @@ public class Store {
     
     public List<DisplayUnit> getAvailableDisplayUnits() {
         return availableDisplayUnits;
+    }
+    
+    public void addProfit(double amount) {
+        profit += amount;
+    }
+    
+    public double getProfit() {
+        return profit;
     }
 }
 
