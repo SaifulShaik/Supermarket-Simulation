@@ -87,14 +87,14 @@ public abstract class Customer extends SuperSmoothMover
         
         // choose store
         if (store == null) {
-            System.out.println("[Customer] choosing store");
+            //System.out.println("[Customer] choosing store");
             chooseStore();
             return;
         }
         
         // take items while walking around if shopping list items aren't collected yet
         if (!shoppingList.isEmpty() && currentActCycles < maxActCycles) {
-            System.out.println("[Customer] walking around");
+            //System.out.println("[Customer] walking around");
             retrieveProdcuts(); 
             move(false);
             return;
@@ -104,19 +104,20 @@ public abstract class Customer extends SuperSmoothMover
         if (!hasCheckedOut) {
             // chooses cashier first
             if (targetCashier == null) {
-                System.out.println("[Customer] choosing cashier");
+                //System.out.println("[Customer] choosing cashier");
                 chooseCashier();
             }
             // then moves to cashier
             else {
-                System.out.println("[Customer] moving to cashier");
+                //System.out.println("[Customer] moving to cashier");
                 moveToCashier();
             }
             return;
         }
         
+        
         // leaves the store if everything has been done
-        System.out.println("[Customer] leaving store");
+        //System.out.println("[Customer] leaving store");
         leaveStore();
     }
     
@@ -407,7 +408,8 @@ public abstract class Customer extends SuperSmoothMover
             pauseTimer--;
             return;
         }
-
+        
+        /**
         // DEBUG: print movement state
         try {
             String cur = (currentNode == null) ? "null" : currentNode.getX() + "," + currentNode.getY();
@@ -417,6 +419,7 @@ public abstract class Customer extends SuperSmoothMover
         } catch (Exception e) {
             System.out.println("[Customer Debug] move() printing failed: " + e.getMessage());
         }
+        */
         
         // no need to reselect a new target node if already moving to one
         if (targetNode != null) {
@@ -429,7 +432,7 @@ public abstract class Customer extends SuperSmoothMover
         
         // cannot move if no neighbouring nodes
         if (neighbouringNodes == null || neighbouringNodes.isEmpty()) {
-            System.out.println("[Customer Debug] neighbouringNodes is null/empty for currentNode=" + (currentNode==null?"null":currentNode.getX()+","+currentNode.getY()));
+            //System.out.println("[Customer Debug] neighbouringNodes is null/empty for currentNode=" + (currentNode==null?"null":currentNode.getX()+","+currentNode.getY()));
             return;
         }
         
@@ -454,11 +457,11 @@ public abstract class Customer extends SuperSmoothMover
         if (availableNodes == null || availableNodes.isEmpty()) {
             // DEBUG: list neighbouring nodes and their exit flags
             try {
-                System.out.print("[Customer Debug] No available nodes. neighbouring: ");
+                //System.out.print("[Customer Debug] No available nodes. neighbouring: ");
                 for (Node nn : neighbouringNodes) {
-                    System.out.print("(" + nn.getX() + "," + nn.getY() + ",exit=" + nn.checkIsExit() + ") ");
+                    //System.out.print("(" + nn.getX() + "," + nn.getY() + ",exit=" + nn.checkIsExit() + ") ");
                 }
-                System.out.println();
+                //System.out.println();
             } catch (Exception e) {}
 
             // Fallback: allow moving back to previous node or any neighbour to avoid deadlock
@@ -467,9 +470,9 @@ public abstract class Customer extends SuperSmoothMover
                     if (nn != null) availableNodes.add(nn);
                 }
                 if (!availableNodes.isEmpty()) {
-                    System.out.println("[Customer Debug] Fallback: using all neighbouring nodes to continue movement.");
+                    //System.out.println("[Customer Debug] Fallback: using all neighbouring nodes to continue movement.");
                 } else {
-                    System.out.println("[Customer Debug] Fallback failed: still no neighbouring nodes.");
+                    //System.out.println("[Customer Debug] Fallback failed: still no neighbouring nodes.");
                     return;
                 }
             } catch (Exception e) {
@@ -503,9 +506,10 @@ public abstract class Customer extends SuperSmoothMover
         double dx = n.getX() - curX;
         double dy = n.getY() - curY;
         double distance = Math.sqrt(dx * dx + dy * dy);
+        
         // DEBUG: print distance to target
         try {
-            System.out.println("[Customer Debug] moveToNode target=" + n.getX() + "," + n.getY() + " current=" + getX() + "," + getY() + " distance=" + distance + " speed=" + movementSpeed);
+            //System.out.println("[Customer Debug] moveToNode target=" + n.getX() + "," + n.getY() + " current=" + getX() + "," + getY() + " distance=" + distance + " speed=" + movementSpeed);
         } catch (Exception e) {}
         
         // finishes movement if almost there (1 act cycle would move too much to the distance)
@@ -519,7 +523,7 @@ public abstract class Customer extends SuperSmoothMover
             targetNode = null;
             
             // DEBUG: arrived at node
-            System.out.println("[Customer Debug] Arrived at node " + n.getX() + "," + n.getY());
+            //System.out.println("[Customer Debug] Arrived at node " + n.getX() + "," + n.getY());
             // don't move any further
             return true;
         }
@@ -533,8 +537,9 @@ public abstract class Customer extends SuperSmoothMover
         
         // updates location
         setLocation(newX, newY);
+        
         // DEBUG: moved to intermediate pos
-        try { System.out.println("[Customer Debug] Moved to " + newX + "," + newY); } catch (Exception e) {}
+        //try { System.out.println("[Customer Debug] Moved to " + newX + "," + newY); } catch (Exception e) {}
         return false;
     }
     
