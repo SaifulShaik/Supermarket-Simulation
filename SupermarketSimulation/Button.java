@@ -116,6 +116,25 @@ public class Button extends Actor
     {
         return Greenfoot.mouseClicked(this);
     }
+
+    /**
+     * Check whether a given point (usually mouse coordinates) lies within
+     * this button's current drawn bounds. This is public so worlds can
+     * perform click checks independent of Greenfoot's actor click events.
+     */
+    public boolean containsPoint(int px, int py)
+    {
+        int myX = getX();
+        int myY = getY();
+
+        int scaledWidth = (width * currentScale) / 100;
+        int scaledHeight = (height * currentScale) / 100;
+
+        return px >= myX - scaledWidth / 2 &&
+               px <= myX + scaledWidth / 2 &&
+               py >= myY - scaledHeight / 2 &&
+               py <= myY + scaledHeight / 2;
+    }
     
     /**
      * Update the button's visual appearance

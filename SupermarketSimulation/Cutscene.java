@@ -34,17 +34,12 @@ public class Cutscene extends World
         setBackground(new GreenfootImage("Cutscene/Cutscene Background 1.PNG"));
         
         addObject(skipButton,120,570);
+        // Ensure the skip button is drawn on top of other cutscene images
+        setPaintOrder(Button.class, CutsceneImage.class, CutscenePerson.class, SpeechBubble.class);
     }
     
     public void act(){
         timer++;
-        
-        if (skipButton != null && skipButton.wasClicked())
-        {
-            System.out.println("skipped");
-            transitionToSimulation();
-            return;
-        }
         
         if (timer==90){
             saiful.setImage(new GreenfootImage("Cutscene/Saiful/Saiful Aha.PNG"));
@@ -68,6 +63,11 @@ public class Cutscene extends World
             removeObject(saiful);
             drawP2Background();
             addObject(text2, 600,300);
+            // Ensure the skip button stays on top after switching to scene 2
+            if (skipButton != null) {
+                removeObject(skipButton);
+                addObject(skipButton, 120, 570);
+            }
         }
         
         if (walkingDiagonal){
@@ -94,6 +94,19 @@ public class Cutscene extends World
         else if (timer==800){ setText("My Butcher Text.PNG"); }
         else if (timer==850){ setText("My Supermarket Text.PNG"); }
         else if (timer==960){ transitionToSimulation(); }
+        
+        // Robust skip handling: detect clicks by global mouse click and
+        // check whether the click coordinates fall within the skip button.
+        MouseInfo mouse = Greenfoot.getMouseInfo();
+        if (skipButton != null && Greenfoot.mouseClicked(null) && mouse != null)
+        {
+            if (skipButton.containsPoint(mouse.getX(), mouse.getY()))
+            {
+                System.out.println("skipped");
+                transitionToSimulation();
+                return;
+            }
+        }
     }
     
     private void setText(String imageName){
