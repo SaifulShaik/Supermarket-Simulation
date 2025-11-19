@@ -3,9 +3,21 @@ import java.util.ArrayList;
 import java.util.*;
 
 /**
+ * An abstract base class for all display units in the supermarket
+ * (fridges, shelves, racks, etc.).
+ *
+ * Holds and manages a list of {@link Product} objects.
+ * Can stock and restock items (implemented in subclasses via {@link #stock()}).
+ * Provides customer nodes that shoppers navigate to.</li>
+ * Plays sound and shows visual feedback when items are retrieved or restocked.
+ * 
+ *
+ * Subclasses must implement stock() to place items into the world.
+ *
  * @author Owen Kung and Joe Zhuo
  * @version Nov 2025
  */
+
 public abstract class DisplayUnit extends SuperSmoothMover
 {
     protected List<Product> stockedItems;
@@ -25,7 +37,17 @@ public abstract class DisplayUnit extends SuperSmoothMover
     }
     
     protected abstract void stock();
-    
+    /**
+     * Skipping stocking if {@link #enableStocking} is disabled.
+     * Reacting to restocking events from RestockingTruck
+     *     Marks stocked status for restocking.
+     *     Plays a restock sound.
+     *     Shows “restocked” text below the unit.
+     *   
+     * Delegates actual stocking logic to stock() in subclass
+     *
+     */
+
     public void act()
     {
         // Only stock if stocking is enabled (not in editor mode)
@@ -39,6 +61,9 @@ public abstract class DisplayUnit extends SuperSmoothMover
             stocked=false; 
             //stock();
             reStocked=true;
+            
+            //sound and visual effect indicating it's restocked
+            SoundManager.playShelfRestocked();
             showText("restocked",Color.YELLOW,getX(),getY()+getImage().getHeight()/2);   
         }
         
@@ -78,9 +103,19 @@ public abstract class DisplayUnit extends SuperSmoothMover
         stockedItems.clear();
     } 
     
-    /*
-     * retrieve an item from display shelve
+    /**
+     * Retrieves an item of the given product class from this display unit.
+     *   Searches {@link #stockedItems} for the first instance of {@code productClass}.
+     *   Decreases its stock count by 1.</li>
+     *   Makes its image fully transparent (instead of removing from the world).
+     *   emoves it from {@link #stockedItems}.</li>
+     *   Shows a “retrieved” text above the display unit.
+     * 
+     *
+     * @param productClass the Class of the product type to retrieve
+     * @return the  product instance if found; null otherwise
      */
+
     protected Product retrieve(Class productClass) {
         if (getWorld() == null) return null;
 
@@ -93,17 +128,20 @@ public abstract class DisplayUnit extends SuperSmoothMover
                 p.setStock(p.getStock()-1);
                 
                 //Remove from world and stockedItems list
-                //getWorld().removeObject(p);
-                p.getImage().setTransparency(0);
-                showText(p.getName()+"\n retrieved", Color.RED,getX(),getY());
+                getWorld().removeObject(p);
+                //p.getImage().setTransparency(0);
                 stockedItems.remove(p);
-                
+                showText(p.getName()+"retrieved",Color.RED,getX(),getY());
+  	  SoundManager.playItemRetrieved();
+
                 return p;//only return the first found
+               
             }
         }
 
-        return null; // none found
+        return null; // none found or out of stock
     }
+
     
     /**
      * Compute and return the node where customers should stand when shopping at this display unit.

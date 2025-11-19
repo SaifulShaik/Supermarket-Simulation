@@ -31,6 +31,17 @@ public abstract class Customer extends SuperSmoothMover
     protected int currentActCycles;
     protected int maxActCycles;
     
+    //imagea related variables
+    protected GreenfootImage rightImages[]={new GreenfootImage("maleShopper/right1.png"),new GreenfootImage("maleShopper/right2.png")};
+    protected GreenfootImage leftImages[]={new GreenfootImage("maleShopper/left1.png"),new GreenfootImage("maleShopper/left2.png")};
+    protected GreenfootImage upImages[]={new GreenfootImage("maleShopper/up1.png"),new GreenfootImage("maleShopper/up2.png")};
+    protected GreenfootImage downImages[]={new GreenfootImage("maleShopper/down1.png"),new GreenfootImage("maleShopper/down2.png")};
+    private int animCounter=0;
+    private int animSpeed=10; //the larger the slower
+    private int animIndex=0;
+    double facingAngle=0; //for correctly display images with right direction
+
+
     public Customer() {
         this(2.0, 100.0, null, 3, 2, 100);
     }
@@ -72,7 +83,8 @@ public abstract class Customer extends SuperSmoothMover
      */
     public void act() {
         currentActCycles++;
-        
+        animateImages();
+
         // move to target node if already set
         if (targetNode != null) {
             moveToNode(targetNode, 0, 0);
@@ -541,6 +553,7 @@ public abstract class Customer extends SuperSmoothMover
         
         // calculates angle using precise deltas
         double angle = Math.atan2(dy, dx);
+        facingAngle = Math.atan2(dy, dx);  //store facing angel
 
         // updates x and y values using precise positions
         double newX = curX + Math.cos(angle) * movementSpeed;
@@ -594,5 +607,43 @@ public abstract class Customer extends SuperSmoothMover
     public Store getStore() {
         return store;
     }
+    private void animateImages()
+    {
+        if (animCounter++ >= animSpeed) {
+            animCounter = 0;
+            animIndex = (animIndex + 1) % 2;
+            //setImage(frames[animIndex]);
+        }
+                
+        String dir = getFacingDirection();
+        
+        if (dir.equals("RIGHT"))
+        {
+             setImage(rightImages[animIndex]);
+        }else if (dir.equals("LEFT"))
+        { 
+            setImage(leftImages[animIndex]);
+        }else if (dir.equals("UP")) 
+        {
+            setImage(upImages[animIndex]);
+        }else if (dir.equals("DOWN"))
+        { 
+             setImage(downImages[animIndex]);
+        }
+        getImage().scale(30,75);
+    }
+    public String getFacingDirection() 
+    {
+        double x = Math.cos(facingAngle);
+        double y = Math.sin(facingAngle);
+    
+        if (Math.abs(x) > Math.abs(y)) {
+            return x > 0 ? "RIGHT" : "LEFT";
+        } else {
+            return y > 0 ? "DOWN" : "UP";
+        }
+    }
+
+
 }
 

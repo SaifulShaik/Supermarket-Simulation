@@ -11,25 +11,35 @@ import java.util.ArrayList;
 public class ImpulseShopper extends Customer
 {
     
-    private boolean shoppingDone = false;
-    private boolean leaving=false;
-    
-    //shopping list
-    private ArrayList<String> shoppingList = new ArrayList<>();
-    //whatever products obtained from the store
-    private ArrayList<Product> basket=new ArrayList<>();
-    public ImpulseShopper()
+    public ImpulseShopper(Node n) 
     {
-        //shopping list for testing 
+         //moving speed, budget, node
+        //super(2,100,n);
+        super(2.0, 100.0, null, 3, 2, 100);
+        
+        rightImages = new GreenfootImage[] {new GreenfootImage("impulseShopper/right1.png"),new GreenfootImage("impulseShopper/right2.png")};
+        leftImages = new GreenfootImage[] {new GreenfootImage("impulseShopper/left1.png"),new GreenfootImage("impulseShopper/left2.png")};
+        upImages = new GreenfootImage[] {new GreenfootImage("impulseShopper/up1.png"),new GreenfootImage("impulseShopper/up2.png")};
+        downImages = new GreenfootImage[] {new GreenfootImage("impulseShopper/down1.png"),new GreenfootImage("impulseShopper/down2.png")};
+        
     }
-    /**
-     * Act - do whatever the ImpulseShopper wants to do. This method is called whenever
-     * the 'Act' or 'Run' button gets pressed in the environment.
-     */
-    public void act()
+    private boolean shoppingDone()
     {
-        // Add your action code here.
+        if(shoppingList.size()==0 && cart.size()>0)
+        {
+            return true;
+        }
+        
+        return false;
+    }
+    private void checkingOutAtCashier()
+    {
+        if(shoppingDone() && isTouching(Cashier.class))
+        {
+            
+        }
     }
 }
+
 
 
