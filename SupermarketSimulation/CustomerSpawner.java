@@ -11,19 +11,31 @@ import java.util.ArrayList;
 public class CustomerSpawner extends Actor
 {
     private final static int spawnRate = 150;
+    private int actCount = 0;
+    private boolean spawn = true;
     
     public CustomerSpawner() {
         setImage((GreenfootImage) null);
     }
     
     public void act() {
-        spawnCustomers();
+        //stop spawning earlier than night cycle to make sure all customers are gone by the time the night comes
+        actCount++;
+        if (actCount > 3500 && actCount < 5000){
+            return;
+        } else{
+            spawnCustomers();
+        }
+        
+        if (actCount > 4000){
+            actCount = 0;
+        }
     }
     
     private void spawnCustomers() {
         ArrayList<RegularShopper> customers = (ArrayList<RegularShopper>) getWorld().getObjects(RegularShopper.class);
         
-        if (Greenfoot.getRandomNumber(spawnRate) == 0) {
+        if (Greenfoot.getRandomNumber(spawnRate) == 0 && customers.size() <= 10 && spawn) {
             int customerType = Greenfoot.getRandomNumber(1);
             
             Node startNode = SimulationWorld.getStartNode();

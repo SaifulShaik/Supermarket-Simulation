@@ -223,7 +223,7 @@ public class SimulationWorld extends World
         zSort ((ArrayList<Actor>)(getObjects(Actor.class)), this);
         actCount++;
         
-        if (actCount % 7000 == 0){
+        if (actCount % 5000 == 0){
             addObject(new RestockingTruck(),600,200);
             addObject(new Night(), getWidth()/2, getHeight()/2);
         }
