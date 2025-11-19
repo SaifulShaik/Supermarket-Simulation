@@ -6,20 +6,20 @@ import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
  * @author Angelina Zhou
  * @version Nov 19 2025
  */
-public class Bacon extends Product
+public class RawSteak extends Product
 {
     private GreenfootImage image;
     private static int stock=0;//keep track of total stock in the store
      
-    public Bacon()
+    public RawSteak()
     {
-        price=4.5;
-        name="Bacon";
-        image = new GreenfootImage("product/Bacon.PNG");
+        price=7.5;
+        name="RawSteak";
+        image = new GreenfootImage("product/Raw Steak.PNG");
         image.scale(image.getWidth()/3, image.getHeight()/3);
         setImage(image);
         
-        //whenever bacon is added to a shelve,
+        //whenever steak is added to a shelve,
         //increase the stock#
         stock++;
     }

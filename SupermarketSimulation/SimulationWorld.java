@@ -239,7 +239,7 @@ public class SimulationWorld extends World
         actCount++;
         /*
         
-        if (actCount % 2000 == 0){
+        if (actCount % 7000 == 0){
             addObject(new RestockingTruck(),600,200);
             addObject(new Night(), getWidth()/2, getHeight()/2);
         }

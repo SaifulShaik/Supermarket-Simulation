@@ -4,8 +4,8 @@ import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
  * Write a description of class Coke here.
  * 
  * @author Angelina Zhou
- * @version Nov 19 2025 
-*/
+ * @version Nov 19 2025
+ */
 public class MeatOnTheBone extends Product
 {
     private GreenfootImage image;
@@ -43,3 +43,5 @@ public class MeatOnTheBone extends Product
     }
     
 }
+
+
