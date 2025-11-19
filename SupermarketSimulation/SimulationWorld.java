@@ -84,9 +84,21 @@ public class SimulationWorld extends World
        
         //Set Paint order
         //So customer, Product and Display units can present properly
-        setPaintOrder(Effect.class, Customer.class,FloatingText.class, Product.class,DisplayUnit.class);
+        //setPaintOrder(Effect.class, Customer.class,FloatingText.class, Product.class,DisplayUnit.class);
+        setPaintOrder(FloatingText.class,NightEffect.class,Customer.class, Product.class,DisplayUnit.class);  
+
+         //Start ambienceSound
+        SoundManager.startAmbienceSound();
+        //Add NightEffect to the world
+        addObject(new NightEffect(),400,300);
+        
+        //Add a clock in the centre of the screen
+        //The customer should be spawned at certain periods in the day
+        //The ReloadingTruck will also come only after store hours       
+        addObject(new ClockDisplay(), 605, 45); // centre top
+
+
     }
-    
     public static Node getStartNode() {
         return roadNodes.get(0);
     }
@@ -222,14 +234,21 @@ public class SimulationWorld extends World
         //use zSort
         zSort ((ArrayList<Actor>)(getObjects(Actor.class)), this);
         actCount++;
+        /*
         
         if (actCount % 5000 == 0){
             addObject(new RestockingTruck(),600,200);
             addObject(new Night(), getWidth()/2, getHeight()/2);
         }
+        */
+        //spawnRestockingTruck();
+        if(TimeOfDayManager.getHour()==22 &&TimeOfDayManager.getMinute()==0)
+        {
+          addObject(new RestockingTruck(),600,200);
         
-    } 
-    
+        }
+
+    }
     /**
      * Z-sort so actors with higher Y (lower on screen) render in front.
      * Uses precise Y for SuperSmoothMover when available. Stable for ties.
@@ -341,6 +360,44 @@ public class SimulationWorld extends World
             bg.drawLine(0, GRID_START_Y + i, worldWidth, GRID_START_Y + i);
         }
     }
+    
+   /*
+     * Try to stop all the long sound effect
+     * Sometimes it still does not work when pause is pressed
+     */
+    public void stopped()
+    {
+        //stop ambience sound
+        SoundManager.stopAmbienceSound();
+        SoundManager.stopNightSound();
+    
+        //stop Restocking Truck sound
+        SoundManager.stopTruckSound();
+        
+        //stop butcher sound
+        SoundManager.stopButcherSound();
+    }
+     /*
+     * 
+     * Tf program is paused, try to resume some of the sound effects
+     */
+    public void started()
+    {
+        //replay ambience sound
+        if(NightEffect.isDayTime)
+        {
+             SoundManager.startAmbienceSound();
+        }
+        else
+        {
+             SoundManager.startNightSound();
+        }
+       
+        
+        //replay butcher sound
+        SoundManager.playButcherSound();
+    }
+
 }
 
 

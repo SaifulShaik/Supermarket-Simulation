@@ -11,6 +11,8 @@ import java.util.ArrayList;
 public class CustomerSpawner extends Actor
 {
     private final static int spawnRate = 150;
+    private final static int maxCustomers = 12;
+    
     private int actCount = 0;
     private boolean spawn = true;
     
@@ -21,6 +23,7 @@ public class CustomerSpawner extends Actor
     public void act() {
         //stop spawning earlier than night cycle to make sure all customers are gone by the time the night comes
         actCount++;
+        
         if (actCount > 3500 && actCount < 5000){
             return;
         } else{
@@ -35,7 +38,7 @@ public class CustomerSpawner extends Actor
     private void spawnCustomers() {
         ArrayList<RegularShopper> customers = (ArrayList<RegularShopper>) getWorld().getObjects(RegularShopper.class);
         
-        if (Greenfoot.getRandomNumber(spawnRate) == 0 && customers.size() <= 10 && spawn) {
+        if (Greenfoot.getRandomNumber(spawnRate) == 0 && customers.size() <= maxCustomers && spawn) {
             int customerType = Greenfoot.getRandomNumber(2);
             
             Node startNode = SimulationWorld.getStartNode();
@@ -45,7 +48,7 @@ public class CustomerSpawner extends Actor
                     getWorld().addObject(new RegularShopper(startNode), startNode.getX(), startNode.getY());
                     break;
                 case 1:
-                    getWorld().addObject(new Zombie(startNode), startNode.getX(), startNode.getY());
+                    getWorld().addObject(new ImpulseShopper(startNode), startNode.getX(), startNode.getY());
                     break;
             }
         }

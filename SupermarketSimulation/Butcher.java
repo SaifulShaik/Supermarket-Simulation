@@ -23,6 +23,8 @@ public class Butcher extends SuperSmoothMover
 
         frames=new GreenfootImage[]{frame0, frame1, frame2};
         setImage(frames[0]);
+        
+        SoundManager.playButcherSound();
     }
 
     public void act() 
