@@ -3,19 +3,19 @@ import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 /**
  * Write a description of class Lettuce here.
  * 
- * @author Owen Kung
+ * @author Angelina Zhou
  * @version Nov 2025
  */
-public class DrumStick extends Product
+public class BakedChicken extends Product
 {
     private static int stock=0;//keep track of total stock ih the store
     private GreenfootImage image;
     
-    public DrumStick() 
+    public BakedChicken() 
     {
-        price=4.5;
-        name="Drumstick";
-        image = new GreenfootImage("product/Drumstick.PNG");
+        price=10.5;
+        name="BakedChicken";
+        image = new GreenfootImage("product/Baked Chicken.PNG");
         image.scale(image.getWidth()/3, image.getHeight()/3);
         //image.rotate(270);
         setImage(image);
