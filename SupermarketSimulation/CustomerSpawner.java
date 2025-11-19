@@ -36,13 +36,16 @@ public class CustomerSpawner extends Actor
         ArrayList<RegularShopper> customers = (ArrayList<RegularShopper>) getWorld().getObjects(RegularShopper.class);
         
         if (Greenfoot.getRandomNumber(spawnRate) == 0 && customers.size() <= 10 && spawn) {
-            int customerType = Greenfoot.getRandomNumber(1);
+            int customerType = Greenfoot.getRandomNumber(2);
             
             Node startNode = SimulationWorld.getStartNode();
             
             switch (customerType) {
                 case 0:
                     getWorld().addObject(new RegularShopper(startNode), startNode.getX(), startNode.getY());
+                    break;
+                case 1:
+                    getWorld().addObject(new Zombie(startNode), startNode.getX(), startNode.getY());
                     break;
             }
         }
