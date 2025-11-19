@@ -14,7 +14,7 @@ public class JinRamen extends Product
     public JinRamen()
     {
         price=3.5;
-        name=SimulationWorld.PRODUCT_JIN_RAMEN;
+        name="Xing Ramen";
         image = new GreenfootImage("product/cup noodle/Cup Noodle 3.png");
         image.scale(image.getWidth()/20, image.getHeight()/20);
         setImage(image);

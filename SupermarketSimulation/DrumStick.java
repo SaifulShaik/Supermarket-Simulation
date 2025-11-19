@@ -14,8 +14,8 @@ public class DrumStick extends Product
     public DrumStick() 
     {
         price=4.5;
-        name=SimulationWorld.PRODUCT_DRUM_STICK;
-        image = new GreenfootImage("product/Drum Stick.PNG");
+        name="Drumstick";
+        image = new GreenfootImage("product/Drumstick.PNG");
         image.scale(image.getWidth()/3, image.getHeight()/3);
         //image.rotate(270);
         setImage(image);

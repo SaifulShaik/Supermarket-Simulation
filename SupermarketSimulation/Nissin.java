@@ -14,7 +14,7 @@ public class Nissin extends Product
     public Nissin()
     {
         price=3.75;
-        name=SimulationWorld.PRODUCT_NISSIN;
+        name="Nissin";
         image = new GreenfootImage("product/cup noodle/Cup Noodle 2.png");
         image.scale(image.getWidth()/15, image.getHeight()/15);
         //image.rotate(270);

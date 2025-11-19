@@ -13,7 +13,7 @@ public class Candy extends Product
      
     public Candy()
     {
-        name=SimulationWorld.PRODUCT_CANDY;
+        name="Candy";
         
         //randomly assign different look to candy
         int candyChoice=Greenfoot.getRandomNumber(5);

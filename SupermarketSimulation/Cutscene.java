@@ -2,16 +2,18 @@ import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 /**
  * Write a description of class Cutscene here.
  * 
- * @author (your name) 
- * @version (a version number or a date)
+ * @author Angelina Zhou
+ * @version Nov 18
  */
 public class Cutscene extends World
 {
     private int timer;
     private CutsceneImage saiful;
-    private CutsceneImage textBubble;
+    private CutsceneImage text1;
+    private CutsceneImage text2;
     private boolean walkingDiagonal;
     private boolean walkingForward;
+    private Button skipButton = new Button("Skip Cutscene", 200, 30);
     /**
      * Constructor for objects of class Cutscene.
      * 
@@ -24,11 +26,16 @@ public class Cutscene extends World
         walkingForward = false;
         
         saiful = new CutsceneImage(new GreenfootImage("Cutscene/Saiful/Saiful Think.PNG"));
-        textBubble = new CutsceneImage(new GreenfootImage("Cutscene/Text/SaiHungry Text.PNG"));
+        text1 = new CutsceneImage(new GreenfootImage("Cutscene/Text/SaiHungry Text.PNG"));
+        text2 = new CutsceneImage(new GreenfootImage("Cutscene/Text/Important Customer Text.PNG"));
         
         addObject(saiful, 650, 325);
-        addObject(textBubble, 650, 330);
+        addObject(text1, 650, 330);
         setBackground(new GreenfootImage("Cutscene/Cutscene Background 1.PNG"));
+        
+        addObject(skipButton,120,570);
+        // Ensure the skip button is drawn on top of other cutscene images
+        setPaintOrder(Button.class, CutsceneImage.class, CutscenePerson.class, SpeechBubble.class);
     }
     
     public void act(){
@@ -36,12 +43,12 @@ public class Cutscene extends World
         
         if (timer==90){
             saiful.setImage(new GreenfootImage("Cutscene/Saiful/Saiful Aha.PNG"));
-            textBubble.setImage(new GreenfootImage("Cutscene/Text/SaiFull Text.PNG"));
+            text1.setImage(new GreenfootImage("Cutscene/Text/SaiFull Text.PNG"));
         }
         
         if (timer==180){
             saiful.setImage(new GreenfootImage("Cutscene/Saiful/Saiful Walk.PNG"));
-            removeObject(textBubble);
+            removeObject(text1);
             
             walkingDiagonal = true;
         }
@@ -52,7 +59,15 @@ public class Cutscene extends World
         }
         
         if (timer==450){
-            transitionToSimulation();
+            walkingForward = false;
+            removeObject(saiful);
+            drawP2Background();
+            addObject(text2, 600,300);
+            // Ensure the skip button stays on top after switching to scene 2
+            if (skipButton != null) {
+                removeObject(skipButton);
+                addObject(skipButton, 120, 570);
+            }
         }
         
         if (walkingDiagonal){
@@ -66,10 +81,47 @@ public class Cutscene extends World
             int y=saiful.getY();
             saiful.setLocation(x+2,y);
         }
+        
+        if (timer==510){ 
+            setText("THE Saiful Text.PNG");
+        }
+        else if (timer==570){ setText("Yes Text.PNG"); }
+        else if (timer==630){ setText("He's Here Text.PNG"); }
+        else if (timer==680){
+            setText("Saiful Wonders Text.PNG");
+            getBackground().drawImage(new GreenfootImage("Cutscene/Saiful/Saiful Think 2.PNG"),0,0);
+        }
+        else if (timer==800){ setText("My Butcher Text.PNG"); }
+        else if (timer==850){ setText("My Supermarket Text.PNG"); }
+        else if (timer==960){ transitionToSimulation(); }
+        
+        // Robust skip handling: detect clicks by global mouse click and
+        // check whether the click coordinates fall within the skip button.
+        MouseInfo mouse = Greenfoot.getMouseInfo();
+        if (skipButton != null && Greenfoot.mouseClicked(null) && mouse != null)
+        {
+            if (skipButton.containsPoint(mouse.getX(), mouse.getY()))
+            {
+                System.out.println("skipped");
+                transitionToSimulation();
+                return;
+            }
+        }
+    }
+    
+    private void setText(String imageName){
+        text2.setImage(new GreenfootImage("Cutscene/Text/" + imageName));
+    }
+    
+    private void drawP2Background(){
+        GreenfootImage background = new GreenfootImage("Cutscene/Cutscene Background 2.PNG");
+        background.drawImage(new GreenfootImage("Cutscene/Butcher Owner.PNG"),0,0);
+        background.drawImage(new GreenfootImage("Cutscene/Supermarket Owner.PNG"),0,0);
+        setBackground(background);
     }
     
     public void transitionToSimulation(){
-        fadeOutAndTransition(new CutsceneP2());
+        fadeOutAndTransition(new SettingWorld());
     }
     
     private void fadeOutAndTransition(World nextWorld)
@@ -84,4 +136,5 @@ public class Cutscene extends World
         
         Greenfoot.setWorld(nextWorld);
     }
+    
 }

@@ -3,23 +3,23 @@ import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 /**
  * Write a description of class Coke here.
  * 
- * @author Owen Kung 
- * @version Nov 6 2025
+ * @author Angelina Zhou
+ * @version Nov 19 2025
  */
-public class Fanta extends Product
+public class RawSteak extends Product
 {
     private GreenfootImage image;
-    private static int stock=0;//keep track of total stock ih the store
+    private static int stock=0;//keep track of total stock in the store
      
-    public Fanta()
+    public RawSteak()
     {
-        price=2.5;
-        name="Fanta";
-        image = new GreenfootImage("product/pop/Pop 1.PNG");
-        image.scale(image.getWidth()/2, image.getHeight()/2);
+        price=7.5;
+        name="RawSteak";
+        image = new GreenfootImage("product/Raw Steak.PNG");
+        image.scale(image.getWidth()/3, image.getHeight()/3);
         setImage(image);
         
-        //whenever a coke is added to a shelve,
+        //whenever steak is added to a shelve,
         //increase the stock#
         stock++;
     }

@@ -75,7 +75,7 @@ public abstract class Customer extends SuperSmoothMover
         
         // move to target node if already set
         if (targetNode != null) {
-            moveToNode(targetNode);
+            moveToNode(targetNode, 0, 0);
             return;
         }
         
@@ -87,14 +87,14 @@ public abstract class Customer extends SuperSmoothMover
         
         // choose store
         if (store == null) {
-            System.out.println("[Customer] choosing store");
+            //System.out.println("[Customer] choosing store");
             chooseStore();
             return;
         }
         
         // take items while walking around if shopping list items aren't collected yet
         if (!shoppingList.isEmpty() && currentActCycles < maxActCycles) {
-            System.out.println("[Customer] walking around");
+            //System.out.println("[Customer] walking around");
             retrieveProdcuts(); 
             move(false);
             return;
@@ -104,19 +104,20 @@ public abstract class Customer extends SuperSmoothMover
         if (!hasCheckedOut) {
             // chooses cashier first
             if (targetCashier == null) {
-                System.out.println("[Customer] choosing cashier");
+                //System.out.println("[Customer] choosing cashier");
                 chooseCashier();
             }
             // then moves to cashier
             else {
-                System.out.println("[Customer] moving to cashier");
+                //System.out.println("[Customer] moving to cashier");
                 moveToCashier();
             }
             return;
         }
         
+        
         // leaves the store if everything has been done
-        System.out.println("[Customer] leaving store");
+        //System.out.println("[Customer] leaving store");
         leaveStore();
     }
     
@@ -179,7 +180,7 @@ public abstract class Customer extends SuperSmoothMover
 
         // updates store entrance
         targetNode = store.getEntranceNode();
-        System.out.println("Chose Store");
+        //System.out.println("Chose Store");
     }
     
     /**
@@ -319,24 +320,31 @@ public abstract class Customer extends SuperSmoothMover
     private void moveToCashier() {
         Node cashierNode = targetCashier.getCustomerNode();
         if (cashierNode == null) return;
-        
-        if (path == null || path.isEmpty()) {
-            path = findPath(cashierNode);
-        }
 
         if (path != null && !path.isEmpty()) {
             targetNode = path.get(0);
     
-            if (moveToNode(targetNode)) {
+            if (targetNode.equals(cashierNode)) {
                 path.remove(0);
                 targetNode = null;
             }
+            else if (moveToNode(targetNode, 0, 0)) {
+                path.remove(0);
+                targetNode = null;
+            }
+            return;
         }
 
-        if (path == null || path.isEmpty()) {
-            targetCashier.addCustomerToQueue(this);
-            targetNode = null;
-        }
+        targetCashier.addCustomerToQueue(this);
+        
+        int pos = targetCashier.getPositionInQueue(this);
+        
+        int spacing = store == SimulationWorld.storeOne ? -20 : 20;
+        
+        double offsetX = 0;
+        double offsetY = spacing * (pos + 1);
+        
+        boolean atOffset = moveToNode(cashierNode, offsetX, offsetY);
     }
     
     private List<Node> findPath(Node goal) {
@@ -384,9 +392,6 @@ public abstract class Customer extends SuperSmoothMover
      * Method for the customer to leave the store
      */
     public void leaveStore() {
-        // cannot leave if didn't check out yet
-        if (!hasCheckedOut) return;
-        
         Node worldExit = SimulationWorld.getExitNode();
         
         if (currentNode.checkIsEnd()) {
@@ -407,7 +412,8 @@ public abstract class Customer extends SuperSmoothMover
             pauseTimer--;
             return;
         }
-
+        
+        /**
         // DEBUG: print movement state
         try {
             String cur = (currentNode == null) ? "null" : currentNode.getX() + "," + currentNode.getY();
@@ -417,10 +423,11 @@ public abstract class Customer extends SuperSmoothMover
         } catch (Exception e) {
             System.out.println("[Customer Debug] move() printing failed: " + e.getMessage());
         }
+        */
         
         // no need to reselect a new target node if already moving to one
         if (targetNode != null) {
-            moveToNode(targetNode); 
+            moveToNode(targetNode, 0, 0); 
             return;
         }
 
@@ -429,7 +436,7 @@ public abstract class Customer extends SuperSmoothMover
         
         // cannot move if no neighbouring nodes
         if (neighbouringNodes == null || neighbouringNodes.isEmpty()) {
-            System.out.println("[Customer Debug] neighbouringNodes is null/empty for currentNode=" + (currentNode==null?"null":currentNode.getX()+","+currentNode.getY()));
+            //System.out.println("[Customer Debug] neighbouringNodes is null/empty for currentNode=" + (currentNode==null?"null":currentNode.getX()+","+currentNode.getY()));
             return;
         }
         
@@ -454,11 +461,11 @@ public abstract class Customer extends SuperSmoothMover
         if (availableNodes == null || availableNodes.isEmpty()) {
             // DEBUG: list neighbouring nodes and their exit flags
             try {
-                System.out.print("[Customer Debug] No available nodes. neighbouring: ");
+                //System.out.print("[Customer Debug] No available nodes. neighbouring: ");
                 for (Node nn : neighbouringNodes) {
-                    System.out.print("(" + nn.getX() + "," + nn.getY() + ",exit=" + nn.checkIsExit() + ") ");
+                    //System.out.print("(" + nn.getX() + "," + nn.getY() + ",exit=" + nn.checkIsExit() + ") ");
                 }
-                System.out.println();
+                //System.out.println();
             } catch (Exception e) {}
 
             // Fallback: allow moving back to previous node or any neighbour to avoid deadlock
@@ -467,9 +474,9 @@ public abstract class Customer extends SuperSmoothMover
                     if (nn != null) availableNodes.add(nn);
                 }
                 if (!availableNodes.isEmpty()) {
-                    System.out.println("[Customer Debug] Fallback: using all neighbouring nodes to continue movement.");
+                    //System.out.println("[Customer Debug] Fallback: using all neighbouring nodes to continue movement.");
                 } else {
-                    System.out.println("[Customer Debug] Fallback failed: still no neighbouring nodes.");
+                    //System.out.println("[Customer Debug] Fallback failed: still no neighbouring nodes.");
                     return;
                 }
             } catch (Exception e) {
@@ -487,39 +494,47 @@ public abstract class Customer extends SuperSmoothMover
         targetNode = nextNode;
         
         // start moving to next node
-        moveToNode(nextNode);
+        moveToNode(nextNode, 0, 0);
     }
     
     /**
      * Method to move towards a Node
      * 
      * @param n node to move to
+     * @param offsetX x offset from node locaiton
+     * @param offsetY y offset from node location
      * @return whether the customer has arrived at the target node
      */
-    protected boolean moveToNode(Node n) {
+    protected boolean moveToNode(Node n, double offsetX, double offsetY) {
+        // target location
+        double targetX = n.getX() + offsetX;
+        double targetY = n.getY() + offsetY;
+        
         // Use precise coordinates (double) to avoid rounding oscillation with Actor.getX()/getY()
         double curX = (this instanceof SuperSmoothMover) ? ((SuperSmoothMover)this).getPreciseX() : getX();
         double curY = (this instanceof SuperSmoothMover) ? ((SuperSmoothMover)this).getPreciseY() : getY();
-        double dx = n.getX() - curX;
-        double dy = n.getY() - curY;
+        
+        double dx = targetX - curX;
+        double dy = targetY - curY;
         double distance = Math.sqrt(dx * dx + dy * dy);
+        
         // DEBUG: print distance to target
         try {
-            System.out.println("[Customer Debug] moveToNode target=" + n.getX() + "," + n.getY() + " current=" + getX() + "," + getY() + " distance=" + distance + " speed=" + movementSpeed);
+            //System.out.println("[Customer Debug] moveToNode target=" + n.getX() + "," + n.getY() + " current=" + getX() + "," + getY() + " distance=" + distance + " speed=" + movementSpeed);
         } catch (Exception e) {}
         
         // finishes movement if almost there (1 act cycle would move too much to the distance)
         // snap when within one step (use <= to be robust)
         if (distance <= movementSpeed) {
             // snaps to the target location
-            setLocation(n.getX(), n.getY());
+            setLocation(targetX, targetY);
             
             // updates current and target node
             currentNode = n;
             targetNode = null;
             
             // DEBUG: arrived at node
-            System.out.println("[Customer Debug] Arrived at node " + n.getX() + "," + n.getY());
+            //System.out.println("[Customer Debug] Arrived at node " + n.getX() + "," + n.getY());
             // don't move any further
             return true;
         }
@@ -533,8 +548,9 @@ public abstract class Customer extends SuperSmoothMover
         
         // updates location
         setLocation(newX, newY);
+        
         // DEBUG: moved to intermediate pos
-        try { System.out.println("[Customer Debug] Moved to " + newX + "," + newY); } catch (Exception e) {}
+        //try { System.out.println("[Customer Debug] Moved to " + newX + "," + newY); } catch (Exception e) {}
         return false;
     }
     
@@ -560,10 +576,21 @@ public abstract class Customer extends SuperSmoothMover
         return total;
     }
     
+    /**
+     * Method to get the size of the cart
+     * 
+     * @return an integer representing the size of the cart
+     */
     public int getCartSize() {
         return cart.size();
     }
     
+    
+    /**
+     * Method to get the store the customer is in
+     * 
+     * @return the store the customer is in
+     */
     public Store getStore() {
         return store;
     }

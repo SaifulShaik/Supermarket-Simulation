@@ -1,22 +1,23 @@
 import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 
 /**
- * Write a description of class Lays here.
+ * Write a description of class Lettuce here.
  * 
- * @author (your name) 
- * @version (a version number or a date)
+ * @author Angelina Zhou
+ * @version Nov 2025
  */
-public class Lays extends Product
+public class BakedChicken extends Product
 {
     private static int stock=0;//keep track of total stock ih the store
     private GreenfootImage image;
     
-    public Lays()
+    public BakedChicken() 
     {
-        price=3.0;
-        name="Lays";
-        image = new GreenfootImage("product/chips/Chips 3.PNG");
-        image.scale(image.getWidth()/2, image.getHeight()/2);
+        price=10.5;
+        name="BakedChicken";
+        image = new GreenfootImage("product/Baked Chicken.PNG");
+        image.scale(image.getWidth()/3, image.getHeight()/3);
+        //image.rotate(270);
         setImage(image);
         
         //whenever a Sprite is added to a shelve,
@@ -32,5 +33,4 @@ public class Lays extends Product
     {
         stock=newStockCount;
     }
-    
 }
