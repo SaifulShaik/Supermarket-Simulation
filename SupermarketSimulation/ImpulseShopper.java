@@ -11,7 +11,7 @@ import java.util.List;
  */
 public class ImpulseShopper extends Customer
 {
-    private static final int IMPUSLE_INDEX=5; //the larger the number the more impulse the buyer
+    private static final int IMPUSLE_INDEX=5; //the larger the number the more impulse the buyer, buy more stuff
     
     public ImpulseShopper(Node n) 
     {

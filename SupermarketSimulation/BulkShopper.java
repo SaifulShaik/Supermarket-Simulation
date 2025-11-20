@@ -3,7 +3,7 @@ import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 /**
  * Write a description of class BulkShopper here.
  * 
- * @author: Owen Kung
+ * @author: Owen Kung ?
  * @version Nov 2025
  */
 public class BulkShopper extends Customer
