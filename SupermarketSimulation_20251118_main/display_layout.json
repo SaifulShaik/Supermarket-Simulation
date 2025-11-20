@@ -1,0 +1,67 @@
+[
+  {
+    "displayUnitType": "CupNoodleShelf",
+    "x": 325,
+    "y": 198
+  },
+  {
+    "displayUnitType": "LettuceBin",
+    "x": 1080,
+    "y": 440
+  },
+  {
+    "displayUnitType": "CarrotBin",
+    "x": 1020,
+    "y": 440
+  },
+  {
+    "displayUnitType": "AppleBin",
+    "x": 960,
+    "y": 440
+  },
+  {
+    "displayUnitType": "OrangeBin",
+    "x": 900,
+    "y": 440
+  },
+  {
+    "displayUnitType": "CandyBin",
+    "x": 840,
+    "y": 440
+  },
+  {
+    "displayUnitType": "LettuceBin",
+    "x": 80,
+    "y": 300
+  },
+  {
+    "displayUnitType": "SnackShelf",
+    "x": 195,
+    "y": 201
+  },
+  {
+    "displayUnitType": "CarrotBin",
+    "x": 320,
+    "y": 300
+  },
+  {
+    "displayUnitType": "AppleBin",
+    "x": 240,
+    "y": 300
+  },
+  {
+    "displayUnitType": "OrangeBin",
+    "x": 160,
+    "y": 300
+  },
+  {
+    "displayUnitType": "FridgeOne",
+    "x": 880,
+    "y": 360
+  },
+  {
+    "displayUnitType": "FridgeTwo",
+    "x": 80,
+    "y": 180
+  }
+]

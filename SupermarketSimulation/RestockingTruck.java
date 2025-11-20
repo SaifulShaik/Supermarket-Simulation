@@ -10,10 +10,10 @@ import greenfoot.GreenfootImage;
  */
 public class RestockingTruck extends SuperSmoothMover
 {
-    private int speed = 2;
-    private int loadingTime = 120;
-    public static boolean unloading = false;
-    private boolean textShown = false;
+    private int speed=2;
+    private int loadingTime=120;
+    private boolean textShown=false;
+    public static boolean unloading=false;
     
     public RestockingTruck()
     {
@@ -22,6 +22,7 @@ public class RestockingTruck extends SuperSmoothMover
         setImage(image);
         unloading=false;
         
+        SoundManager.playTruckSound();
     }
     public void act()
     {
@@ -41,11 +42,12 @@ public class RestockingTruck extends SuperSmoothMover
         if(getY()==300 )
         {
             loadingTime--;
-            if (textShown = false){
+            if(!textShown)
+            {
                 showText("Unloading \n&\n Restocking",Color.RED,getX(),getY()+getImage().getHeight()/2+20);
-                textShown = true;
+                textShown=true;
             }
-            System.out.println("Unloading and Restocking");
+            
             unloading=true;
         }
         
@@ -55,11 +57,11 @@ public class RestockingTruck extends SuperSmoothMover
         if(loadingTime<=0)
         {
            unloading=false;
-           textShown = false;
            setLocation(getX(),getY()+speed);
         }
         if(isAtEdge())
         {
+            SoundManager.stopTruckSound();
             getWorld().removeObject(this);
         }
     }

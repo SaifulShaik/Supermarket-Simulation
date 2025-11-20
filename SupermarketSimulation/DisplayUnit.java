@@ -131,8 +131,8 @@ public abstract class DisplayUnit extends SuperSmoothMover
                 getWorld().removeObject(p);
                 //p.getImage().setTransparency(0);
                 stockedItems.remove(p);
-                showText(p.getName()+"retrieved",Color.RED,getX(),getY());
-  	  SoundManager.playItemRetrieved();
+                //showText(p.getName()+"retrieved",Color.RED,getX(),getY());
+                SoundManager.playItemRetrieved();
 
                 return p;//only return the first found
                

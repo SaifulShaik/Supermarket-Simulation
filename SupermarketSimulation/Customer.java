@@ -42,6 +42,10 @@ public abstract class Customer extends SuperSmoothMover
     double facingAngle=0; //for correctly display images with right direction
 
 
+     //===== Basket system variables =====
+    private Basket visualBasket; //visual basket
+    private List<Product> carriedItems;  //visual basket
+
     public Customer() {
         this(2.0, 100.0, null, 3, 2, 100);
     }
@@ -73,6 +77,12 @@ public abstract class Customer extends SuperSmoothMover
         shoppingList = new ArrayList<>();
         shoppingList = generateShoppingList(minShoppingListItems, maxAdditionalRandomItems);
         cart = new ArrayList();
+        
+    //initialize visual basket related variables
+    visualBasket = null;  //visual basket
+    carriedItems = new ArrayList<>();//visual basket
+
+        
     }
     
     /**
@@ -84,7 +94,8 @@ public abstract class Customer extends SuperSmoothMover
     public void act() {
         currentActCycles++;
         animateImages();
-
+        updateBasketAndItems(); //visual basket
+        
         // move to target node if already set
         if (targetNode != null) {
             moveToNode(targetNode, 0, 0);
@@ -240,6 +251,7 @@ public abstract class Customer extends SuperSmoothMover
     
     /**
      * Method for the customer to retrieve products
+
      */
     protected void retrieveProdcuts() {
         if (store == null || currentNode == null || shoppingList == null || shoppingList.isEmpty() || getWorld() == null) return;
@@ -288,6 +300,9 @@ public abstract class Customer extends SuperSmoothMover
                     cart.add(retrieved);
                     shoppingList.remove(wantedClass);
                     pauseTimer = 10 + Greenfoot.getRandomNumber(21); // 10-30 act delay
+                    //visually add item into basket
+                    addItemToBasket(retrieved); //visual basket
+
                     return;
                 }
             }
@@ -407,6 +422,7 @@ public abstract class Customer extends SuperSmoothMover
         Node worldExit = SimulationWorld.getExitNode();
         
         if (currentNode.checkIsEnd()) {
+            removeAllCarriedItems(); //visual basket
             getWorld().removeObject(this);
             return;
         }
@@ -572,6 +588,7 @@ public abstract class Customer extends SuperSmoothMover
      */
     public void checkOut() {
         this.hasCheckedOut = true;
+        SoundManager.playCashierSound();
     }
     
     /**
@@ -585,7 +602,7 @@ public abstract class Customer extends SuperSmoothMover
         for (Product p : cart) {
             total += p.getPrice();
         }
-        
+                    
         return total;
     }
     
@@ -643,7 +660,98 @@ public abstract class Customer extends SuperSmoothMover
             return y > 0 ? "DOWN" : "UP";
         }
     }
+     // ========== For carrying basket==========//visual basket
+    /**
+     * Add a retrieved product visually into the customer's basket.
+     */
+protected void addItemToBasket(Product p)
+    {
+        if (getWorld() == null) return;
 
+        // Create basket if this is the first carried item
+        if (visualBasket == null) {
+            visualBasket = new Basket();
+            getWorld().addObject(visualBasket, getX(), getY());
+        }
 
+        carriedItems.add(p);
+
+        // Add product actor to world if not already there
+        if (p.getWorld() == null) {
+            getWorld().addObject(p, getX(), getY());
+        }
+
+        //shrink the item so it fits better inside the basket
+        GreenfootImage img = p.getImage();
+        img.scale(20, 20);
+        p.setImage(img);
+    }
+
+    /**
+     * Update the position of the basket and all carried items
+     * so they follow the customer.
+     */
+    private void updateBasketAndItems()
+    {
+        if (visualBasket == null) return;
+        if (getWorld() == null) return;
+
+        String dir = getFacingDirection();
+
+        int bx = getX();
+        int by = getY();
+
+        // place basket based on facing direction
+        if (dir.equals("RIGHT")) {
+            bx += 15;
+            by += 5;
+        } else if (dir.equals("LEFT")) {
+            bx -= 15;
+            by += 5;
+        } else if (dir.equals("UP")) {
+            by -= 15;
+        } else if (dir.equals("DOWN")) {
+            by += 15;
+        }
+
+        visualBasket.setLocation(bx, by);
+
+        // place items stacked inside basket
+        int index = 0;
+        for (Product p : carriedItems) {
+            if (p == null || p.getWorld() == null) continue;
+
+            int px = bx;
+            int py = by - 5 - index * 5; // stack upward inside the basket
+
+            p.setLocation(px, py);
+            index++;
+        }
+    }
+
+    /**
+     * Removes this customer's basket and any carried items from the world.
+     * Called by NightEffect when customers are force-removed at night
+     * and also by leaveStore() when customer exits normally.
+     */
+    public void removeAllCarriedItems()
+    {
+        if (getWorld() == null) return;
+
+        // remove basket
+        if (visualBasket != null && visualBasket.getWorld() != null) {
+            getWorld().removeObject(visualBasket);
+        }
+        visualBasket = null;
+
+        // remove all carried products
+        for (Product p : carriedItems) {
+            if (p != null && p.getWorld() != null) {
+                getWorld().removeObject(p);
+            }
+        }
+        carriedItems.clear();
+    }
 }
+
 
