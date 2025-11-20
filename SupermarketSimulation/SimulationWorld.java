@@ -85,7 +85,7 @@ public class SimulationWorld extends World
         //Set Paint order
         //So customer, Product and Display units can present properly
         //setPaintOrder(Effect.class, Customer.class,FloatingText.class, Product.class,DisplayUnit.class);
-        setPaintOrder(FloatingText.class,NightEffect.class,Customer.class, Product.class,DisplayUnit.class);  
+        setPaintOrder(FloatingText.class,Emoji.class,NightEffect.class,Customer.class, Product.class,DisplayUnit.class);  
 
          //Start ambienceSound
         SoundManager.startAmbienceSound();

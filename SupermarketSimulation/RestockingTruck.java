@@ -12,6 +12,7 @@ public class RestockingTruck extends SuperSmoothMover
 {
     private int speed=2;
     private int loadingTime=120;
+    private boolean textShown=false;
     public static boolean unloading=false;
     
     public RestockingTruck()
@@ -41,8 +42,12 @@ public class RestockingTruck extends SuperSmoothMover
         if(getY()==300 )
         {
             loadingTime--;
-            showText("Unloading \n&\n Restocking",Color.RED,getX(),getY()+getImage().getHeight()/2+20);
-            //System.out.println("Unloading and Restocking");
+            if(!textShown)
+            {
+                showText("Unloading \n&\n Restocking",Color.RED,getX(),getY()+getImage().getHeight()/2+20);
+                textShown=true;
+            }
+            
             unloading=true;
         }
         

@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 public class CustomerSpawner extends Actor
 {
-    private final static int spawnRate = 120;
+    private final static int spawnRate = 90;
     
     public CustomerSpawner() {
         setImage((GreenfootImage) null);
@@ -24,7 +24,7 @@ public class CustomerSpawner extends Actor
         
         //Don't spawn customers during this hous
         //store close
-        if (TimeOfDayManager.getHour()>=20 || TimeOfDayManager.getHour()<=1)
+        if (TimeOfDayManager.getHour()>=20 || TimeOfDayManager.getHour()<=6)
         {
             return;
         }
@@ -32,7 +32,7 @@ public class CustomerSpawner extends Actor
         ArrayList<RegularShopper> customers = (ArrayList<RegularShopper>) getWorld().getObjects(RegularShopper.class);
         
         if (Greenfoot.getRandomNumber(spawnRate) == 0) {
-            int customerType = Greenfoot.getRandomNumber(2);
+            int customerType = Greenfoot.getRandomNumber(5);
             
             Node startNode = SimulationWorld.getStartNode();
             
@@ -42,6 +42,12 @@ public class CustomerSpawner extends Actor
                     break;
                 case 1:
                     getWorld().addObject(new ImpulseShopper(startNode), startNode.getX(), startNode.getY());
+                    break;
+                case 3:
+                    getWorld().addObject(new BulkShopper(startNode), startNode.getX(), startNode.getY());
+                    break;
+                case 4:
+                    getWorld().addObject(new BargainShopper(startNode), startNode.getX(), startNode.getY());
                     break;
     
             }

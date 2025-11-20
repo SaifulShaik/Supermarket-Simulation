@@ -77,8 +77,6 @@ public class Cashier extends SuperSmoothMover
         System.out.println("a");
         if (timer <= 0) {
             totalEarnings = currentCustomer.calculatePriceOfCart();
-            //play beep sound
-            SoundManager.playCashierSound();
             
             showEarnings();
             

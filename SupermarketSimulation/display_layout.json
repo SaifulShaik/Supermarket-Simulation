@@ -41,11 +41,6 @@
   },
   {
     "displayUnitType": "Fridge",
-    "x": 880,
-    "y": 360
-  },
-  {
-    "displayUnitType": "Fridge",
     "x": 86,
     "y": 178
   },
@@ -68,5 +63,10 @@
     "displayUnitType": "OrangeBin",
     "x": 160,
     "y": 300
+  },
+  {
+    "displayUnitType": "LettuceBin",
+    "x": 780,
+    "y": 440
   }
 ]

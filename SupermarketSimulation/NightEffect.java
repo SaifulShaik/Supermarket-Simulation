@@ -128,7 +128,6 @@ public class NightEffect extends Effect
         
         if (percent > 1.00) return;
         
-   
         int newTransparency = (int)(percent * 255);
         image.setTransparency (newTransparency);
         
@@ -161,7 +160,7 @@ public class NightEffect extends Effect
     /**
      * Removes all Customer objects from the world while the overlay is
      * considered totally dark. This simulates the supermarket being closed
-     * during the deepest part of the night.
+     * during the darkest part of the night.
      */
     private void cleanUp()
     {
@@ -174,7 +173,8 @@ public class NightEffect extends Effect
         
         for(Customer c: customers)
         {
-// c.removeAllCarriedItems();  
+            //remove all the carried items.
+            c.removeAllCarriedItems(); //visual basket
             getWorld().removeObject(c);
         }
     }
@@ -222,7 +222,7 @@ public class NightEffect extends Effect
         drawStars();
     
         setImage(image);
-        image.setTransparency(prevAlpha);   // ⭐ RESTORE the transparency
+        image.setTransparency(prevAlpha);   //RESTORE the transparency
     }
     /**
      * Draws a simple star field on the current overlay image.
