@@ -21,6 +21,7 @@ public class RestockingTruck extends SuperSmoothMover
         setImage(image);
         unloading=false;
         
+        SoundManager.playTruckSound();
     }
     public void act()
     {
@@ -55,6 +56,7 @@ public class RestockingTruck extends SuperSmoothMover
         }
         if(isAtEdge())
         {
+            SoundManager.stopTruckSound();
             getWorld().removeObject(this);
         }
     }

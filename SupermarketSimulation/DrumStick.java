@@ -15,7 +15,7 @@ public class DrumStick extends Product
     {
         price=4.5;
         name="Drumstick";
-        image = new GreenfootImage("product/Drumstick.PNG");
+        image = new GreenfootImage("product/Drum Stick.PNG");
         image.scale(image.getWidth()/3, image.getHeight()/3);
         //image.rotate(270);
         setImage(image);

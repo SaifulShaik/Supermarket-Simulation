@@ -23,8 +23,8 @@ public class SoundManager
     //Truck sound
     private static GreenfootSound truckSound  = new GreenfootSound("truckResume.mp3");   
 
-
-    //private static GreenfootSound checkoutBeep = new GreenfootSound("beep.wav");
+    //Cashier sound
+    private static GreenfootSound cashierSound = new GreenfootSound("beep.wav");
     
     //Customer walking
     // private static GreenfootSound footsteps = new GreenfootSound("walking.mp3");
@@ -142,6 +142,20 @@ public class SoundManager
     public static void stopButcherSound()
     {
         stop(butcherSound);
+    }
+    /**
+     * Play the cashier check out sound
+     */
+    public static void playCashierSound()
+    {
+         playOnce(cashierSound, 35);
+    }
+    /**
+     * Stops the cashier sound.
+     */
+    public static void stopCashierSound()
+    {
+        stop(cashierSound);
     }
     // --------------------------------------------------------
     // Footsepts sounds

@@ -10,35 +10,28 @@ import java.util.ArrayList;
 
 public class CustomerSpawner extends Actor
 {
-    private final static int spawnRate = 150;
-    private final static int maxCustomers = 12;
-    
-    private int actCount = 0;
-    private boolean spawn = true;
+    private final static int spawnRate = 120;
     
     public CustomerSpawner() {
         setImage((GreenfootImage) null);
     }
     
     public void act() {
-        //stop spawning earlier than night cycle to make sure all customers are gone by the time the night comes
-        actCount++;
-        
-        if (actCount > 3500 && actCount < 5000){
-            return;
-        } else{
-            spawnCustomers();
-        }
-        
-        if (actCount > 4000){
-            actCount = 0;
-        }
+        spawnCustomers();
     }
     
     private void spawnCustomers() {
+        
+        //Don't spawn customers during this hous
+        //store close
+        if (TimeOfDayManager.getHour()>=20 || TimeOfDayManager.getHour()<=1)
+        {
+            return;
+        }
+
         ArrayList<RegularShopper> customers = (ArrayList<RegularShopper>) getWorld().getObjects(RegularShopper.class);
         
-        if (Greenfoot.getRandomNumber(spawnRate) == 0 && customers.size() <= maxCustomers && spawn) {
+        if (Greenfoot.getRandomNumber(spawnRate) == 0) {
             int customerType = Greenfoot.getRandomNumber(2);
             
             Node startNode = SimulationWorld.getStartNode();
@@ -50,6 +43,7 @@ public class CustomerSpawner extends Actor
                 case 1:
                     getWorld().addObject(new ImpulseShopper(startNode), startNode.getX(), startNode.getY());
                     break;
+    
             }
         }
     }

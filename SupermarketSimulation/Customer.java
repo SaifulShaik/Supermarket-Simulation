@@ -585,7 +585,7 @@ public abstract class Customer extends SuperSmoothMover
         for (Product p : cart) {
             total += p.getPrice();
         }
-        
+                    
         return total;
     }
     
@@ -646,4 +646,5 @@ public abstract class Customer extends SuperSmoothMover
 
 
 }
+
 

@@ -66,6 +66,15 @@ public class TimeOfDayManager
         return seconds % 60;
     }
     /**
+     * Reset the in gametime by resetting the seconds.
+     *
+     * @return second of the current minute
+     */ 
+    public static void setSecond(int newSeconds)
+    {
+        seconds=newSeconds;
+    }
+    /**
      * Returns the current time as a {"HH:MM:SS"} string
      * in 24-hour format (e.g. "17:35:09").
      *

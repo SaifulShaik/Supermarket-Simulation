@@ -16,7 +16,7 @@ public class Steak extends Product
         price=10.5;
         name="Steak";
         image = new GreenfootImage("product/Cooked Steak.PNG");
-        image.scale(image.getWidth()/3, image.getHeight()/3);
+        image.scale(image.getWidth()/4, image.getHeight()/4);
         //image.rotate(270);
         setImage(image);
         

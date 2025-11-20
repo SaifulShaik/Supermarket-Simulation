@@ -16,8 +16,7 @@ public class RegularShopper extends Customer
 
         int w = shopper.getWidth();
         int h = shopper.getHeight();
-        
-        GreenfootImage padded = new GreenfootImage(w, (int)(h * 2));
+        GreenfootImage padded = new GreenfootImage(w, h * 2);
         padded.drawImage(shopper, 0, 0);
         setImage(padded);
     }

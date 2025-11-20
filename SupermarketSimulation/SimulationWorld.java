@@ -95,8 +95,11 @@ public class SimulationWorld extends World
         //Add a clock in the centre of the screen
         //The customer should be spawned at certain periods in the day
         //The ReloadingTruck will also come only after store hours       
-        addObject(new ClockDisplay(), 605, 45); // centre top
+        addObject(new ClockDisplay(), 605, 45); // centre to
 
+                
+        //starts the day with 8:00 AM
+        TimeOfDayManager.setSecond(8 * 3600); 
 
     }
     public static Node getStartNode() {
@@ -236,7 +239,7 @@ public class SimulationWorld extends World
         actCount++;
         /*
         
-        if (actCount % 5000 == 0){
+        if (actCount % 2000 == 0){
             addObject(new RestockingTruck(),600,200);
             addObject(new Night(), getWidth()/2, getHeight()/2);
         }
