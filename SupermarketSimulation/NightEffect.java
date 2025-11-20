@@ -6,33 +6,35 @@ import java.util.ArrayList;
  *
  * It gradually darkens the screen and then brightens it
  * again by changing the transparency of a dark rectangle drawn over the world.
- * The night cycle starts after 9:00  and runs for a fixed
+ * The night cycle starts after 9:00 and runs for a fixed
  * duration each day.
  *
- * @author Owen Kung
+ * @author Owen Lee & Owen Kung
  * @version Oct 2025
  */
 public class NightEffect extends Effect
 {
-    //private static final int DAY_TIME_LENGTH=600;
-    private static final int DARKER_LENGTH=200;
-    private static final int BRIGHTER_LENGTH=200;
-    private static int totalDuration=DARKER_LENGTH+BRIGHTER_LENGTH;
+    private static final int DARKER_LENGTH = 200;
+    private static final int BRIGHTER_LENGTH = 200;
+    private static int totalDuration = DARKER_LENGTH + BRIGHTER_LENGTH;
     private static int timer;
     
-    //private int dayTime=0;
-    private int gettingDark=0;
-    private int gettingBrighter=BRIGHTER_LENGTH;
-    public static boolean isDayTime=true;
-    private static boolean isTotalDark=false;
+    private int gettingDark = 0;
+    private int gettingBrighter = BRIGHTER_LENGTH;
+    public static boolean isDayTime = true;
+    private static boolean isTotalDark = false;
     
- // Moon arc animation properties
+    // Moon arc animation properties
     private double moonProgress; // 0.0 to 1.0, tracks progress across the sky
     private double moonSpeed;
+    
     public NightEffect () 
     {
+        moonProgress = 0.0;
+        moonSpeed = 1.0 / totalDuration; // Complete arc over the full night duration
         drawImage();
     }
+    
     /**
      * At specified time, the timer is reset
      * Starting from 9:00, and while timer <= totalDuration
@@ -40,18 +42,20 @@ public class NightEffect extends Effect
      */
     public void act()
     {
-        
-        if(TimeOfDayManager.getHour()==21 && TimeOfDayManager.getMinute()==0)
+        if(TimeOfDayManager.getHour() == 23 && TimeOfDayManager.getMinute() == 0)
         {  
-            timer=0;
-            isDayTime=false;
+            timer = 0;
+            isDayTime = false;
+            moonProgress = 0.0; // Reset moon to start position
             
             SoundManager.stopAmbienceSound();
         }
-         //run the darkening mechanism with given duration
-         //make sure it has enough time to get back to day time
-        if(TimeOfDayManager.getHour()>=21 || TimeOfDayManager.getHour()<=2 && timer<=totalDuration)
-        {   timer++;
+        
+        // Run the darkening mechanism with given duration
+        // Make sure it has enough time to get back to day time
+        if(TimeOfDayManager.getHour() >= 23 || TimeOfDayManager.getHour() <= 2 && timer <= totalDuration)
+        {   
+            timer++;
             darken();          
         }
         
@@ -65,68 +69,67 @@ public class NightEffect extends Effect
         if (moonProgress > 1.0) {
             moonProgress = 1.0; // Stop at the end
         }
-        //drawImage();
         
-        if(gettingDark<=DARKER_LENGTH)
+        // Redraw the image with updated moon position
+        drawImage();
+        
+        if(gettingDark <= DARKER_LENGTH)
         {
             gettingDark++;
-            fade(gettingDark,DARKER_LENGTH);;
+            fade(gettingDark, DARKER_LENGTH);
         }
-        if(gettingBrighter==BRIGHTER_LENGTH && gettingDark>=DARKER_LENGTH)
+        
+        if(gettingBrighter == BRIGHTER_LENGTH && gettingDark >= DARKER_LENGTH)
         {
-            isTotalDark=true;
+            isTotalDark = true;
         }
-        if(gettingDark>=DARKER_LENGTH  && gettingBrighter>=0)
+        
+        if(gettingDark >= DARKER_LENGTH && gettingBrighter >= 0)
         { 
             gettingBrighter--;
-            fade(gettingBrighter,BRIGHTER_LENGTH);
+            fade(gettingBrighter, BRIGHTER_LENGTH);
         }
-        if(gettingBrighter==BRIGHTER_LENGTH-30)
+        
+        if(gettingBrighter == BRIGHTER_LENGTH - 30)
         {
-            isTotalDark=false;
+            isTotalDark = false;
         }
-        if(gettingDark>=DARKER_LENGTH && gettingBrighter<=0)
+        
+        if(gettingDark >= DARKER_LENGTH && gettingBrighter <= 0)
         {
-            isDayTime=true;
-            isTotalDark=false;
-            gettingDark=0;
-            gettingBrighter=BRIGHTER_LENGTH;
-
+            isDayTime = true;
+            isTotalDark = false;
+            gettingDark = 0;
+            gettingBrighter = BRIGHTER_LENGTH;
         } 
-
     }
+    
     /*
      * Use transparency to control the darkness of effect
      */
-    private void drawImage_old() {
-        image= new GreenfootImage(1600, 650);
-        //draw the box of the traffic ligh
-        image.setColor(Color.DARK_GRAY);
-        image.fillRect(0, 0, 1600, 650);
-        image.setTransparency(0);  //start with daytime
-        setImage(image);
-        
-    }
-    private void fade (int timeLeft, int totalFadeTime){
+    private void fade(int timeLeft, int totalFadeTime)
+    {
         double percent = timeLeft / (double)totalFadeTime;
         
         if (percent > 1.00) return;
         
-   
         int newTransparency = (int)(percent * 255);
-        image.setTransparency (newTransparency);
+        image.setTransparency(newTransparency);
         
         // When it is dark enough and we are in the darkening phase, start night sound
-        if(newTransparency>30 && gettingDark>0)
+        if(newTransparency > 30 && gettingDark > 0)
         {       
             SoundManager.startNightSound();
         }
+        
         // When we are well into the brightening phase, stop night sound and resume ambience
-         if(gettingBrighter<BRIGHTER_LENGTH-60){       
+        if(gettingBrighter < BRIGHTER_LENGTH - 60)
+        {       
             SoundManager.stopNightSound();
             SoundManager.startAmbienceSound();
         }
     }
+    
     private void cleanUp()
     {
         if(!isTotalDark)
@@ -134,17 +137,18 @@ public class NightEffect extends Effect
             return;
         }
         
-        ArrayList<Customer> customers=(ArrayList<Customer>)getWorld().getObjects(Customer.class);
+        ArrayList<Customer> customers = (ArrayList<Customer>)getWorld().getObjects(Customer.class);
         
-        for(Customer c: customers)
+        for(Customer c : customers)
         {
             getWorld().removeObject(c);
         }
     }
     
-        private void drawImage() {
+    private void drawImage() 
+    {
         image = new GreenfootImage(1600, 600);
-        image.setColor(new Color(0, 0, 0, 255)); // black background
+        image.setColor(new Color(0, 0, 0, 255)); // Black background
         image.fill();
         
         // Calculate moon position in a V shape
@@ -153,7 +157,7 @@ public class NightEffect extends Effect
         
         // Y follows a V shape: goes up first half, then down second half
         int startY = 300; // Starting height (lower in sky)
-        int peakY = 50;  // Peak height (higher in sky)
+        int peakY = 50;   // Peak height (higher in sky)
         int moonY;
         
         if (moonProgress < 0.5) {
@@ -170,17 +174,19 @@ public class NightEffect extends Effect
         image.setColor(new Color(255, 255, 200, 80));
         image.fillOval(moonX - 15, moonY - 15, moonSize + 30, moonSize + 30);
         
-        // Draw moon background
+        // Draw moon
         image.setColor(new Color(255, 255, 220));
         image.fillOval(moonX, moonY, moonSize, moonSize);
         
+        // Draw stars
         drawStars();
         
         setImage(image);
-        image.setTransparency(0);  //start with daytime
+        image.setTransparency(0);  // Start with daytime
     }
     
-    private void drawStars() {
+    private void drawStars() 
+    {
         image.setColor(new Color(255, 255, 255, 200));
         // Create random stars 
         for (int i = 0; i < 50; i++) {
@@ -191,5 +197,3 @@ public class NightEffect extends Effect
         }
     }
 }
-
-

@@ -24,14 +24,10 @@ public class CustomerSpawner extends Actor
         //stop spawning earlier than night cycle to make sure all customers are gone by the time the night comes
         actCount++;
         
-        if (actCount > 3500 && actCount < 5000){
+        if (TimeOfDayManager.getHour() > 16 || TimeOfDayManager.getHour() < 3){
             return;
         } else{
             spawnCustomers();
-        }
-        
-        if (actCount > 4000){
-            actCount = 0;
         }
     }
     
@@ -39,10 +35,15 @@ public class CustomerSpawner extends Actor
         ArrayList<RegularShopper> customers = (ArrayList<RegularShopper>) getWorld().getObjects(RegularShopper.class);
         
         if (Greenfoot.getRandomNumber(spawnRate) == 0 && customers.size() <= maxCustomers && spawn) {
-            int customerType = Greenfoot.getRandomNumber(2);
-            
             Node startNode = SimulationWorld.getStartNode();
             
+            int zombie = Greenfoot.getRandomNumber(150);
+            if (zombie == 0){
+                getWorld().addObject(new Zombie(startNode), startNode.getX(), startNode.getY());
+                return;
+            }
+
+            int customerType = Greenfoot.getRandomNumber(2);
             switch (customerType) {
                 case 0:
                     getWorld().addObject(new RegularShopper(startNode), startNode.getX(), startNode.getY());

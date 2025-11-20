@@ -242,7 +242,7 @@ public class SimulationWorld extends World
         }
         */
         //spawnRestockingTruck();
-        if(TimeOfDayManager.getHour()==22 &&TimeOfDayManager.getMinute()==0)
+        if(TimeOfDayManager.getHour() == 23 &&TimeOfDayManager.getMinute()==0)
         {
           addObject(new RestockingTruck(),600,200);
         
