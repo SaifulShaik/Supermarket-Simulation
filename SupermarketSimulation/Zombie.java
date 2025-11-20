@@ -8,6 +8,7 @@ import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
  */
 public class Zombie extends Customer
 {
+    //saiful
     GreenfootImage shopper = new GreenfootImage("Zombie.png");
     
     public Zombie(Node n)

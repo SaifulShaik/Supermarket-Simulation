@@ -13,6 +13,7 @@ public class CustomerSpawner extends Actor
     private final static int spawnRate = 150;
     private final static int maxCustomers = 12;
     
+    private boolean zombieSpawned = false;
     private int actCount = 0;
     private boolean spawn = true;
     
@@ -37,7 +38,7 @@ public class CustomerSpawner extends Actor
         if (Greenfoot.getRandomNumber(spawnRate) == 0 && customers.size() <= maxCustomers && spawn) {
             Node startNode = SimulationWorld.getStartNode();
             
-            int zombie = Greenfoot.getRandomNumber(150);
+            int zombie = Greenfoot.getRandomNumber(100);
             if (zombie == 0){
                 getWorld().addObject(new Zombie(startNode), startNode.getX(), startNode.getY());
                 return;
