@@ -4,132 +4,164 @@ import java.util.ArrayList;
 /**
  * An overlay effect that simulates night in the supermarket simulation.
  *
- * It gradually darkens the screen and then brightens it
- * again by changing the transparency of a dark rectangle drawn over the world.
- * The night cycle starts after 9:00 and runs for a fixed
- * duration each day.
+ * It gradually darkens the screen and then brightens it again by changing the
+ * transparency of a dark image drawn over the world. A simple moon animation
+ * moves across the sky during the night. The night cycle starts after 21:00
+ * (9:00 PM) and runs for a fixed duration each day.
  *
- * @author Owen Lee & Owen Kung
- * @version Oct 2025
+ * NightEffect also:
+ * - Switches between ambience and night sounds.
+ * - Resets the in-game time to a fixed morning hour when full darkness is reached.
+ * - Removes all Customer objects while it is totally dark.
+ *
+ * @author Owen Kung, Owen Lee
+ * @version Nov 2025
  */
 public class NightEffect extends Effect
 {
-    private static final int DARKER_LENGTH = 200;
-    private static final int BRIGHTER_LENGTH = 200;
-    private static int totalDuration = DARKER_LENGTH + BRIGHTER_LENGTH;
+    //private static final int DAY_TIME_LENGTH=600;
+    private static final int DARKER_LENGTH=200;
+    private static final int BRIGHTER_LENGTH=200;
+    private static final int RESET_HOUR=6;
+    private boolean hasResetTime = false;
+    private static int totalDuration=DARKER_LENGTH+BRIGHTER_LENGTH;
     private static int timer;
     
-    private int gettingDark = 0;
-    private int gettingBrighter = BRIGHTER_LENGTH;
-    public static boolean isDayTime = true;
-    private static boolean isTotalDark = false;
+    //private int dayTime=0;
+    private int gettingDark=0;
+    private int gettingBrighter=BRIGHTER_LENGTH;
+    public static boolean isDayTime=true;
+    private static boolean isTotalDark=false;
     
-    // Moon arc animation properties
+    //Moon arc animation properties
     private double moonProgress; // 0.0 to 1.0, tracks progress across the sky
     private double moonSpeed;
-    
+    /**
+     * Creates the NightEffect overlay and draws the initial night image.
+     * The image starts fully transparent so that daytime is visible.
+     */
     public NightEffect () 
     {
+        moonSpeed = 0.006;   //moon moving speed
         moonProgress = 0.0;
-        moonSpeed = 1.0 / totalDuration; // Complete arc over the full night duration
         drawImage();
+        getImage().setTransparency(0);
     }
-    
     /**
-     * At specified time, the timer is reset
-     * Starting from 9:00, and while timer <= totalDuration
-     * the night effect progresses by calling darken()
+     * Main act method for the night effect.
+     *
+     * Behaviour:
+     * - At 21:00, the night cycle is started.
+     * - While it is night, the effect runs darken() until the full cycle
+     *   (darken + brighten) is complete.
+     * - When fully dark, customers may be removed by cleanUp().
      */
     public void act()
     {
-        if(TimeOfDayManager.getHour() == 23 && TimeOfDayManager.getMinute() == 0)
+        
+        if(TimeOfDayManager.getHour()==21 && TimeOfDayManager.getMinute()==0)
         {  
-            timer = 0;
-            isDayTime = false;
-            moonProgress = 0.0; // Reset moon to start position
+            timer=0;
+            isDayTime=false;
+            hasResetTime=false;
             
             SoundManager.stopAmbienceSound();
         }
-        
-        // Run the darkening mechanism with given duration
-        // Make sure it has enough time to get back to day time
-        if(TimeOfDayManager.getHour() >= 23 || TimeOfDayManager.getHour() <= 2 && timer <= totalDuration)
-        {   
+        //if it's still night time, let the darkening mechanism work till completion
+        if (!isDayTime && timer <= totalDuration)
+        {
             timer++;
-            darken();          
+            darken();   
         }
-        
         cleanUp();
     }
-    
+    /**
+     * Runs a single step of the night cycle.
+     *
+     * This method:
+     * - Updates the moon position.
+     * - Redraws the night sky (moon and stars).
+     * - Fades the overlay darker until DARKER_LENGTH is reached.
+     * - Then fades the overlay brighter until BRIGHTER_LENGTH is finished.
+     * - Resets state back to daytime at the end of the brightening phase.
+     */
     private void darken()
     {
         // Update moon progress
         moonProgress += moonSpeed;
-        if (moonProgress > 1.0) {
+        if (moonProgress > 1.0) 
+        {
             moonProgress = 1.0; // Stop at the end
         }
-        
-        // Redraw the image with updated moon position
         drawImage();
         
-        if(gettingDark <= DARKER_LENGTH)
+        if(gettingDark<=DARKER_LENGTH)
         {
             gettingDark++;
-            fade(gettingDark, DARKER_LENGTH);
+            fade(gettingDark,DARKER_LENGTH);;
         }
-        
-        if(gettingBrighter == BRIGHTER_LENGTH && gettingDark >= DARKER_LENGTH)
-        {
-            isTotalDark = true;
-        }
-        
-        if(gettingDark >= DARKER_LENGTH && gettingBrighter >= 0)
+        if(gettingDark>=DARKER_LENGTH  && gettingBrighter>=0)
         { 
             gettingBrighter--;
-            fade(gettingBrighter, BRIGHTER_LENGTH);
+            fade(gettingBrighter,BRIGHTER_LENGTH);
         }
-        
-        if(gettingBrighter == BRIGHTER_LENGTH - 30)
+        if(gettingDark>=DARKER_LENGTH && gettingBrighter<=0)
         {
-            isTotalDark = false;
-        }
-        
-        if(gettingDark >= DARKER_LENGTH && gettingBrighter <= 0)
-        {
-            isDayTime = true;
-            isTotalDark = false;
-            gettingDark = 0;
-            gettingBrighter = BRIGHTER_LENGTH;
+            isDayTime=true;
+            isTotalDark=false;
+            gettingDark=0;
+            gettingBrighter=BRIGHTER_LENGTH;
+            moonProgress = 0.0;
+
         } 
+
     }
-    
-    /*
-     * Use transparency to control the darkness of effect
+    /**
+     * Adjusts the transparency of the overlay image based on the current
+     * progress of the darkening or brightening phase.
+     *
+     * @param timeLeft      current step in the darken or brighten phase
+     * @param totalFadeTime total number of steps for that phase
      */
-    private void fade(int timeLeft, int totalFadeTime)
-    {
+    private void fade (int timeLeft, int totalFadeTime){
         double percent = timeLeft / (double)totalFadeTime;
         
         if (percent > 1.00) return;
         
         int newTransparency = (int)(percent * 255);
-        image.setTransparency(newTransparency);
+        image.setTransparency (newTransparency);
         
         // When it is dark enough and we are in the darkening phase, start night sound
-        if(newTransparency > 30 && gettingDark > 0)
+        if(newTransparency>30 && gettingDark>0)
         {       
             SoundManager.startNightSound();
         }
-        
         // When we are well into the brightening phase, stop night sound and resume ambience
-        if(gettingBrighter < BRIGHTER_LENGTH - 60)
-        {       
+         if(gettingBrighter<BRIGHTER_LENGTH-60)
+         {       
             SoundManager.stopNightSound();
-            SoundManager.startAmbienceSound();
+            SoundManager.startAmbienceSound();           
+        }
+        //Reset in-game clock exactly when night reaches full darkness
+        if (newTransparency >= 255 && !hasResetTime)
+        {
+            TimeOfDayManager.setSecond(RESET_HOUR * 3600); // 6:00 AM
+            hasResetTime = true;
+        }
+        if(newTransparency >= 255)
+        {
+            isTotalDark=true;
+        }
+        if(newTransparency < 200)
+        {
+            isTotalDark=false;
         }
     }
-    
+    /**
+     * Removes all Customer objects from the world while the overlay is
+     * considered totally dark. This simulates the supermarket being closed
+     * during the darkest part of the night.
+     */
     private void cleanUp()
     {
         if(!isTotalDark)
@@ -137,56 +169,67 @@ public class NightEffect extends Effect
             return;
         }
         
-        ArrayList<Customer> customers = (ArrayList<Customer>)getWorld().getObjects(Customer.class);
+        ArrayList<Customer> customers=(ArrayList<Customer>)getWorld().getObjects(Customer.class);
         
-        for(Customer c : customers)
+        for(Customer c: customers)
         {
+            //remove all the carried items.
+            c.removeAllCarriedItems(); //visual basket
             getWorld().removeObject(c);
         }
     }
-    
+    /**
+     * Draws the night sky image for the overlay.
+     * This includes:
+     * - A black background.
+     * - The moon at its current position along an arc.
+     * - A simple star field.
+     *
+     * The previous transparency value is preserved, so the fade effect
+     * remains smooth across frames.
+     */
     private void drawImage() 
     {
+        int prevAlpha = 0;
+        if (image != null) prevAlpha = image.getTransparency();
+    
         image = new GreenfootImage(1600, 600);
-        image.setColor(new Color(0, 0, 0, 255)); // Black background
+    
+        // background
+        image.setColor(Color.BLACK);
         image.fill();
-        
-        // Calculate moon position in a V shape
-        // X moves from left to right (0 to image width)
+    
+        // Calculate moon position
         int moonX = (int)(moonProgress * image.getWidth());
-        
-        // Y follows a V shape: goes up first half, then down second half
-        int startY = 300; // Starting height (lower in sky)
-        int peakY = 50;   // Peak height (higher in sky)
+        int startY = 300;
+        int peakY = 50;
         int moonY;
-        
+    
         if (moonProgress < 0.5) {
-            // First half: going up 
             moonY = (int)(startY - (startY - peakY) * (moonProgress / 0.5));
         } else {
-            // Second half: going down 
             moonY = (int)(peakY + (startY - peakY) * ((moonProgress - 0.5) / 0.5));
         }
-        
+    
         int moonSize = 60;
-        
-        // Draw moon glow (the part on top)
+    
         image.setColor(new Color(255, 255, 200, 80));
         image.fillOval(moonX - 15, moonY - 15, moonSize + 30, moonSize + 30);
-        
-        // Draw moon
+    
         image.setColor(new Color(255, 255, 220));
         image.fillOval(moonX, moonY, moonSize, moonSize);
-        
-        // Draw stars
-        drawStars();
-        
-        setImage(image);
-        image.setTransparency(0);  // Start with daytime
-    }
     
-    private void drawStars() 
-    {
+        drawStars();
+    
+        setImage(image);
+        image.setTransparency(prevAlpha);   //RESTORE the transparency
+    }
+    /**
+     * Draws a simple star field on the current overlay image.
+     * Stars are placed in repeatable pseudo-random positions so the pattern
+     * looks scattered but does not change every frame.
+     */
+    private void drawStars() {
         image.setColor(new Color(255, 255, 255, 200));
         // Create random stars 
         for (int i = 0; i < 50; i++) {
@@ -197,3 +240,6 @@ public class NightEffect extends Effect
         }
     }
 }
+
+
+

@@ -77,6 +77,7 @@ public class Cashier extends SuperSmoothMover
         System.out.println("a");
         if (timer <= 0) {
             totalEarnings = currentCustomer.calculatePriceOfCart();
+            
             showEarnings();
             
             currentCustomer.getStore().addProfit(totalEarnings);
@@ -121,7 +122,7 @@ public class Cashier extends SuperSmoothMover
         
         int offsetX = Greenfoot.getRandomNumber(40) - 20;
         int offsetY = Greenfoot.getRandomNumber(40) - 20;
-        
+  
         getWorld().addObject(new FloatingText("$: " + totalEarnings, Color.GREEN), getX() + offsetX, getY() + offsetY);
     }
 }

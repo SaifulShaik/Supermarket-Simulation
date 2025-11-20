@@ -85,7 +85,7 @@ public class SimulationWorld extends World
         //Set Paint order
         //So customer, Product and Display units can present properly
         //setPaintOrder(Effect.class, Customer.class,FloatingText.class, Product.class,DisplayUnit.class);
-        setPaintOrder(FloatingText.class,NightEffect.class,Customer.class, Product.class,DisplayUnit.class);  
+        setPaintOrder(FloatingText.class,Emoji.class,NightEffect.class,Customer.class, Product.class,DisplayUnit.class);  
 
          //Start ambienceSound
         SoundManager.startAmbienceSound();
@@ -95,8 +95,11 @@ public class SimulationWorld extends World
         //Add a clock in the centre of the screen
         //The customer should be spawned at certain periods in the day
         //The ReloadingTruck will also come only after store hours       
-        addObject(new ClockDisplay(), 605, 45); // centre top
+        addObject(new ClockDisplay(), 605, 45); // centre to
 
+                
+        //starts the day with 8:00 AM
+        TimeOfDayManager.setSecond(8 * 3600); 
 
     }
     public static Node getStartNode() {
@@ -236,7 +239,7 @@ public class SimulationWorld extends World
         actCount++;
         /*
         
-        if (actCount % 5000 == 0){
+        if (actCount % 2000 == 0){
             addObject(new RestockingTruck(),600,200);
             addObject(new Night(), getWidth()/2, getHeight()/2);
         }
