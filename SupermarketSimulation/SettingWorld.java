@@ -28,7 +28,7 @@ public class SettingWorld extends World
     private static final String[] DISPLAY_UNIT_TYPES = {
         "Fridge", "FridgeOne", "FridgeTwo", "SnackShelf", "CupNoodleShelf",
         "LettuceBin", "CarrotBin", "AppleBin", "OrangeBin", "CandyBin",
-        "SteakWarmer", "RawBeefHangers", 
+        "SteakWarmer", "RawBeefHangers", "MeatFridge", "SteakWarmer2"
     };
     
     // UI Components
@@ -721,5 +721,4 @@ public class SettingWorld extends World
         return y < 80 || (y > getHeight() - 100 && x > getWidth() / 2 - 100 && x < getWidth() / 2 + 150) ;
     }
 }
-
 
