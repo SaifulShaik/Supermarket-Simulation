@@ -43,7 +43,7 @@ public class Cashier extends SuperSmoothMover
         setImage(frames[0]);
         
         queue = new LinkedList<>();
-        this.serviceSpeed = 50.0;
+        this.serviceSpeed = 25.0;
     }
     
     public void act() 
