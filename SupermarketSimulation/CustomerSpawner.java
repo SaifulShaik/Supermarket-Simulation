@@ -23,6 +23,12 @@ public class CustomerSpawner extends Actor
     
     public void act() {
         //stop spawning earlier than night cycle to make sure all customers are gone by the time the night comes
+        if (TimeOfDayManager.getHour() > 16 || TimeOfDayManager.getHour() < 3){
+            return;
+        } else{
+            spawnCustomers();
+        }
+        
         spawnCustomers();
     }
     
