@@ -329,5 +329,16 @@ public class Store {
     public double getProfit() {
         return profit;
     }
+
+    public boolean isInStore(int x, int y) {
+        if (name.equals("Store 1")) {
+            // Left store boundaries (blue/gray store) - EXCLUDES the road
+            return x >= 25 && x <= 600 && y >= 150 && y <= 600;
+        } else if (name.equals("Store 2")) {
+            // Right store boundaries (wooden store) - EXCLUDES the road
+            return x >= 725 && x <= 1525 && y >= 150 && y <= 600;
+        }
+        return false;
+    }
 }
 

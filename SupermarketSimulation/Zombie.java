@@ -1,9 +1,8 @@
 import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
-
 /**
  * Write a description of class Zombie here.
  * 
- * @author (your name) 
+ * By Owen Lee
  * @version (a version number or a date)
  */
 public class Zombie extends Customer
@@ -12,13 +11,20 @@ public class Zombie extends Customer
     
     public Zombie(Node n)
     {
-        super(3, 0, n, 0, 0, 700);
+        super(1, 0, n, 0, 0, 700);
         shopper.scale(shopper.getWidth()/4, shopper.getHeight()/4);
         int w = shopper.getWidth();
         int h = shopper.getHeight();
         GreenfootImage padded = new GreenfootImage(w, h * 2);
         padded.drawImage(shopper, 0, 0);
         setImage(padded);
+        
+        // Clear inherited customer state to prevent checkout behavior
+        this.hasCheckedOut = false;
+        this.targetCashier = null;
+        this.path = null;
+        this.shoppingList.clear();
+        this.cart.clear();
     }
     
     @Override
@@ -28,7 +34,7 @@ public class Zombie extends Customer
         if (targetNode != null) {
             moveToNode(targetNode, 0, 0);
         } else if (currentNode != null) {
-            move(false); // Keep wandering
+            move(false); // Keep wandering, never use move(true) which exits
         }
         
         checkCollision(); // Check for customers to convert
@@ -40,10 +46,23 @@ public class Zombie extends Customer
         
         if (victim != null && !(victim instanceof Zombie))
         {
+            // Only convert customers who are in a store
+            if (victim.getStore() == null) {
+                return;
+            }
+            
+            // Soldiers are immune to zombie infection!
+            if (victim instanceof Soldier) {
+                return; // Don't infect soldiers
+            }
+            
             // Save position and node info
             Node currentNodePos = victim.currentNode;
             int x = victim.getX();
             int y = victim.getY();
+            
+            // Remove the victim's basket and carried items first
+            victim.removeAllCarriedItems();
             
             // Remove the customer
             getWorld().removeObject(victim);
