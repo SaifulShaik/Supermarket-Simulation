@@ -12,7 +12,7 @@ public class TimeOfDayManager
 {
 
     private static int seconds = 8 * 3600;    //Start at 08:00:00  →  8 * 3600
-    private static int secondsPerTick = 30;    //1 = 1 game second per act, 30, about 1:08 a day
+    private static int secondsPerTick = 25;    //1 = 1 game second per act, 30, about 1:08 a day
 
     /**
      * Advances the in-game clock

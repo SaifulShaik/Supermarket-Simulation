@@ -11,7 +11,7 @@ import java.util.*;
  * @author Joe Zhuo and Owen Kung
  * @version Nov 4, 2025
  */
-public class Cashier extends SuperSmoothMover
+public class Cashier extends Actor
 {
     private GreenfootImage[] frames;
     //animation parameters
@@ -63,6 +63,12 @@ public class Cashier extends SuperSmoothMover
         else {
             processCurrentCustomer();
         } 
+        
+        if (TimeOfDayManager.getHour() > 17){
+            this.serviceSpeed = 5.0;
+        } else{
+            this.serviceSpeed = 25.0;
+        }
     }
     
     private void startNextCustomer() {

@@ -238,14 +238,8 @@ public class SimulationWorld extends World
         zSort ((ArrayList<Actor>)(getObjects(Actor.class)), this);
         actCount++;
         
-        /**
-        if (actCount % 7000 == 0){
-            addObject(new RestockingTruck(),600,200);
-            addObject(new Night(), getWidth()/2, getHeight()/2);
-        }
-        */
         //spawnRestockingTruck();
-        if(TimeOfDayManager.getHour() == 23 &&TimeOfDayManager.getMinute()==0)
+        if(TimeOfDayManager.getHour() == 23 &&TimeOfDayManager.getMinute() == 0)
         {
           addObject(new RestockingTruck(),600,200);
         
