@@ -20,7 +20,7 @@ public class Soldier extends Customer {
         super(3, 0, startNode, 0, 0, 10000);
         
         GreenfootImage img = new GreenfootImage("Soldier.png");
-        img.scale(50, 75);
+        img.scale(80, 75);
         setImage(img);
         
         // Clear shopping behavior

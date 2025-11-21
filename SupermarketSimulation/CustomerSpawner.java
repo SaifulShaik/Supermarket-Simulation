@@ -11,7 +11,7 @@ public class CustomerSpawner extends Actor
     private final static int spawnRate = 150;
     private int actCount = 0;
     private boolean spawn = true;
-    private boolean soldiersAdded = false;
+    private int lastSoldierSpawnDay = -1;  // Track which day soldiers were spawned
     private boolean zombieAdded = false;
     
     public CustomerSpawner() {
@@ -19,12 +19,15 @@ public class CustomerSpawner extends Actor
     }
     
     public void act() {
+        int currentDay = TimeOfDayManager.getDaysPassed();  // Get current day from TimeOfDayManager
         
-        if (TimeOfDayManager.getHour() == 17 && TimeOfDayManager.getMinute() == 0 && !soldiersAdded){
+        // Spawn soldiers at 17:00 each day (only once per day)
+        if (TimeOfDayManager.getHour() == 17 && TimeOfDayManager.getMinute() == 0 && lastSoldierSpawnDay != currentDay){
             spawnSoldiersIfNeeded();
-            soldiersAdded = true;
+            lastSoldierSpawnDay = currentDay;
         } 
         
+        // Only spawn customers before 17:00
         if (TimeOfDayManager.getHour() > 16){
             return;
         } else{
@@ -82,7 +85,7 @@ public class CustomerSpawner extends Actor
         if (Greenfoot.getRandomNumber(spawnRate) == 0 && customers.size() <= 10 && spawn) {
             int customerType = Greenfoot.getRandomNumber(5);
             //chance for zombie
-            int zombie = Greenfoot.getRandomNumber(10);
+            int zombie = Greenfoot.getRandomNumber(3);
             if (zombie == 0){
                 int storeChoice = Greenfoot.getRandomNumber(2);
                 Node spawnNode;
