@@ -13,7 +13,6 @@ public class SimulationWorld extends World
     
     //for spawning truck
     private int truckDelay;
-    private int actCount;
     
     // Grid settings
     public static final int GRID_CELL_SIZE = 20; // pixels per cell
@@ -236,10 +235,9 @@ public class SimulationWorld extends World
     {
         //use zSort
         zSort ((ArrayList<Actor>)(getObjects(Actor.class)), this);
-        actCount++;
         
         //spawnRestockingTruck();
-        if(TimeOfDayManager.getHour() == 23 &&TimeOfDayManager.getMinute() == 0)
+        if(TimeOfDayManager.getHour() == 23 && TimeOfDayManager.getMinute() == 0 && TimeOfDayManager.getDaysPassed() % 3 == 0)
         {
           addObject(new RestockingTruck(),600,200);
         
@@ -374,10 +372,11 @@ public class SimulationWorld extends World
         //stop butcher sound
         SoundManager.stopButcherSound();
     }
-     /*
-     * 
-     * Tf program is paused, try to resume some of the sound effects
-     */
+    
+    /*
+    * 
+    * Tf program is paused, try to resume some of the sound effects
+    */
     public void started()
     {
         //replay ambience sound

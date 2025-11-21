@@ -13,6 +13,7 @@ public class TimeOfDayManager
 
     private static int seconds = 8 * 3600;    //Start at 08:00:00  →  8 * 3600
     private static int secondsPerTick = 25;    //1 = 1 game second per act, 30, about 1:08 a day
+    private static int days = 0;
 
     /**
      * Advances the in-game clock
@@ -22,12 +23,14 @@ public class TimeOfDayManager
      * 
      * Call this once per frame (for example from {ClockDisplay.act()}).
      */
+    
     public static void updateTime()
     {
         seconds += secondsPerTick;
         //Rest at the end of the day;
         if (seconds >= 24 * 3600) {
             seconds -= 24 * 3600;
+            days++;
         }
     }
     /**
@@ -74,6 +77,11 @@ public class TimeOfDayManager
     {
         seconds=newSeconds;
     }
+    
+    public static int getDaysPassed(){
+        return days;
+    }
+    
     /**
      * Returns the current time as a {"HH:MM:SS"} string
      * in 24-hour format (e.g. "17:35:09").
