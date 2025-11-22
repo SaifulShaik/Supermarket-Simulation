@@ -38,6 +38,9 @@ public abstract class MultiRowUnit extends DisplayUnit {
                 //x and y co-ordinates
                 if(item!=null)
                 {
+                    if (SaleManager.isOnSale(item.getClass()) && !item.isDiscounted()) {
+                        item.applyDiscount(SaleManager.getDiscountPercent());
+                    }
                     int itemX = topLeftX + LEFT_PAD + c * COL_GAP + item.getImage().getWidth()/2;
                     int itemY = topLeftY + TOP_PAD  + r * ROW_GAP + item.getImage().getHeight()/2;
 

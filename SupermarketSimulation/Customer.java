@@ -11,7 +11,7 @@ import java.util.*;
 public abstract class Customer extends SuperSmoothMover 
 {
     private double movementSpeed;
-    private double budget;
+protected double budget; //changed to proteced for bargainshopper 
     
     protected List<Class<? extends Product>> shoppingList;
     protected List<Product> cart;

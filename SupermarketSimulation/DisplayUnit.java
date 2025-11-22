@@ -30,7 +30,7 @@ public abstract class DisplayUnit extends SuperSmoothMover
     // Node that customers navigate to (computed dynamically based on position)
     protected List<Node> customerNodes;
     protected Store parentStore;
-    
+protected SaleSign saleSign;   // current sale sign for this unit (if any)
     public DisplayUnit() {
         stockedItems = new ArrayList<>();
         customerNodes = new ArrayList<>();
@@ -71,8 +71,9 @@ public abstract class DisplayUnit extends SuperSmoothMover
         {
             reStocked=false; //ready for the next restock       
         }
-        
+      
         stock();
+        updateSaleStatus();   //after stocking check to see if there's item on the unit has sale
     }
     
     /**
@@ -185,6 +186,52 @@ public abstract class DisplayUnit extends SuperSmoothMover
     public List<Product> getStockedItems() {
         if (stockedItems == null) stockedItems = new ArrayList<Product>();
         return stockedItems;
+    }
+    /**
+     * Show or hide the SALE sign on this display unit based on the global sale.
+     */
+    protected void updateSaleStatus() {
+        if (getWorld() == null) return;
+    
+        Class<? extends Product> saleType = SaleManager.getSaleProduct();
+        boolean hasSaleProduct = false;
+    
+        // Check if this display unit stocks the sale product type
+        if (saleType != null) {
+            for (Product p : getStockedItems()) {
+                if (p != null && saleType.equals(p.getClass())) {
+                    hasSaleProduct = true;
+                    break;
+                }
+            }
+        }
+    
+        // CASE 1: This shelf DOES stock today's sale item
+        if (hasSaleProduct) {
+    
+            // CASE 1A: No sign yet → create one
+            if (saleSign == null || saleSign.getWorld() == null ||
+                !saleSign.productType.equals(saleType)) 
+            {
+                // remove old sign
+                if (saleSign != null && saleSign.getWorld() != null) {
+                    getWorld().removeObject(saleSign);
+                }
+    
+                // create new sale sign for today's sale item
+                saleSign = new SaleSign(this, saleType);
+    
+                int shelfTopY = getY() - getImage().getHeight() / 2;
+                getWorld().addObject(saleSign, getX(), shelfTopY - 30);
+            }
+    
+        } else {
+            // CASE 2: This shelf does NOT contain today's sale product
+            if (saleSign != null && saleSign.getWorld() != null) {
+                getWorld().removeObject(saleSign);
+            }
+            saleSign = null; // IMPORTANT: reset reference
+        }
     }
 }
 

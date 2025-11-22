@@ -65,9 +65,8 @@ public abstract class Product extends SuperSmoothMover
     public Store getParentStore() {
         return parentStore;
     }
-    
-    public void setParentStore(Store store) {
-        this.parentStore = store;
+    public boolean isDiscounted() {
+        return isDiscounted;
     }
 }
 

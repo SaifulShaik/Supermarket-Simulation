@@ -72,6 +72,9 @@ public abstract class Bin extends DisplayUnit
                 int y = surfaceY - layer * ROW_GAP + randomY;
     
                 Product item = itemToFill();
+                if (item != null && SaleManager.isOnSale(item.getClass()) && !item.isDiscounted()) {
+                    item.applyDiscount(SaleManager.getDiscountPercent());
+                }
                 item.setRotation(Greenfoot.getRandomNumber(90) - 40); //randomized the rotation
                 item.setDisplayUnit(this); // link product to this display unit
                 stockedItems.add(item);//add to stocked list
