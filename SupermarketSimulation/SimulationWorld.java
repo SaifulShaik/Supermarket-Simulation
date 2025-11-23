@@ -29,6 +29,11 @@ public class SimulationWorld extends World
     
     private boolean stormSpawnedToday = false;
     
+    //sale related variables
+    private boolean saleChosenToday = false;
+    private boolean saleUpdatedToday = false;
+    private int lastHour = -1;
+
     public SimulationWorld(){
         super(bg.getWidth(), bg.getHeight(), 1);
         setBackground(bg); 
@@ -86,7 +91,8 @@ public class SimulationWorld extends World
         //Set Paint order
         //So customer, Product and Display units can present properly
         //setPaintOrder(Effect.class, Customer.class,FloatingText.class, Product.class,DisplayUnit.class);
-        setPaintOrder(Fire.class, FloatingText.class,Emoji.class,NightEffect.class,Customer.class, Product.class,DisplayUnit.class);  
+        //setPaintOrder(Fire.class, FloatingText.class,Emoji.class,NightEffect.class,Customer.class, Product.class,DisplayUnit.class);  
+        setPaintOrder(Fire.class,FloatingText.class,Emoji.class,NightEffect.class,Customer.class, SaleSign.class,Product.class,DisplayUnit.class);  
 
          //Start ambienceSound
         SoundManager.startAmbienceSound();
@@ -101,6 +107,11 @@ public class SimulationWorld extends World
                 
         //starts the day with 8:00 AM
         TimeOfDayManager.setSecond(8 * 3600); 
+        //pick today's sale immediately
+        storeOne.startNewDay(this);
+        storeTwo.startNewDay(this);
+        saleChosenToday = true;
+
 
     }
     
@@ -112,11 +123,11 @@ public class SimulationWorld extends World
         handleStorms();
         
         //spawnRestockingTruck();
-        if(TimeOfDayManager.getHour() == 23 && TimeOfDayManager.getMinute() == 0 && TimeOfDayManager.getDaysPassed() % 3 == 0)
+        if(TimeOfDayManager.getHour() == 23 &&TimeOfDayManager.getMinute() == 0)
         {
-          addObject(new RestockingTruck(),600,200);
-        
+          addObject(new RestockingTruck(),600,200);       
         }
+        updateSaleItem();
 
     }
     
@@ -402,7 +413,25 @@ public class SimulationWorld extends World
             bg.drawLine(0, GRID_START_Y + i, worldWidth, GRID_START_Y + i);
         }
     }
+    ////update sale items daily
+    private void updateSaleItem() {
+        int currentHour = TimeOfDayManager.getHour();
+        int currentMinute = TimeOfDayManager.getMinute();
     
+        //Before stcoking truck appear at 22
+        if (currentHour == 21 && lastHour != 0) {
+            saleChosenToday = false;
+        }
+    
+        lastHour = currentHour;
+    
+        //Before custoer comes in update the sale item
+        if (!saleChosenToday && currentHour == 6 && currentMinute == 59) {
+            storeOne.startNewDay(this);
+            storeTwo.startNewDay(this);
+            saleChosenToday = true;
+        }
+    }
    /*
      * Try to stop all the long sound effect
      * Sometimes it still does not work when pause is pressed

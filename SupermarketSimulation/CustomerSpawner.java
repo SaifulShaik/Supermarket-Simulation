@@ -28,7 +28,7 @@ public class CustomerSpawner extends Actor
         } 
         
         // Only spawn customers before 17:00
-        if (TimeOfDayManager.getHour() > 16){
+        if (TimeOfDayManager.getHour() > 16  && TimeOfDayManager.getHour()>7){
             return;
         } else{
             spawnCustomers();

@@ -342,5 +342,20 @@ public class Store {
         }
         return false;
     }
+    public void startNewDay(World world) {
+        List<Class<? extends Product>> allTypes = new ArrayList<>();
+        allTypes.add(Coke.class);
+        allTypes.add(Doritos.class);
+        allTypes.add(XingRamen.class);
+        allTypes.add(Lettuce.class);
+        allTypes.add(Carrot.class);
+        allTypes.add(Candy.class);
+        allTypes.add(DrumStick.class);
+        allTypes.add(Apple.class);
+    
+        //pass the world reference!
+        SaleManager.chooseRandomSale(allTypes, world);
+}
+
 }
 

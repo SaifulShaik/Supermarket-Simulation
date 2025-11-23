@@ -79,6 +79,10 @@ public abstract class Product extends SuperSmoothMover
             getWorld().removeObject(this);
         }
     }
+    public boolean isDiscounted() {
+    return isDiscounted;
+}
+
 }
 
 

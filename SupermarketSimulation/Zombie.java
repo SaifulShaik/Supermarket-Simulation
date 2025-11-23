@@ -61,6 +61,12 @@ public class Zombie extends Customer
             int x = victim.getX();
             int y = victim.getY();
             
+            
+            //emoji shows up to visually let viewer know a victim disappear
+            getWorld().addObject(new Death(), getX(), getY() - 40);
+            
+            // Remove the customer and it's carriedItems
+            victim.removeAllCarriedItems();
             // Remove the victim's basket and carried items first
             victim.removeAllCarriedItems();
             
