@@ -62,8 +62,11 @@ public class Zombie extends Customer
             int y = victim.getY();
             
             
-            //emoji shows up to visually let viewer know a victim disappear
+             //emoji shows up to visually let viewer know a victim disappear
             getWorld().addObject(new Death(), getX(), getY() - 40);
+            //playsound effect
+            SoundManager.playZombieSound();
+
             
             // Remove the customer and it's carriedItems
             victim.removeAllCarriedItems();

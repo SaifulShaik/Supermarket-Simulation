@@ -38,6 +38,19 @@ public class SoundManager
     
     //butcher sound effect
     private static GreenfootSound butcherSound = new GreenfootSound("choppingMeat.mp3");
+    
+    //zombie sound
+    private static int zombieSoundIndex;
+    private static GreenfootSound zombieSounds[]= {new GreenfootSound("zombieEat.mp3"),
+                                                   new GreenfootSound("zombieEat.mp3"),
+                                                   new GreenfootSound("zombieEat.mp3"),
+                                                   new GreenfootSound("zombieEat.mp3")}; 
+    //bullet sound
+    private static int bulletSoundIndex;
+    private static GreenfootSound bulletSounds[]= {new GreenfootSound("bullet.mp3"),
+                                                   new GreenfootSound("bullet.mp3"),
+                                                   new GreenfootSound("bullet.mp3"),
+                                                   new GreenfootSound("bullet.mp3")}; 
 
     /**
      * Private constructor
@@ -233,7 +246,38 @@ public class SoundManager
         }
         ambience.setVolume(totalVolume);
     }
+    
+    /**
+     * Plays one of the zombie sounds when a zombie eats a customer.
+     * Sounds are cycled to avoid overlap or repetition.
+     */
+    public static void playZombieSound()
+    {
+        zombieSounds[zombieSoundIndex].setVolume(30);
+        zombieSounds[zombieSoundIndex].play();    
+        zombieSoundIndex++; 
+        if(zombieSoundIndex==zombieSounds.length)
+        {
+            zombieSoundIndex=0;
+        }
+    }
+    /**
+     * Plays one of the bullet sounds when a soldier shoot zombie
+     * Sounds are cycled to avoid overlap or repetition.
+     */
+    public static void playBulletSound()
+    {
+        bulletSounds[bulletSoundIndex].setVolume(30);
+        bulletSounds[bulletSoundIndex].play();    
+        bulletSoundIndex++; 
+        if(bulletSoundIndex==bulletSounds.length)
+        {
+            bulletSoundIndex=0;
+        }
+    }
 
 }
+
+
 
 

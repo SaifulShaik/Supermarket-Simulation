@@ -90,6 +90,9 @@ public class Soldier extends Customer {
             faceZombie(nearestZombie);
             
             if (shootCooldown <= 0) {
+                //PlaySoundEffect
+                SoundManager.playBulletSound();
+
                 shootBullet(nearestZombie);
                 shootCooldown = 40;
             } else {
