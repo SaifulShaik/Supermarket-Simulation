@@ -11,7 +11,7 @@ import java.util.*;
 public abstract class Customer extends SuperSmoothMover 
 {
     private double movementSpeed;
-protected double budget; //changed to proteced for bargainshopper 
+    protected double budget; //changed to proteced for bargainshopper 
     
     protected List<Class<? extends Product>> shoppingList;
     protected List<Product> cart;
@@ -46,6 +46,9 @@ protected double budget; //changed to proteced for bargainshopper
     private Basket visualBasket; //visual basket
     protected List<Product> carriedItems;  //visual basket
 
+    //rating related
+    private int originalShoppingListSize=0;
+
     public Customer() {
         this(2.0, 100.0, null, 3, 2, 100);
     }
@@ -76,11 +79,14 @@ protected double budget; //changed to proteced for bargainshopper
         
         shoppingList = new ArrayList<>();
         shoppingList = generateShoppingList(minShoppingListItems, maxAdditionalRandomItems);
+        //keep track of original shoppinglist
+        //for rating
+        originalShoppingListSize=shoppingList.size();
         cart = new ArrayList();
         
-    //initialize visual basket related variables
-    visualBasket = null;  //visual basket
-    carriedItems = new ArrayList<>();//visual basket
+        //initialize visual basket related variables
+        visualBasket = null;  //visual basket
+        carriedItems = new ArrayList<>();//visual basket
 
         
     }
@@ -424,6 +430,8 @@ protected double budget; //changed to proteced for bargainshopper
         if (currentNode.checkIsEnd()) {
             removeAllCarriedItems(); //visual basket
             getWorld().removeObject(this);
+            //calculate rating before leaving the store
+            calculateRating();
             return;
         }
         
@@ -615,7 +623,6 @@ protected double budget; //changed to proteced for bargainshopper
         return cart.size();
     }
     
-    
     /**
      * Method to get the store the customer is in
      * 
@@ -769,6 +776,47 @@ protected double budget; //changed to proteced for bargainshopper
         padded.drawImage(original, 0, 0);
         
         return padded;
+    }
+    //rating
+    /**
+     * Calculates a star rating for this customer based on how many items
+     * they successfully collected compared to their original shopping list,
+     * and sends that rating to the StoreUI.
+     * 
+     * The rating rules are:
+     * - 5 stars if the customer found 100% of their items
+     * - 4 stars if they found at least 75%
+     * - 3 stars if they found at least 50%
+     * - 2 stars if they found more than 0% but less than 50%
+     * - 1 star if they did not find any items
+     * 
+     * If the original shopping list size is 0, a default rating of 5 is used
+     * as a safety value.
+     */
+    protected void calculateRating()
+    {
+        int found=cart.size();
+        int rating=0;
+        
+        if (originalShoppingListSize == 0) 
+        {
+            rating=3+Greenfoot.getRandomNumber(3); //3-5
+        }
+    
+        if (found>originalShoppingListSize)
+        {
+           rating=5;
+        }
+        if (found==originalShoppingListSize)
+        {
+           rating=3+Greenfoot.getRandomNumber(3);
+        }
+        if (found<originalShoppingListSize)
+        {
+           rating=1+Greenfoot.getRandomNumber(2);
+        }
+        //update rating
+        SimulationWorld.storeUI.addStar( rating, store.getStoreNumber());
     }
 }
 

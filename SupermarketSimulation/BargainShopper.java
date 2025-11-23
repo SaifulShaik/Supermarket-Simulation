@@ -69,13 +69,16 @@ public class BargainShopper extends Customer
         {
             //Emoji
             getWorld().addObject(new Happy(), getX(), getY() - 50);
-            //showText("Happy! Saved so much!", Color.YELLOW, getX(), getY() - 30);
+            //increase rating
+            SimulationWorld.storeUI.addStar( 5, store.getStoreNumber()); 
             msgShown=true;   
         }
         if(!msgShown && cart.size()==0)
         {
             //Emoji
             getWorld().addObject(new Mad(), getX(), getY() - 50);
+            //reduce rating 
+            SimulationWorld.storeUI.addStar( 1, store.getStoreNumber()); 
             msgShown=true;  
         }
 

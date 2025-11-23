@@ -28,7 +28,7 @@ public class CustomerSpawner extends Actor
         } 
         
         // Only spawn customers before 17:00
-        if (TimeOfDayManager.getHour() > 16  && TimeOfDayManager.getHour()>7){
+        if (TimeOfDayManager.getHour() > 16  || TimeOfDayManager.getHour()<8){
             return;
         } else{
             spawnCustomers();
@@ -90,10 +90,16 @@ public class CustomerSpawner extends Actor
                 Node spawnNode;
                 if (storeChoice == 0) {
                     // Spawn in Store 1
-                    spawnNode = SimulationWorld.storeOne.getEntranceNode();
+                    spawnNode = SimulationWorld.storeOne.getEntranceNode(); 
+                    //rating                    
+                    SimulationWorld.storeUI.addStar( 1, 1);
+                    SimulationWorld.storeUI.addStar( 1, 1);
                 } else {
                     // Spawn in Store 2
                     spawnNode = SimulationWorld.storeTwo.getEntranceNode();
+                    //rating                    
+                    SimulationWorld.storeUI.addStar( 1, 2);
+                    SimulationWorld.storeUI.addStar( 1, 2);
                 }
                 getWorld().addObject(new Zombie(spawnNode), spawnNode.getX(), spawnNode.getY());
                 return;

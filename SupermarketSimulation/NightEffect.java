@@ -60,7 +60,7 @@ public class NightEffect extends Effect
     public void act()
     {
         
-        if(TimeOfDayManager.getHour()==23 && TimeOfDayManager.getMinute()==0)
+  if(TimeOfDayManager.getHour()==22 && TimeOfDayManager.getMinute()==45)
         {  
             timer=0;
             isDayTime=false;

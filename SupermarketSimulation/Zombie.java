@@ -25,6 +25,7 @@ public class Zombie extends Customer
         this.path = null;
         this.shoppingList.clear();
         this.cart.clear();
+
     }
     
     @Override
@@ -62,11 +63,10 @@ public class Zombie extends Customer
             int y = victim.getY();
             
             
-             //emoji shows up to visually let viewer know a victim disappear
+            //emoji shows up to visually let viewer know a victim disappear
             getWorld().addObject(new Death(), getX(), getY() - 40);
             //playsound effect
             SoundManager.playZombieSound();
-
             
             // Remove the customer and it's carriedItems
             victim.removeAllCarriedItems();
@@ -79,6 +79,25 @@ public class Zombie extends Customer
             // Add a new zombie at the same location
             Zombie newZombie = new Zombie(currentNodePos);
             getWorld().addObject(newZombie, x, y);
+            //whenever it appears, reduce rating
+            if (SimulationWorld.storeOne.isInStore(x, y)) {
+               SimulationWorld.storeUI.addStar( 0, 1);
+            }
+            if (SimulationWorld.storeTwo.isInStore(x, y)) {
+               SimulationWorld.storeUI.addStar( 0, 2);
+            }
         }
+    }
+    /*
+     * When zombie leave the store, reduce more rating
+     */
+    protected void calculateRating()
+    {
+            if (SimulationWorld.storeOne.isInStore(getX(), getY())) {
+                SimulationWorld.storeUI.addStar( 0, 1);
+            }
+            if (SimulationWorld.storeTwo.isInStore(getX(), getY())) {
+                SimulationWorld.storeUI.addStar( 0, 2);
+            }
     }
 }

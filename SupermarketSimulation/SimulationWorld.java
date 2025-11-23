@@ -22,7 +22,7 @@ public class SimulationWorld extends World
     
     public static Store storeOne = new Store("Store 1"); 
     public static Store storeTwo = new Store("Store 2");
-    
+    public static StoreUI storeUI;   //rating
     private static List<Node> roadNodes;
     
     private static final boolean showNodes = true;
@@ -53,8 +53,15 @@ public class SimulationWorld extends World
         roadNodes.add(roadSpawn);
         
         addObject(new CustomerSpawner(), 0, 0);
-        addObject(new StoreUI(), getWidth()/2, 50);
-        
+        //create UI
+        //rating
+        storeUI = new StoreUI();
+        addObject(storeUI, getWidth() / 2, 50); 
+        //rating, assign random rating to store 1 and store 2
+        //start with maximum 4
+        storeUI.addStar(2 + Greenfoot.getRandomNumber(3), 1);
+        storeUI.addStar(2 + Greenfoot.getRandomNumber(3), 2);
+         
         // Enable stocking in simulation mode
         DisplayUnit.setEnableStocking(true);
         
@@ -123,7 +130,7 @@ public class SimulationWorld extends World
         handleStorms();
         
         //spawnRestockingTruck();
-        if(TimeOfDayManager.getHour() == 23 &&TimeOfDayManager.getMinute() == 0)
+        if(TimeOfDayManager.getHour() == 23 &&TimeOfDayManager.getMinute() == 30)
         {
           addObject(new RestockingTruck(),600,200);       
         }

@@ -342,6 +342,16 @@ public class Store {
         }
         return false;
     }
+    /**
+     * Prepares the store for a new day of operation.
+     * 
+     * This method creates a list of all product types that can be selected
+     * for a daily sale event and then calls the SaleManager to randomly
+     * choose one of them. The world reference is passed so that the sale
+     * visuals or effects can be displayed in the correct world.
+     *
+     * @param world the world in which the sale event should be created
+     */
     public void startNewDay(World world) {
         List<Class<? extends Product>> allTypes = new ArrayList<>();
         allTypes.add(Coke.class);
@@ -353,9 +363,23 @@ public class Store {
         allTypes.add(DrumStick.class);
         allTypes.add(Apple.class);
     
-        //pass the world reference!
+        // Pass the world reference to the SaleManager
         SaleManager.chooseRandomSale(allTypes, world);
-}
+    }
+    /**
+     * Returns the store number based on this store's name.
+     * For example, "Store 1" returns 1 and "Store 2" returns 2.
+     *
+     * @return the store number if recognized, or -1 if the name is not a known format
+     */
+    public int getStoreNumber() {
+        if ("Store 1".equals(name)) {
+            return 1;
+        } else if ("Store 2".equals(name)) {
+            return 2;
+        }
+        return -1;
+    }
 
 }
 

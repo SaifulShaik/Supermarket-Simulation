@@ -1,33 +1,55 @@
 import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 import java.util.ArrayList;
+
 /**
- * Store UI
+ * StoreUI is responsible for displaying the main UI elements
+ * that compare the performance of two stores in the simulation.
+ *
+ * It shows:
+ * - Profit labels for each store
+ * - Money bars that fill based on store profit
+ * - Star ratings (average of all ratings) for each store
+ * 
+ * The StoreUI actor itself has no image; it just manages other UI objects.
  * 
  * @author Joe and Owen L
  * @version November 11, 2025
  */
 public class StoreUI extends Actor
 {   
+    //Current profits
     private Label storeOneProfitLabel;
     private Label storeTwoProfitLabel;
     
-    // Money tracker bars
+    //Money Tracker Bar
     private SuperStatBar storeOneMoneyBar;
     private SuperStatBar storeTwoMoneyBar;
     
-    // Star rating variables
+    //star rating
     private ArrayList<Integer> storeOneRatings;
     private ArrayList<Integer> storeTwoRatings;
+    
+    //Visual Star Icon
     private Actor storeOneStarIcon;
     private Actor storeTwoStarIcon;
+    
+    //Average Rating Labels
     private Label storeOneRatingLabel;
     private Label storeTwoRatingLabel;
     
+    //Maxium Money Value
     private final int MAX_MONEY = 500;
-    private boolean tested = false;
     
+    //debugging
+    //private boolean tested = true;
+    
+    /**
+     * Constructor for StoreUI.
+     * Initializes the rating lists for each store and removes the main actor image,
+     * since this class only manages other UI objects.
+     */
     public StoreUI() {
-        // no image
+        // No main image – UI is made from separate Label and SuperStatBar objects.
         setImage((GreenfootImage) null);
 
         // Initialize rating arrays
@@ -35,22 +57,25 @@ public class StoreUI extends Actor
         storeTwoRatings = new ArrayList<Integer>();
     }
     
+    /**
+     * Main act method for StoreUI.
+     * On the first frame, adds a test rating for each store (for debugging).
+     * On every frame, updates the money bars and profit labels to match
+     * the current store profits.
+     */
     public void act(){
-        if (!tested) {
-            addStar(4, 1);  // Test rating for store 1
-            addStar(5, 2);  // Test rating for store 2
-            tested = true;
-        }
         updateDisplay();
     }
     
     /**
-     * Add a star rating (1-5) to a specific store
-     * @param rating The rating value (1-5)
-     * @param store The store number (1 or 2)
+     * Adds a star rating (1–5) to a specific store.
+     *
+     * @param rating the rating value (must be between 1 and 5, inclusive)
+     * @param store  the store number to rate: 1 for Store 1, 2 for Store 2
      */
     public void addStar(int rating, int store) {
-        if (rating < 1 || rating > 5) return; // Validate rating is between 1-5
+        // Validate rating is between 1–5
+        if (rating < 1 || rating > 5) return; 
         
         switch (store) {
             case 1:
@@ -61,11 +86,19 @@ public class StoreUI extends Actor
                 storeTwoRatings.add(rating);
                 updateRatingDisplay(2);
                 break;
+            default:
+                // Invalid store index; do nothing
+                break;
         }
     }
     
     /**
-     * Calculate average rating for a store, rounded to 1 decimal place
+     * Calculates the average rating for a given store and rounds it
+     * to one decimal place.
+     *
+     * @param store the store number (1 or 2)
+     * @return the average rating for that store, rounded to one decimal place;
+     *         returns 0.0 if the store has no ratings yet
      */
     private double getAverageRating(int store) {
         ArrayList<Integer> ratings = (store == 1) ? storeOneRatings : storeTwoRatings;
@@ -81,41 +114,59 @@ public class StoreUI extends Actor
         return Math.round(average * 10.0) / 10.0; // Round to 1 decimal
     }
     
+    /**
+     * Creates and positions all UI elements (money bars, profit labels,
+     * star icons, rating labels) in the given world.
+     *
+     * This method should only be called once. If the UI has already been
+     * created, the method returns immediately.
+     *
+     * @param w the world in which the UI components are added
+     */
     public void createDisplay(World w) {
         // Only create if not already created
         if (storeOneProfitLabel != null) return;
         
         // Create money tracker bars (green filled, red missing, with border)
         storeOneMoneyBar = new SuperStatBar(
-            MAX_MONEY,                          // maxVal
-            0,                                  // START AT 0
-            null,                               // owner (null = don't follow)
-            180,                                // width
-            30,                                 // height
-            0,                                  // offset
-            Color.GREEN,                        // filled color
-            Color.RED,                          // missing color
-            false,                              // hideAtMax
-            Color.WHITE,                        // border color
-            2                                   // border thickness
+            MAX_MONEY,      // maxVal
+            0,              // start at 0
+            null,           // owner (null = do not follow any actor)
+            180,            // width
+            30,             // height
+            0,              // offset
+            Color.GREEN,    // filled color
+            Color.RED,      // missing color
+            false,          // hideAtMax
+            Color.WHITE,    // border color
+            2               // border thickness
         );
         
-        storeTwoMoneyBar = new SuperStatBar(MAX_MONEY, 0, null, 180, 30, 0, Color.GREEN, Color.RED, false, Color.WHITE, 2);
+        storeTwoMoneyBar = new SuperStatBar(
+            MAX_MONEY, 0, null, 180, 30, 0,
+            Color.GREEN, Color.RED, false, Color.WHITE, 2
+        );
         
-        // Add money bars FIRST (so they're behind)
+        // Add money bars first (so they are behind labels)
         w.addObject(storeOneMoneyBar, w.getWidth() / 2 - 200, getY());
         w.addObject(storeTwoMoneyBar, w.getWidth() / 2 + 250, getY());
         
-        // Create labels with transparent backgrounds
-        storeOneProfitLabel = new Label("Profit: $" + String.format("%.2f", SimulationWorld.storeOne.getProfit()), 27);
+        // Create profit labels
+        storeOneProfitLabel = new Label(
+            "Profit: $" + String.format("%.2f", SimulationWorld.storeOne.getProfit()),
+            27
+        );
         storeOneProfitLabel.setLineColor(Color.BLACK);
-        storeOneProfitLabel.setFillColor(new Color(255, 255, 255, 255)); // Transparent
+        storeOneProfitLabel.setFillColor(new Color(255, 255, 255, 255));
         
-        storeTwoProfitLabel = new Label("Profit: $" + String.format("%.2f", SimulationWorld.storeTwo.getProfit()), 27);
+        storeTwoProfitLabel = new Label(
+            "Profit: $" + String.format("%.2f", SimulationWorld.storeTwo.getProfit()),
+            27
+        );
         storeTwoProfitLabel.setLineColor(Color.BLACK);
-        storeTwoProfitLabel.setFillColor(new Color(255, 255, 255, 255)); // Transparent
+        storeTwoProfitLabel.setFillColor(new Color(255, 255, 255, 255));
         
-        // Add labels SECOND (so they're on top) - SAME Y position as bars
+        // Add profit labels second (on top of bars)
         w.addObject(storeOneProfitLabel, w.getWidth() / 2 - 200, getY());
         w.addObject(storeTwoProfitLabel, w.getWidth() / 2 + 250, getY());
         
@@ -123,7 +174,7 @@ public class StoreUI extends Actor
         storeOneStarIcon = new Actor() {
             {
                 setImage("star.png");
-                getImage().scale(30, 30); // Scale to appropriate size
+                getImage().scale(30, 30);
             }
         };
         
@@ -134,16 +185,16 @@ public class StoreUI extends Actor
             }
         };
         
-        // Create rating labels
+        // Create rating labels (for displaying average rating)
         storeOneRatingLabel = new Label("0.0", 24);
         storeOneRatingLabel.setLineColor(Color.YELLOW);
-        storeOneRatingLabel.setFillColor(new Color(255, 255, 0, 255)); // Transparent
+        storeOneRatingLabel.setFillColor(new Color(255, 255, 0, 255));
         
         storeTwoRatingLabel = new Label("0.0", 24);
         storeTwoRatingLabel.setLineColor(Color.YELLOW);
-        storeTwoRatingLabel.setFillColor(new Color(255, 255, 0, 255)); // Transparent
+        storeTwoRatingLabel.setFillColor(new Color(255, 255, 0, 255));
         
-        // Add star icons and ratings below the money bars
+        // Add star icons and ratings near the money bars
         w.addObject(storeOneStarIcon, w.getWidth() / 2 - 360, getY());
         w.addObject(storeOneRatingLabel, w.getWidth() / 2 - 320, getY());
         
@@ -151,19 +202,34 @@ public class StoreUI extends Actor
         w.addObject(storeTwoRatingLabel, w.getWidth() / 2 + 400, getY());
     }
     
+    /**
+     * Called automatically when this StoreUI object is added to a world.
+     * Ensures that the display is created once the actor appears in the world.
+     *
+     * @param world the world that this actor was added to
+     */
     @Override
     protected void addedToWorld(World world) {
         createDisplay(world);
     }
     
+    /**
+     * Updates the money bars and profit labels to match the current store profits.
+     * The bars are capped at MAX_MONEY and re-added to keep them visually on top
+     * in the correct order.
+     */
     private void updateDisplay() {
         if (storeOneProfitLabel == null || storeTwoProfitLabel == null) return;
         
-        // Update labels
-        storeOneProfitLabel.setValue("Profit: $" + String.format("%.2f", SimulationWorld.storeOne.getProfit()));
-        storeTwoProfitLabel.setValue("Profit: $" + String.format("%.2f", SimulationWorld.storeTwo.getProfit()));
+        // Update label text
+        storeOneProfitLabel.setValue(
+            "Profit: $" + String.format("%.2f", SimulationWorld.storeOne.getProfit())
+        );
+        storeTwoProfitLabel.setValue(
+            "Profit: $" + String.format("%.2f", SimulationWorld.storeTwo.getProfit())
+        );
         
-        // Remove old bars AND labels from world
+        // Remove old bars and labels from world
         World w = getWorld();
         if (w != null && storeOneMoneyBar.getWorld() != null) {
             w.removeObject(storeOneMoneyBar);
@@ -178,26 +244,29 @@ public class StoreUI extends Actor
             w.removeObject(storeTwoProfitLabel);
         }
         
-        // Update money bars (capped at MAX_MONEY)
+        // Update money bar values (capped at MAX_MONEY)
         double storeOneBarValue = Math.min(SimulationWorld.storeOne.getProfit(), MAX_MONEY);
         double storeTwoBarValue = Math.min(SimulationWorld.storeTwo.getProfit(), MAX_MONEY);
         
         storeOneMoneyBar.update((int)(storeOneBarValue));
         storeTwoMoneyBar.update((int)(storeTwoBarValue));
         
-        // Add bars back FIRST (behind)
+        // Add bars back first (behind labels)
         if (w != null) {
             w.addObject(storeOneMoneyBar, w.getWidth() / 2 - 200, getY());
             w.addObject(storeTwoMoneyBar, w.getWidth() / 2 + 250, getY());
             
-            // Add labels back SECOND (on top)
+            // Add labels back second (on top)
             w.addObject(storeOneProfitLabel, w.getWidth() / 2 - 200, getY());
             w.addObject(storeTwoProfitLabel, w.getWidth() / 2 + 250, getY());
         }
     }
     
     /**
-     * Update the rating display for a specific store
+     * Updates the rating display label for a specific store,
+     * based on the current average rating value.
+     *
+     * @param store the store number (1 or 2)
      */
     private void updateRatingDisplay(int store) {
         double avgRating = getAverageRating(store);
