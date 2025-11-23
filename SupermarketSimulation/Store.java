@@ -332,11 +332,13 @@ public class Store {
 
     public boolean isInStore(int x, int y) {
         if (name.equals("Store 1")) {
-            // Left store boundaries (blue/gray store) - EXCLUDES the road
-            return x >= 25 && x <= 600 && y >= 150 && y <= 600;
+            // Left store boundaries (blue/gray store)
+            // fillRect(25, 150, 450, 350) means x: 25 to 475, y: 150 to 500
+            return x >= 25 && x <= 475 && y >= 150 && y <= 500;
         } else if (name.equals("Store 2")) {
-            // Right store boundaries (wooden store) - EXCLUDES the road
-            return x >= 725 && x <= 1525 && y >= 150 && y <= 600;
+            // Right store boundaries (wooden store)
+            // fillRect(725, 150, 370, 300) means x: 725 to 1095, y: 150 to 450
+            return x >= 725 && x <= 1095 && y >= 150 && y <= 450;
         }
         return false;
     }

@@ -33,14 +33,14 @@ public class Storm extends Effect {
             this.endX = startX;
             this.endY = 0;
             // Random height: 40-100% of image height
-            this.targetHeight = 20 + Greenfoot.getRandomNumber(61);
+            this.targetHeight = 40 + Greenfoot.getRandomNumber(50);
         }
     }
     
     public Storm() {
         drawimage();
-        actCount = 240;
-        fadeTime = 90;
+        actCount = 600;  // Storm lasts 600 acts before fading (about 10 seconds)
+        fadeTime = 120;  // Takes 120 acts to fade out (about 2 seconds)
         firstAct = true;
         position = 0;
         direction = 1;
@@ -60,6 +60,14 @@ public class Storm extends Effect {
             return;
         }
         
+        // Call parent's fade out and removal logic
+        actCount--;
+        fadeOut(actCount, fadeTime);
+        if (actCount == 0) {
+            getWorld().removeObject(this);
+            return;
+        }
+        
         // Move around back and forth
         if (duration > 0) {
             setLocation(getPreciseX() + (speed * direction), getPreciseY());
@@ -69,25 +77,28 @@ public class Storm extends Effect {
             duration = 50;
         }
         
-        // Handle lightning timing
-        if (lightningCooldown > 0) {
-            lightningCooldown--;
-        } else {
-            lightningTimer--;
-            if (lightningTimer <= 0) {
-                triggerLightning();
-                lightningTimer = 80 + Greenfoot.getRandomNumber(150);
+        // Only spawn lightning if not in fade-out phase
+        if (actCount > fadeTime) {
+            // Handle lightning timing
+            if (lightningCooldown > 0) {
+                lightningCooldown--;
+            } else {
+                lightningTimer--;
+                if (lightningTimer <= 0) {
+                    triggerLightning();
+                    lightningTimer = 80 + Greenfoot.getRandomNumber(150);
+                }
             }
-        }
-        
-        // Handle lightning display
-        if (showLightning) {
-            flashDuration--;
-            if (flashDuration <= 0) {
-                showLightning = false;
-                spawnFireAtLightningStrike();
-                drawimage(); // Redraw without lightning
-                lightningCooldown = 30;
+            
+            // Handle lightning display
+            if (showLightning) {
+                flashDuration--;
+                if (flashDuration <= 0) {
+                    showLightning = false;
+                    spawnFireAtLightningStrike();
+                    drawimage(); // Redraw without lightning
+                    lightningCooldown = 30;
+                }
             }
         }
     }
@@ -247,8 +258,8 @@ public class Storm extends Effect {
                 // Only spawn fire if within store boundaries
                 // Store 1: x between 10-550
                 // Store 2: x between 900-1500
-                boolean inStore1 = (worldX >= 10 && worldX <= 550);
-                boolean inStore2 = (worldX >= 900 && worldX <= 1500);
+                boolean inStore1 = (worldX >= 25 && worldX <= 475);
+                boolean inStore2 = (worldX >= 725 && worldX <= 1095);
                 
                 if (inStore1 || inStore2) {
                     // Spawn fire at lightning strike location

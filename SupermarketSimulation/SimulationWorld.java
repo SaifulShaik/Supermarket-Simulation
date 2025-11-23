@@ -27,12 +27,12 @@ public class SimulationWorld extends World
     
     private static final boolean showNodes = true;
     
-    private boolean stormAdded = false;
+    private boolean stormSpawnedToday = false;
     
     public SimulationWorld(){
         super(bg.getWidth(), bg.getHeight(), 1);
         setBackground(bg); 
-        
+
         roadNodes = new ArrayList<>();
         
         Node roadSpawn = new Node(600, 100);
@@ -109,14 +109,9 @@ public class SimulationWorld extends World
         //use zSort
         zSort ((ArrayList<Actor>)(getObjects(Actor.class)), this);
         
+        handleStorms();
+        
         //spawnRestockingTruck();
-        if (TimeOfDayManager.getHour() == 9 && TimeOfDayManager.getMinute() == 0){
-            if (!stormAdded){
-                addObject(new Storm(),getWidth()/2,getHeight()/2);
-                stormAdded = true;
-            }
-            
-        }
         if(TimeOfDayManager.getHour() == 23 && TimeOfDayManager.getMinute() == 0 && TimeOfDayManager.getDaysPassed() % 3 == 0)
         {
           addObject(new RestockingTruck(),600,200);
@@ -125,6 +120,47 @@ public class SimulationWorld extends World
 
     }
     
+    /**
+     * Draw filled rectangles to visualize store boundaries for debugging
+     * For testing
+     */
+    private void drawStoreBoundaries() {
+        GreenfootImage bg = getBackground();
+        
+        // Store 1 boundaries (blue/gray store) - FILLED
+        bg.setColor(new Color(0, 0, 255, 80)); // Semi-transparent blue
+        bg.fillRect(25, 150, 450, 350); // x, y, width, height
+        
+        // Store 2 boundaries (wooden store) - FILLED
+        bg.setColor(new Color(255, 0, 0, 80)); // Semi-transparent red
+        bg.fillRect(725, 150, 370, 300); // x, y, width, height
+        
+        // Add labels
+        bg.setColor(Color.WHITE);
+        bg.setFont(new Font("Arial", true, false, 20));
+        bg.drawString("Store 1", 280, 180);
+        bg.drawString("Store 2", 1080, 180);
+    }
+    
+    private void handleStorms() {
+        int hour = TimeOfDayManager.getHour();
+        
+        // Reset flag at midnight
+        if (hour == 0) {
+            stormSpawnedToday = false;
+        }
+        
+        // Spawn storm randomly between 10 AM and 6 PM (ensures it's done before 23:00)
+        if (!stormSpawnedToday && hour >= 10 && hour <= 18) {
+            // Small random chance each act
+            if (Greenfoot.getRandomNumber(1000) == 0) {
+                Storm storm = new Storm();
+                addObject(storm, getWidth() / 2, getHeight() / 2);
+                stormSpawnedToday = true;
+            }
+        }
+    }
+
     public static Node getStartNode() {
         return roadNodes.get(0);
     }
