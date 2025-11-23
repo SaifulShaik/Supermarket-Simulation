@@ -83,9 +83,8 @@ public class CustomerSpawner extends Actor
        
         
         if (Greenfoot.getRandomNumber(spawnRate) == 0 && customers.size() <= 10 && spawn) {
-            int customerType = Greenfoot.getRandomNumber(5);
             //chance for zombie
-            int zombie = Greenfoot.getRandomNumber(3);
+            int zombie = Greenfoot.getRandomNumber(10);
             if (zombie == 0){
                 int storeChoice = Greenfoot.getRandomNumber(2);
                 Node spawnNode;
@@ -100,7 +99,7 @@ public class CustomerSpawner extends Actor
                 return;
             }
             
-            
+            int customerType = Greenfoot.getRandomNumber(5);
             switch (customerType) {
                 case 0:
                     getWorld().addObject(new RegularShopper(startNode), startNode.getX(), startNode.getY());

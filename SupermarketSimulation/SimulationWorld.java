@@ -27,6 +27,8 @@ public class SimulationWorld extends World
     
     private static final boolean showNodes = true;
     
+    private boolean stormAdded = false;
+    
     public SimulationWorld(){
         super(bg.getWidth(), bg.getHeight(), 1);
         setBackground(bg); 
@@ -84,7 +86,7 @@ public class SimulationWorld extends World
         //Set Paint order
         //So customer, Product and Display units can present properly
         //setPaintOrder(Effect.class, Customer.class,FloatingText.class, Product.class,DisplayUnit.class);
-        setPaintOrder(FloatingText.class,Emoji.class,NightEffect.class,Customer.class, Product.class,DisplayUnit.class);  
+        setPaintOrder(Fire.class, FloatingText.class,Emoji.class,NightEffect.class,Customer.class, Product.class,DisplayUnit.class);  
 
          //Start ambienceSound
         SoundManager.startAmbienceSound();
@@ -101,6 +103,28 @@ public class SimulationWorld extends World
         TimeOfDayManager.setSecond(8 * 3600); 
 
     }
+    
+    public void act () 
+    {
+        //use zSort
+        zSort ((ArrayList<Actor>)(getObjects(Actor.class)), this);
+        
+        //spawnRestockingTruck();
+        if (TimeOfDayManager.getHour() == 9 && TimeOfDayManager.getMinute() == 0){
+            if (!stormAdded){
+                addObject(new Storm(),getWidth()/2,getHeight()/2);
+                stormAdded = true;
+            }
+            
+        }
+        if(TimeOfDayManager.getHour() == 23 && TimeOfDayManager.getMinute() == 0 && TimeOfDayManager.getDaysPassed() % 3 == 0)
+        {
+          addObject(new RestockingTruck(),600,200);
+        
+        }
+
+    }
+    
     public static Node getStartNode() {
         return roadNodes.get(0);
     }
@@ -230,20 +254,7 @@ public class SimulationWorld extends World
             }
         }
     }
-    
-    public void act () 
-    {
-        //use zSort
-        zSort ((ArrayList<Actor>)(getObjects(Actor.class)), this);
-        
-        //spawnRestockingTruck();
-        if(TimeOfDayManager.getHour() == 23 && TimeOfDayManager.getMinute() == 0 && TimeOfDayManager.getDaysPassed() % 3 == 0)
-        {
-          addObject(new RestockingTruck(),600,200);
-        
-        }
 
-    }
     /**
      * Z-sort so actors with higher Y (lower on screen) render in front.
      * Uses precise Y for SuperSmoothMover when available. Stable for ties.

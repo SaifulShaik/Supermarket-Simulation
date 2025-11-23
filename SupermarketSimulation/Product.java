@@ -28,6 +28,10 @@ public abstract class Product extends SuperSmoothMover
         stock = 1;
     }
     
+    public void act(){
+        touchingFire();
+    }
+    
     public String getName()
     {
         return name;
@@ -68,6 +72,12 @@ public abstract class Product extends SuperSmoothMover
     
     public void setParentStore(Store store) {
         this.parentStore = store;
+    }
+    
+    private void touchingFire(){
+        if (getOneIntersectingObject(Fire.class) != null){
+            getWorld().removeObject(this);
+        }
     }
 }
 
