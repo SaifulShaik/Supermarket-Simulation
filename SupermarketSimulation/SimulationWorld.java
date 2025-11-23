@@ -13,7 +13,6 @@ public class SimulationWorld extends World
     
     //for spawning truck
     private int truckDelay;
-    private int actCount;
     
     // Grid settings
     public static final int GRID_CELL_SIZE = 20; // pixels per cell
@@ -28,14 +27,12 @@ public class SimulationWorld extends World
     
     private static final boolean showNodes = true;
     
-    //sale related variables
-    private boolean saleChosenToday = false;
-    private boolean saleUpdatedToday = false;
-    private int lastHour = -1;
+    private boolean stormSpawnedToday = false;
+    
     public SimulationWorld(){
         super(bg.getWidth(), bg.getHeight(), 1);
         setBackground(bg); 
-        
+
         roadNodes = new ArrayList<>();
         
         Node roadSpawn = new Node(600, 100);
@@ -88,8 +85,8 @@ public class SimulationWorld extends World
        
         //Set Paint order
         //So customer, Product and Display units can present properly
-        //setPaintOrder(Effect.class, Customer.class,FloatingText.class, Product.class,DisplayUnit.class    );
-    setPaintOrder(FloatingText.class,Emoji.class,NightEffect.class,Customer.class, SaleSign.class,Product.class,DisplayUnit.class);  
+        //setPaintOrder(Effect.class, Customer.class,FloatingText.class, Product.class,DisplayUnit.class);
+        setPaintOrder(Fire.class, FloatingText.class,Emoji.class,NightEffect.class,Customer.class, Product.class,DisplayUnit.class);  
 
          //Start ambienceSound
         SoundManager.startAmbienceSound();
@@ -104,12 +101,66 @@ public class SimulationWorld extends World
                 
         //starts the day with 8:00 AM
         TimeOfDayManager.setSecond(8 * 3600); 
-        //pick today's sale immediately
-        storeOne.startNewDay(this);
-        storeTwo.startNewDay(this);
-        saleChosenToday = true;
 
     }
+    
+    public void act () 
+    {
+        //use zSort
+        zSort ((ArrayList<Actor>)(getObjects(Actor.class)), this);
+        
+        handleStorms();
+        
+        //spawnRestockingTruck();
+        if(TimeOfDayManager.getHour() == 23 && TimeOfDayManager.getMinute() == 0 && TimeOfDayManager.getDaysPassed() % 3 == 0)
+        {
+          addObject(new RestockingTruck(),600,200);
+        
+        }
+
+    }
+    
+    /**
+     * Draw filled rectangles to visualize store boundaries for debugging
+     * For testing
+     */
+    private void drawStoreBoundaries() {
+        GreenfootImage bg = getBackground();
+        
+        // Store 1 boundaries (blue/gray store) - FILLED
+        bg.setColor(new Color(0, 0, 255, 80)); // Semi-transparent blue
+        bg.fillRect(25, 150, 450, 350); // x, y, width, height
+        
+        // Store 2 boundaries (wooden store) - FILLED
+        bg.setColor(new Color(255, 0, 0, 80)); // Semi-transparent red
+        bg.fillRect(725, 150, 370, 300); // x, y, width, height
+        
+        // Add labels
+        bg.setColor(Color.WHITE);
+        bg.setFont(new Font("Arial", true, false, 20));
+        bg.drawString("Store 1", 280, 180);
+        bg.drawString("Store 2", 1080, 180);
+    }
+    
+    private void handleStorms() {
+        int hour = TimeOfDayManager.getHour();
+        
+        // Reset flag at midnight
+        if (hour == 0) {
+            stormSpawnedToday = false;
+        }
+        
+        // Spawn storm randomly between 10 AM and 6 PM (ensures it's done before 23:00)
+        if (!stormSpawnedToday && hour >= 10 && hour <= 18) {
+            // Small random chance each act
+            if (Greenfoot.getRandomNumber(1000) == 0) {
+                Storm storm = new Storm();
+                addObject(storm, getWidth() / 2, getHeight() / 2);
+                stormSpawnedToday = true;
+            }
+        }
+    }
+
     public static Node getStartNode() {
         return roadNodes.get(0);
     }
@@ -239,24 +290,7 @@ public class SimulationWorld extends World
             }
         }
     }
-    
-    public void act () 
-    {
-        //use zSort
-        zSort ((ArrayList<Actor>)(getObjects(Actor.class)), this);
-        actCount++;
 
-
-        //spawnRestockingTruck();
-        if(TimeOfDayManager.getHour() == 22 &&TimeOfDayManager.getMinute() == 0)
-        {
-          addObject(new RestockingTruck(),600,200);       
-        }
-        
-        //update sale item daily
-        updateSaleItem();
-
-    }
     /**
      * Z-sort so actors with higher Y (lower on screen) render in front.
      * Uses precise Y for SuperSmoothMover when available. Stable for ties.
@@ -368,33 +402,8 @@ public class SimulationWorld extends World
             bg.drawLine(0, GRID_START_Y + i, worldWidth, GRID_START_Y + i);
         }
     }
-    /**
-     * Updates the daily sale item.
-     * 
-     * Behaviour:
-     * - Around 21:00 the daily flag is cleared so a new sale can be chosen.
-     * - At 6:59 the next morning, a new sale item is selected for both stores.
-     *   This should happen once per in-game day.
-     */
-    private void updateSaleItem() {
-        int currentHour = TimeOfDayManager.getHour();
-        int currentMinute = TimeOfDayManager.getMinute();
     
-        //Before stcoking truck appear at 22
-        if (currentHour == 21 && lastHour != 0) {
-            saleChosenToday = false;
-        }
-        
-        lastHour = currentHour;
-        
-        //Before custoer comes in update the sale item
-        if (!saleChosenToday && currentHour == 6 && currentMinute == 59) {
-            storeOne.startNewDay(this);
-            storeTwo.startNewDay(this);
-            saleChosenToday = true;
-        }
-    }
-     /*
+   /*
      * Try to stop all the long sound effect
      * Sometimes it still does not work when pause is pressed
      */
@@ -410,10 +419,11 @@ public class SimulationWorld extends World
         //stop butcher sound
         SoundManager.stopButcherSound();
     }
+    
     /*
-     * 
-     * Tf program is paused, try to resume some of the sound effects
-     */
+    * 
+    * Tf program is paused, try to resume some of the sound effects
+    */
     public void started()
     {
         //replay ambience sound

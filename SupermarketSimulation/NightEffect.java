@@ -46,6 +46,7 @@ public class NightEffect extends Effect
         moonProgress = 0.0;
         drawImage();
         getImage().setTransparency(0);
+        
     }
     /**
      * Main act method for the night effect.
@@ -59,7 +60,7 @@ public class NightEffect extends Effect
     public void act()
     {
         
-        if(TimeOfDayManager.getHour()==21 && TimeOfDayManager.getMinute()==0)
+        if(TimeOfDayManager.getHour()==23 && TimeOfDayManager.getMinute()==0)
         {  
             timer=0;
             isDayTime=false;
@@ -116,6 +117,7 @@ public class NightEffect extends Effect
         } 
 
     }
+    
     /**
      * Adjusts the transparency of the overlay image based on the current
      * progress of the darkening or brightening phase.
@@ -157,6 +159,7 @@ public class NightEffect extends Effect
             isTotalDark=false;
         }
     }
+    
     /**
      * Removes all Customer objects from the world while the overlay is
      * considered totally dark. This simulates the supermarket being closed
@@ -178,6 +181,7 @@ public class NightEffect extends Effect
             getWorld().removeObject(c);
         }
     }
+    
     /**
      * Draws the night sky image for the overlay.
      * This includes:
@@ -224,6 +228,7 @@ public class NightEffect extends Effect
         setImage(image);
         image.setTransparency(prevAlpha);   //RESTORE the transparency
     }
+    
     /**
      * Draws a simple star field on the current overlay image.
      * Stars are placed in repeatable pseudo-random positions so the pattern
