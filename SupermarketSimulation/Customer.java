@@ -429,9 +429,11 @@ public abstract class Customer extends SuperSmoothMover
         
         if (currentNode.checkIsEnd()) {
             removeAllCarriedItems(); //visual basket
+            //calculate rating here?
+            calculateRating();
             getWorld().removeObject(this);
             //calculate rating before leaving the store
-            calculateRating();
+            
             return;
         }
         
@@ -815,6 +817,9 @@ public abstract class Customer extends SuperSmoothMover
         {
            rating=1+Greenfoot.getRandomNumber(2);
         }
+        
+        //display rating
+        showText("Rating:"+rating,Color.GREEN,getX(),getY()-100);
         //update rating
         SimulationWorld.storeUI.addStar( rating, store.getStoreNumber());
     }
