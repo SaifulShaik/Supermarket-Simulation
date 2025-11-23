@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 public class CustomerSpawner extends Actor
 {
-    private final static int spawnRate = 150;
+    private final static int spawnRate = 100;
     private int actCount = 0;
     private boolean spawn = true;
     

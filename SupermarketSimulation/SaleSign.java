@@ -1,8 +1,16 @@
 import greenfoot.*;
 
 /**
- * A small flashing SALE sign that sits above a DisplayUnit and
- * shows which product is on sale.
+ * A small flashing SALE sign that appears above a DisplayUnit
+ * and shows which product is currently on sale.
+ *
+ * The sign rebuilds its text image in the constructor and then
+ * flashes by changing transparency at regular intervals.
+ * It automatically removes itself when the sale ends or the
+ * DisplayUnit is removed from the world.
+ *
+ * @author Owen Kung
+ * @version Nov 2025
  */
 public class SaleSign extends Actor
 {
@@ -11,40 +19,53 @@ public class SaleSign extends Actor
 
     private int flashCounter = 0;
 
+    /**
+     * Creates a new SaleSign attached to a DisplayUnit.
+     * The sign displays the product type currently on sale.
+     *
+     * @param owner the DisplayUnit this sign belongs to
+     * @param productType the product class that is on sale
+     */
     public SaleSign(DisplayUnit owner, Class<? extends Product> productType) {
         this.owner = owner;
         this.productType = productType;
         buildImage();
     }
 
-    /** Build a compact text-only image: narrower + smaller font. */
+    /**
+     * Builds the sign image using a small yellow SALE label
+     * and the product name in smaller text. The image is compact
+     * so it does not block objects behind it.
+     */
     private void buildImage() {
         String unitName = owner.getClass().getSimpleName();
         String productName = productType.getSimpleName();
 
-        int w = 70;   // narrower
-        int h = 28;   // shorter
+        int w = 70;
+        int h = 28;
         GreenfootImage img = new GreenfootImage(w, h);
 
-        // dark background rectangle
         img.setColor(new Color(0, 0, 0, 200));
         img.fillRect(0, 0, w, h);
 
-        // small yellow "SALE!"
         img.setColor(Color.YELLOW);
-        img.setFont(new Font(true, false, 11));   // smaller
+        img.setFont(new Font(true, false, 11));
         img.drawString("SALE", 4, 12);
 
-        // tiny text: product name only (to save space)
         img.setFont(new Font(true, false, 9));
         img.drawString(productName.toUpperCase(), 4, 24);
 
         setImage(img);
     }
 
+    /**
+     * Updates the sign each act:
+     * - Removes the sign if the sale ends or the display unit is gone
+     * - Keeps the sign positioned above the shelf
+     * - Creates a flashing effect by alternating transparency
+     */
     public void act()
     {
-        // if owner is gone, or sale changed/ended, remove the sign
         if (owner == null || owner.getWorld() == null || !SaleManager.isOnSale(productType)) {
             if (getWorld() != null) {
                 getWorld().removeObject(this);
@@ -52,17 +73,15 @@ public class SaleSign extends Actor
             return;
         }
 
-        // keep sign sitting just above the shelf
         int shelfTopY = owner.getY() - owner.getImage().getHeight() / 2;
         setLocation(owner.getX(), shelfTopY - getImage().getHeight() / 2 - 2);
 
-        // flashing animation: toggle transparency every few acts
         flashCounter++;
-        int phase = (flashCounter / 60) % 2;   // slightly slower flash
+        int phase = (flashCounter / 20) % 2;
         if (phase == 0) {
-            getImage().setTransparency(255);   // bright
+            getImage().setTransparency(255);
         } else {
-            getImage().setTransparency(80);    // dim
+            getImage().setTransparency(80);
         }
     }
 }

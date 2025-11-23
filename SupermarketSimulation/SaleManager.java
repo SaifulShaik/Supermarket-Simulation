@@ -42,7 +42,7 @@ public class SaleManager
         if (productType == null) {
             System.out.println("[SALE] No sale today.");
         } else {
-            System.out.println("[SALE] " + productType.getSimpleName() +
+            System.out.println(TimeOfDayManager.getHour()+"-[SALE] " + productType.getSimpleName() +
                                " is " + discountPercent + "% off!");
         }
     }

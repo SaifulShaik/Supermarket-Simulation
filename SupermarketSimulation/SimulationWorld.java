@@ -89,7 +89,7 @@ public class SimulationWorld extends World
         //Set Paint order
         //So customer, Product and Display units can present properly
         //setPaintOrder(Effect.class, Customer.class,FloatingText.class, Product.class,DisplayUnit.class    );
-        setPaintOrder(FloatingText.class,Emoji.class,NightEffect.class,Customer.class, SaleSign.class,Product.class,DisplayUnit.class);  
+    setPaintOrder(FloatingText.class,Emoji.class,NightEffect.class,Customer.class, SaleSign.class,Product.class,DisplayUnit.class);  
 
          //Start ambienceSound
         SoundManager.startAmbienceSound();
@@ -368,7 +368,14 @@ public class SimulationWorld extends World
             bg.drawLine(0, GRID_START_Y + i, worldWidth, GRID_START_Y + i);
         }
     }
-    //update sale items daily
+    /**
+     * Updates the daily sale item.
+     * 
+     * Behaviour:
+     * - Around 21:00 the daily flag is cleared so a new sale can be chosen.
+     * - At 6:59 the next morning, a new sale item is selected for both stores.
+     *   This should happen once per in-game day.
+     */
     private void updateSaleItem() {
         int currentHour = TimeOfDayManager.getHour();
         int currentMinute = TimeOfDayManager.getMinute();

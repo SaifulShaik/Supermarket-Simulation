@@ -44,7 +44,7 @@ protected double budget; //changed to proteced for bargainshopper
 
      //===== Basket system variables =====
     private Basket visualBasket; //visual basket
-    private List<Product> carriedItems;  //visual basket
+    protected List<Product> carriedItems;  //visual basket
 
     public Customer() {
         this(2.0, 100.0, null, 3, 2, 100);

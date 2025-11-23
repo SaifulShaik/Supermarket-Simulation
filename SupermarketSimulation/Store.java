@@ -329,16 +329,37 @@ public class Store {
     public double getProfit() {
         return profit;
     }
+    /**
+     * Starts a new sale day for this store.
+     * 
+     * Builds a list of all product types that are allowed to go on sale
+     * and asks the SaleManager to randomly choose one of them as the
+     * sale item for the new day. The chosen item will then be discounted
+     * and marked on the display units in the given world.
+     * 
+     * @param world the current world, used by the SaleManager to find
+     *              existing display units and apply discounts to their
+     *              stocked products
+     */
     public void startNewDay(World world) {
         List<Class<? extends Product>> allTypes = new ArrayList<>();
         allTypes.add(Coke.class);
+        allTypes.add(Water.class);
+        allTypes.add(Sprite.class);
+        allTypes.add(Fanta.class);
         allTypes.add(Doritos.class);
+        allTypes.add(Lays.class);
         allTypes.add(XingRamen.class);
+        allTypes.add(Nissin.class);
         allTypes.add(Lettuce.class);
         allTypes.add(Carrot.class);
         allTypes.add(Candy.class);
         allTypes.add(DrumStick.class);
+        allTypes.add(Steak.class);
+        allTypes.add(Bacon.class);
+        allTypes.add(BakedChicken.class);
         allTypes.add(Apple.class);
+        allTypes.add(Orange.class);
     
         //pass the world reference!
         SaleManager.chooseRandomSale(allTypes, world);

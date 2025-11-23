@@ -30,7 +30,7 @@ public abstract class DisplayUnit extends SuperSmoothMover
     // Node that customers navigate to (computed dynamically based on position)
     protected List<Node> customerNodes;
     protected Store parentStore;
-protected SaleSign saleSign;   // current sale sign for this unit (if any)
+    protected SaleSign saleSign;   // current sale sign for this unit (if any)
     public DisplayUnit() {
         stockedItems = new ArrayList<>();
         customerNodes = new ArrayList<>();
@@ -38,16 +38,19 @@ protected SaleSign saleSign;   // current sale sign for this unit (if any)
     
     protected abstract void stock();
     /**
-     * Skipping stocking if {@link #enableStocking} is disabled.
-     * Reacting to restocking events from RestockingTruck
-     *     Marks stocked status for restocking.
-     *     Plays a restock sound.
-     *     Shows “restocked” text below the unit.
-     *   
-     * Delegates actual stocking logic to stock() in subclass
-     *
+     * Main update loop for a display unit.
+     * 
+     * This method:
+     * 1) Skips all logic if stocking is disabled (editor mode).
+     * 2) Detects when the restocking truck is unloading for the first time and:
+     *    - Marks the unit as not stocked so it can be refilled.
+     *    - Plays a restock sound and shows a "restocked" floating message.
+     * 3) Resets the restock flag once the truck is no longer unloading so the
+     *    next truck visit can trigger restocking again.
+     * 4) Calls stock() to place items on the display unit when needed.
+     * 5) Calls updateSaleStatus() after stocking to show or hide the SALE sign
+     *    based on whether this unit currently holds the sale product.
      */
-
     public void act()
     {
         // Only stock if stocking is enabled (not in editor mode)

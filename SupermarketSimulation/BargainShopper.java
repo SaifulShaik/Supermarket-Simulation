@@ -5,7 +5,10 @@ import greenfoot.*;
  * - ONLY buys the sale item
  * - If nothing is on sale → leaves immediately
  * - Buys MANY units of the sale item until stock or budget runs out
- * - Shows a ❤️ emoji every time she picks up a sale item
+ * - Shows a smiley emjoi when leaving the store
+ * 
+ * @author:Owen Kung
+ * @version:Nov 2025
  */
 public class BargainShopper extends Customer
 {
@@ -57,17 +60,23 @@ public class BargainShopper extends Customer
     }
     
     /**
-     * Method for the customer to leave the store
+     * Method for the bargainshopper to leave the store
      */
     public void leaveStore() {
 
         //show msg and emoji
-        if(!msgShown)
+        if(!msgShown && cart.size()>0)
         {
             //Emoji
             getWorld().addObject(new Happy(), getX(), getY() - 50);
             //showText("Happy! Saved so much!", Color.YELLOW, getX(), getY() - 30);
             msgShown=true;   
+        }
+        if(!msgShown && cart.size()==0)
+        {
+            //Emoji
+            getWorld().addObject(new Mad(), getX(), getY() - 50);
+            msgShown=true;  
         }
 
         super.leaveStore();
