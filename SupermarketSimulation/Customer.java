@@ -102,7 +102,8 @@ public abstract class Customer extends SuperSmoothMover
         currentActCycles++;
         
         // animation
-        if (!(pauseTimer > 0) || !(!hasCheckedOut && targetCashier == null)) {
+        boolean isInQueueAndNotMoving =  (!hasCheckedOut && targetCashier != null && (path == null || path.isEmpty()) && targetNode == null);
+        if (!(pauseTimer > 0) || !isInQueueAndNotMoving) {
             animateImages();
         }
         
