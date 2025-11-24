@@ -1,34 +1,62 @@
 import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 
 /**
- * Write a description of class Lettuce here.
- * 
- * @author (your name) 
- * @version (a version number or a date)
+ * A lettuce product that can be bought in the store.
+ *
+ * Lettuce is a Product with a fixed name and image.
+ * It also keeps track of the total number of Lettuce items
+ * created in the store using a static stock counter.
+ *
+ * Each time a Lettuce object is created, the stock count increases.
+ *
+ * @author Owen Kung
+ * @version Nov 2025
  */
 public class Lettuce extends Product
 {
-    private static int stock=0;//keep track of total stock ih the store
+    // Tracks the total number of Lettuce items in the entire store
+    private static int stock = 0;
+
     private GreenfootImage image;
     
+    /**
+     * Creates a new Lettuce product with name and image set.
+     *
+     * The Lettuce:
+     *  - has name "Lettuce"
+     *  - uses product/Lettuce.PNG as its image
+     * Each time a Lettuce is constructed, the static stock counter increases.
+     */
     public Lettuce()
     {
-        name="Lettuce";
+        name = "Lettuce";
+
         image = new GreenfootImage("product/Lettuce.PNG");
-        image.scale(image.getWidth()/2, image.getHeight()/2);
+        image.scale(image.getWidth() / 2, image.getHeight() / 2);
         setImage(image);
         
-        //whenever a Sprite is added to a shelve,
-        //increase the stock#
+        // increase total Lettuce stock
         stock++;
     }
+
+    /**
+     * Returns the total number of Lettuce items in the store.
+     *
+     * @return total Lettuce stock
+     */
     public int getStock()
     {
         return stock;
     }
-    //Return total number of stock in the store
+
+    /**
+     * Sets the total number of Lettuce items in the store.
+     *
+     * @param newStockCount the new total Lettuce stock
+     */
     public void setStock(int newStockCount)
     {
-        stock=newStockCount;
+        stock = newStockCount;
     }
 }
+

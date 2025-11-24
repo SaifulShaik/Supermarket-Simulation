@@ -4,6 +4,9 @@ import greenfoot.*;
  * 
  * The explosion floats upward, gradually fades out, and
  * removes itself from the world when its lifetime ends.
+ * 
+ * @author:Owen Kung
+ * @version:Nov 2025
  */
 public class Explosion extends Emoji
 {
@@ -19,4 +22,5 @@ public class Explosion extends Emoji
         getImage().setTransparency(255);   // start fully visible
     }
 }
+
 

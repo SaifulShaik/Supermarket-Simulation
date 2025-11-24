@@ -18,7 +18,7 @@ public class SimulationWorld extends World
     public static final int GRID_CELL_SIZE = 20; // pixels per cell
     public static final int GRID_START_Y = 100;  // Grid starts at y=100
     
-    private static final GreenfootImage bg = new GreenfootImage("background.png");
+   private static final GreenfootImage bg = new GreenfootImage("background.png");
     
     public static Store storeOne = new Store("Store 1"); 
     public static Store storeTwo = new Store("Store 2");
@@ -35,8 +35,6 @@ public class SimulationWorld extends World
     private int lastHour = -1;
     
     public int numberOfStorms = 0;
-    
-    GreenfootSound music = new GreenfootSound("tokyo-music-walker-sunset-drive-chosic.com_.mp3");
 
     public SimulationWorld(){
         super(bg.getWidth(), bg.getHeight(), 1);
@@ -125,8 +123,9 @@ public class SimulationWorld extends World
         storeTwo.startNewDay(this);
         saleChosenToday = true;
 
-        music.setVolume(30);
-        music.playLoop();
+       SoundManager.startAmbienceSound();
+       // music.setVolume(30);
+        //music.playLoop();
     }
     
     public void act () 
@@ -462,8 +461,7 @@ public class SimulationWorld extends World
         
         //stop butcher sound
         SoundManager.stopButcherSound();
-        
-        music.pause(); 
+
     }
     
     /*
@@ -485,11 +483,12 @@ public class SimulationWorld extends World
         
         //replay butcher sound
         SoundManager.playButcherSound();
-        music.playLoop();
     }
 
     public int getNumOfStorms(){ return numberOfStorms; }
 }
+
+
 
 
 
