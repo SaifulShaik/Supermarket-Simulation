@@ -3,8 +3,19 @@ import java.util.*;
 
 /**
  * Abstract Customer class
+ * 
+ * This class represents a generic customer
+ * Responsible for
+ * - navigating nodes in the store
+ * - choosing the best store to go to
+ * - creating a shopping list
+ * - taking items in the store
+ * - selecting a cashier with the shortest queue
+ * - leaving the store through the world exit once done
+ * - handles animations in four directions
+ * - pauses when collecting items and waiting in queue
  *
- * @author Joe and saiful
+ * @author Joe Zhuo
  * @version November 2025
  */
 
@@ -101,8 +112,8 @@ public abstract class Customer extends SuperSmoothMover
         // updates act cycles
         currentActCycles++;
         
-        // animation
-        boolean isInQueueAndNotMoving =  (!hasCheckedOut && targetCashier != null && (path == null || path.isEmpty()) && targetNode == null);
+        // animation when not checking out or moving to checkout
+        boolean isInQueueAndNotMoving = (!hasCheckedOut && targetCashier != null && targetNode == null && (path.isEmpty() || path == null));
         if (!(pauseTimer > 0) || !isInQueueAndNotMoving) {
             animateImages();
         }

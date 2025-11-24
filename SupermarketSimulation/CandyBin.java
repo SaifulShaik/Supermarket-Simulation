@@ -28,13 +28,14 @@ public class CandyBin extends Bin
         setImage(image);
         stocked=false;
     }
+    
     protected Product itemToFill()
     {
         return new Candy();
     }
+    
     public Product retrieve()
     {
         return retrieve(Candy.class);
     }  
-
 }

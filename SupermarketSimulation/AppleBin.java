@@ -29,10 +29,12 @@ public class AppleBin extends Bin
         setImage(image);
         stocked=false;
     }
+    
     protected Product itemToFill()
     {
         return new Apple();
     }
+    
     public Product retrieve()
     {
         return retrieve(Lettuce.class);

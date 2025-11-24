@@ -29,10 +29,12 @@ public class OrangeBin extends Bin
         setImage(image);
         stocked=false;
     }
+    
     protected Product itemToFill()
     {
         return new Orange();
     }
+    
     public Product retrieve()
     {
         return retrieve(Orange.class);

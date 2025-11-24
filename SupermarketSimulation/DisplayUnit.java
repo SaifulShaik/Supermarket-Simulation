@@ -37,6 +37,9 @@ public abstract class DisplayUnit extends SuperSmoothMover
         customerNodes = new ArrayList<>();
     }
     
+    /**
+     * Stocking methods need to be different for each display unit 
+     */
     protected abstract void stock();
     
     /**
@@ -95,7 +98,7 @@ public abstract class DisplayUnit extends SuperSmoothMover
         return enableStocking;
     }
     
-    /*
+    /**
      * Clear whatever is in the display shelves
      */
     protected void clear()
@@ -121,7 +124,6 @@ public abstract class DisplayUnit extends SuperSmoothMover
      * @param productClass the Class of the product type to retrieve
      * @return the  product instance if found; null otherwise
      */
-
     protected Product retrieve(Class productClass) {
         if (getWorld() == null) return null;
 
@@ -147,7 +149,6 @@ public abstract class DisplayUnit extends SuperSmoothMover
 
         return null; // none found or out of stock
     }
-
     
     /**
      * Compute and return the node where customers should stand when shopping at this display unit.
@@ -180,6 +181,9 @@ public abstract class DisplayUnit extends SuperSmoothMover
         return parentStore;
     }
     
+    /**
+     * Set the parent store this display unit belongs to
+     */
     public void setParentStore(Store s) {
         parentStore = s;
     }
@@ -192,6 +196,7 @@ public abstract class DisplayUnit extends SuperSmoothMover
         if (stockedItems == null) stockedItems = new ArrayList<Product>();
         return stockedItems;
     }
+    
     /**
      * Show or hide the SALE sign on this display unit based on the global sale.
      */

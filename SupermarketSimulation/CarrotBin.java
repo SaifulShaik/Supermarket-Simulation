@@ -11,7 +11,6 @@ public class CarrotBin extends Bin
 {
     private GreenfootImage image;
 
-    
     public CarrotBin() 
     {
             
@@ -30,13 +29,14 @@ public class CarrotBin extends Bin
         setImage(image);
         stocked=false;
     }
+    
     protected Product itemToFill()
     {
         return new Carrot();
     }
+    
     public Product retrieve()
     {
         return retrieve(Carrot.class);
     }  
-
 }

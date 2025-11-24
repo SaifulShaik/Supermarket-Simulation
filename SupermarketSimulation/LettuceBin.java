@@ -28,10 +28,12 @@ public class LettuceBin extends Bin
         setImage(image);
         stocked=false;
     }
+    
     protected Product itemToFill()
     {
        return new Lettuce();
     }
+    
     public Product retrieve()
     {
         return retrieve(Lettuce.class);
