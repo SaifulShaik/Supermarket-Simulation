@@ -41,7 +41,7 @@ public class Bullet extends Actor {
     
     /**
      * Moves the bullet toward its target zombie by predicting where it will move
-     * Calculates the angle and distance to the target,then moves the bullet at its specified speed. 
+     * Calculates the angle and distance to the target, then moves the bullet at its specified speed. 
      */
     private void moveTowardsTarget() {
         int dx = target.getX() - getX();
