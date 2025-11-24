@@ -1,5 +1,6 @@
 import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 import java.util.ArrayList;
+
 /**
  * Spawns customers into the road 
  * 
@@ -14,10 +15,17 @@ public class CustomerSpawner extends Actor
     private int lastSoldierSpawnDay = -1;  // Track which day soldiers were spawned
     private boolean zombieAdded = false;
     
+    /**
+     * Constructor for customer spawner
+     * has no image
+     */
     public CustomerSpawner() {
         setImage((GreenfootImage) null);
     }
     
+    /**
+     * handles soldier and customer spawning
+     */
     public void act() {
         int currentDay = TimeOfDayManager.getDaysPassed();  // Get current day from TimeOfDayManager
         
@@ -30,18 +38,20 @@ public class CustomerSpawner extends Actor
         // Only spawn customers before 17:00
         if (TimeOfDayManager.getHour() > 16  || TimeOfDayManager.getHour()<8){
             return;
-        } else{
+        } 
+        else {
             spawnCustomers();
         }
-        
-        
     }
     
     /**
      * Spawns soldiers only to stores that have zombies
      */
     private void spawnSoldiersIfNeeded() {
+        // gets starting node
         Node startNode = SimulationWorld.getStartNode();
+        
+        // gets zombies in store
         ArrayList<Zombie> allZombies = (ArrayList<Zombie>) getWorld().getObjects(Zombie.class);
         
         boolean store1HasZombies = false;
@@ -61,27 +71,25 @@ public class CustomerSpawner extends Actor
         if (store1HasZombies) {
             Soldier soldier1 = new Soldier(startNode, SimulationWorld.storeOne);
             getWorld().addObject(soldier1, startNode.getX(), startNode.getY());
-            System.out.println("[CustomerSpawner] Spawned soldier for Store 1 (has zombies)");
         }
         
         // Spawn soldier for Store 2 if it has zombies
-        if (store2HasZombies) {
+        else if (store2HasZombies) {
             Soldier soldier2 = new Soldier(startNode, SimulationWorld.storeTwo);
             getWorld().addObject(soldier2, startNode.getX(), startNode.getY());
-            System.out.println("[CustomerSpawner] Spawned soldier for Store 2 (has zombies)");
-        }
-        
-        if (!store1HasZombies && !store2HasZombies) {
-            System.out.println("[CustomerSpawner] No zombies detected, no soldiers spawned");
         }
     }
     
+    /**
+     * Spawns customers
+     */
     private void spawnCustomers() {
+        // gets start node
         Node startNode = SimulationWorld.getStartNode();
         
-        ArrayList<RegularShopper> customers = (ArrayList<RegularShopper>) getWorld().getObjects(RegularShopper.class);
+        // gets customers
+        ArrayList<Customer> customers = (ArrayList<Customer>) getWorld().getObjects(Customer.class);
        
-        
         if (Greenfoot.getRandomNumber(spawnRate) == 0 && customers.size() <= 10 && spawn) {
             //chance for zombie
             int zombie = Greenfoot.getRandomNumber(10);
@@ -91,20 +99,24 @@ public class CustomerSpawner extends Actor
                 if (storeChoice == 0) {
                     // Spawn in Store 1
                     spawnNode = SimulationWorld.storeOne.getEntranceNode(); 
-                    //rating                    
-                    SimulationWorld.storeUI.addStar( 1, 1);
-                    SimulationWorld.storeUI.addStar( 1, 1);
+                    
+                    // bad rating                     
+                    SimulationWorld.storeUI.addStar(1, 1);
+                    SimulationWorld.storeUI.addStar(1, 1);
                 } else {
                     // Spawn in Store 2
                     spawnNode = SimulationWorld.storeTwo.getEntranceNode();
+                    
                     //rating                    
-                    SimulationWorld.storeUI.addStar( 1, 2);
-                    SimulationWorld.storeUI.addStar( 1, 2);
+                    SimulationWorld.storeUI.addStar(1, 2);
+                    SimulationWorld.storeUI.addStar(1, 2);
                 }
+                // adds zombies
                 getWorld().addObject(new Zombie(spawnNode), spawnNode.getX(), spawnNode.getY());
                 return;
             }
             
+            // spawns customers
             int customerType = Greenfoot.getRandomNumber(5);
             switch (customerType) {
                 case 0:

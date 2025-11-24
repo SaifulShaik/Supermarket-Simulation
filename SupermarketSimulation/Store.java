@@ -1,8 +1,10 @@
 import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 import java.util.*;
 /**
- * @author Joe and Saiful
- * @version nov 11, 2025
+ * Store class
+ * 
+ * @author Joe Zhuo
+ * @version November 2025
  */
 public class Store {
     String name;
@@ -300,36 +302,77 @@ public class Store {
         return null;
     }
     
+    /**
+     * Checks if the store owns a specific node
+     * 
+     * @param node to check
+     * @return whether store owns node or not
+     */
     public boolean ownsNode(Node n) {
         if (nodes.contains(n)) return true;
         return false;
     }
     
+    /**
+     * adds a display unit to the list of available display units in the store
+     * 
+     * @param display unit to add
+     */
     public void addDisplayUnit(DisplayUnit d) {
         availableDisplayUnits.add(d);
     }
     
+    /**
+     * adds a cashier to the avaialble cashiers in the store
+     * 
+     * @param cashier to add
+     */
     public void addCashier(Cashier c) {
         if (cashiers == null) cashiers = new ArrayList<>();
         cashiers.add(c);
     }
     
+    /**
+     * gets all the cashiers in the store
+     * 
+     * @return list of cashiers in the store
+     */
     public List<Cashier> getCashiers() {
         return cashiers;
     }
-    
+
+    /**
+     * gets all display units in the store
+     * 
+     * @return list of display units
+     */
     public List<DisplayUnit> getAvailableDisplayUnits() {
         return availableDisplayUnits;
     }
     
+    /**
+     * Adds a profit to the store's earnings
+     * 
+     * @param amount to add
+     */
     public void addProfit(double amount) {
         profit += amount;
     }
     
+    /**
+     * gets the total profit of the store
+     * 
+     * @return total profit of the store
+     */
     public double getProfit() {
         return profit;
     }
 
+    /**
+     * checks if a location is inside a store
+     * 
+     * @param x and y coordinates to check
+     */
     public boolean isInStore(int x, int y) {
         if (name.equals("Store 1")) {
             // Left store boundaries (blue/gray store)
@@ -342,6 +385,7 @@ public class Store {
         }
         return false;
     }
+    
     /**
      * Prepares the store for a new day of operation.
      * 
@@ -366,6 +410,7 @@ public class Store {
         // Pass the world reference to the SaleManager
         SaleManager.chooseRandomSale(allTypes, world);
     }
+    
     /**
      * Returns the store number based on this store's name.
      * For example, "Store 1" returns 1 and "Store 2" returns 2.
@@ -380,6 +425,5 @@ public class Store {
         }
         return -1;
     }
-
 }
 
