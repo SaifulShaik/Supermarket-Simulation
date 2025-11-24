@@ -1,6 +1,6 @@
 import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 /**
- * Write a description of class Zombie here.
+ * Zombie customer that wanders stores and converts regular customers.
  * 
  * By Owen Lee
  * @version (a version number or a date)
@@ -25,7 +25,6 @@ public class Zombie extends Customer
         this.path = null;
         this.shoppingList.clear();
         this.cart.clear();
-
     }
     
     @Override
@@ -35,7 +34,7 @@ public class Zombie extends Customer
         if (targetNode != null) {
             moveToNode(targetNode, 0, 0);
         } else if (currentNode != null) {
-            move(false); // Keep wandering, never use move(true) which exits
+            move(false); // Keep wandering, never exit
         }
         
         checkCollision(); // Check for customers to convert
@@ -52,6 +51,11 @@ public class Zombie extends Customer
                 return;
             }
             
+            // Don't convert customers who have already checked out and are leaving
+            if (victim.hasCheckedOut) {
+                return; // Let them leave peacefully
+            }
+            
             // Soldiers are immune to zombie infection!
             if (victim instanceof Soldier) {
                 return; // Don't infect soldiers
@@ -65,6 +69,7 @@ public class Zombie extends Customer
             
             //emoji shows up to visually let viewer know a victim disappear
             getWorld().addObject(new Death(), getX(), getY() - 40);
+            
             //playsound effect
             SoundManager.playZombieSound();
             
@@ -79,25 +84,29 @@ public class Zombie extends Customer
             // Add a new zombie at the same location
             Zombie newZombie = new Zombie(currentNodePos);
             getWorld().addObject(newZombie, x, y);
+            
             //whenever it appears, reduce rating
             if (SimulationWorld.storeOne.isInStore(x, y)) {
                SimulationWorld.storeUI.addStar( 0, 1);
             }
+            
             if (SimulationWorld.storeTwo.isInStore(x, y)) {
                SimulationWorld.storeUI.addStar( 0, 2);
             }
         }
     }
+    
     /*
      * When zombie leave the store, reduce more rating
      */
+    @Override
     protected void calculateRating()
     {
-            if (SimulationWorld.storeOne.isInStore(getX(), getY())) {
-                SimulationWorld.storeUI.addStar( 0, 1);
-            }
-            if (SimulationWorld.storeTwo.isInStore(getX(), getY())) {
-                SimulationWorld.storeUI.addStar( 0, 2);
-            }
+        if (SimulationWorld.storeOne.isInStore(getX(), getY())) {
+            SimulationWorld.storeUI.addStar( 0, 1);
+        }
+        if (SimulationWorld.storeTwo.isInStore(getX(), getY())) {
+            SimulationWorld.storeUI.addStar( 0, 2);
+        }
     }
 }

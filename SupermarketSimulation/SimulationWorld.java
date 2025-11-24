@@ -44,6 +44,8 @@ public class SimulationWorld extends World
 
         roadNodes = new ArrayList<>();
         
+        //drawStoreBoundaries();
+        
         Node roadSpawn = new Node(600, 100);
         Node entranceAccess = new Node(600, 400);
         Node storeOneEntranceNode = storeOne.getEntranceNode();
