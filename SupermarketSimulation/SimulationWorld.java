@@ -22,7 +22,7 @@ public class SimulationWorld extends World
     
     public static Store storeOne = new Store("Store 1"); 
     public static Store storeTwo = new Store("Store 2");
-    public static StoreUI storeUI;   //rating
+    public static StoreUI storeUI = new StoreUI();
     private static List<Node> roadNodes;
     
     private static final boolean showNodes = true;
@@ -169,7 +169,7 @@ public class SimulationWorld extends World
         }
         
         // Spawn storm randomly between 10 AM and 6 PM (ensures it's done before 23:00)
-        if (!stormSpawnedToday && hour >= 10 && hour <= 18) {
+        if (!stormSpawnedToday && hour >= 8 && hour <= 18) {
             // Small random chance each act
             if (Greenfoot.getRandomNumber(1000) == 0) {
                 Storm storm = new Storm();

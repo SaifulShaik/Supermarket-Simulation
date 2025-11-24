@@ -425,5 +425,26 @@ public class Store {
         }
         return -1;
     }
+    
+    // Add these instance variables after 'private double profit;'
+    private double storeDiscount = 0.0; // Percentage discount (0-100)
+    private double baseRating = 3.0; // Starting rating (1.0-5.0)
+    
+    // Add these getter/setter methods at the very end of the class
+    public double getStoreDiscount() {
+        return storeDiscount;
+    }
+    
+    public void setStoreDiscount(double discount) {
+        this.storeDiscount = Math.max(0, Math.min(100, discount));
+    }
+    
+    public double getBaseRating() {
+        return baseRating;
+    }
+    
+    public void setBaseRating(double rating) {
+        this.baseRating = Math.max(1.0, Math.min(5.0, rating));
+    }
 }
 

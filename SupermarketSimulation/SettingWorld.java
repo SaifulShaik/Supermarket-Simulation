@@ -7,7 +7,7 @@ import java.io.IOException;
  * Users can scroll through available display units, place them in free or grid mode,
  * save layouts, and navigate back with unsaved changes confirmation.
  * 
- * @author Saiful Shaik
+ * @author Saiful Shaik and Owen Lee
  * @version Nov 8, 2025
  */
 public class SettingWorld extends World
@@ -39,6 +39,16 @@ public class SettingWorld extends World
     private Button nextUnitButton;
     private Label unitTypeLabel;
     private Label instructionLabel;
+    
+    private Label store1DiscountLabel;
+    private Label store2DiscountLabel;
+    private Button store1DiscountUp, store1DiscountDown;
+    private Button store2DiscountUp, store2DiscountDown;
+    
+    private Label store1RatingLabel;
+    private Label store2RatingLabel;
+    private Button store1RatingUp, store1RatingDown;
+    private Button store2RatingUp, store2RatingDown;
     
     // Editor state
     private int currentUnitIndex = 0;
@@ -107,6 +117,15 @@ public class SettingWorld extends World
         preview = new PlacementPreview();
         addObject(preview, -100, -100);
         loadExistingLayout();
+        
+        if (SimulationWorld.storeOne != null) {
+            SimulationWorld.storeOne.setStoreDiscount(0);
+            SimulationWorld.storeOne.setBaseRating(3.0);
+        }
+        if (SimulationWorld.storeTwo != null) {
+            SimulationWorld.storeTwo.setStoreDiscount(0);
+            SimulationWorld.storeTwo.setBaseRating(3.0);
+        }
     }
     
     /**
@@ -166,6 +185,41 @@ public class SettingWorld extends World
         
         // Ensure preview draws above other world objects
         setPaintOrder(PlacementPreview.class, NodeMarker.class, DisplayUnit.class, Cashier.class);
+        
+        // Store settings controls (add at end of setupUI method)
+        // Store 1 controls (left side)
+        store1DiscountLabel = new Label("Store 1 Discount: 0%", 21);
+        addObject(store1DiscountLabel, 280, getHeight() - 450);
+        
+        store1DiscountUp = new Button("+", 35, 35);
+        store1DiscountDown = new Button("-", 35, 35);
+        addObject(store1DiscountUp, 400, getHeight() - 450);
+        addObject(store1DiscountDown, 170, getHeight() - 450);
+        
+        store1RatingLabel = new Label("Store 1 Rating: 3.0", 21);
+        addObject(store1RatingLabel, 280, getHeight() - 490);
+        
+        store1RatingUp = new Button("+", 35, 35);
+        store1RatingDown = new Button("-", 35, 35);
+        addObject(store1RatingUp, 400, getHeight() - 490);
+        addObject(store1RatingDown, 170, getHeight() - 490);
+        
+        // Store 2 controls (right side)
+        store2DiscountLabel = new Label("Store 2 Discount: 0%", 21);
+        addObject(store2DiscountLabel, getWidth() - 260, getHeight() - 450);
+        
+        store2DiscountUp = new Button("+", 35, 35);
+        store2DiscountDown = new Button("-", 35, 35);
+        addObject(store2DiscountUp, getWidth() - 150, getHeight() -450);
+        addObject(store2DiscountDown, getWidth() - 380, getHeight() - 450);
+        
+        store2RatingLabel = new Label("Store 2 Rating: 3.0", 21);
+        addObject(store2RatingLabel, getWidth() - 260, getHeight() - 490);
+        
+        store2RatingUp = new Button("+", 35, 35);
+        store2RatingDown = new Button("-", 35, 35);
+        addObject(store2RatingUp, getWidth() - 150, getHeight() - 490);
+        addObject(store2RatingDown, getWidth() - 380, getHeight() - 490);
     }
 
     /**
@@ -270,6 +324,8 @@ public class SettingWorld extends World
             return;
         }
         
+        handleStoreSettings();
+         
         handleUnitSelection();
         handleGridModeToggle();
         handlePlacementPreview();
@@ -718,7 +774,68 @@ public class SettingWorld extends World
         int x = mouse.getX();
         
         // Check if click is on any button or label area
-        return y < 80 || (y > getHeight() - 100 && x > getWidth() / 2 - 100 && x < getWidth() / 2 + 150) ;
+        return y < 80 || y > getHeight() - 200; // Changed from 100 to 200
+    }
+    
+    /**
+     * Handle store discount and rating button clicks
+     */
+    private void handleStoreSettings() {
+        // Store 1 discount buttons
+        if (store1DiscountUp != null && store1DiscountUp.wasClicked()) {
+            SimulationWorld.storeOne.setStoreDiscount(SimulationWorld.storeOne.getStoreDiscount() + 5);
+            store1DiscountLabel.setValue("Store 1 Discount: " + (int)SimulationWorld.storeOne.getStoreDiscount() + "%");
+        }
+        if (store1DiscountDown != null && store1DiscountDown.wasClicked()) {
+            SimulationWorld.storeOne.setStoreDiscount(SimulationWorld.storeOne.getStoreDiscount() - 5);
+            store1DiscountLabel.setValue("Store 1 Discount: " + (int)SimulationWorld.storeOne.getStoreDiscount() + "%");
+        }
+        
+        // Store 1 rating buttons
+        if (store1RatingUp != null && store1RatingUp.wasClicked()) {
+            SimulationWorld.storeOne.setBaseRating(SimulationWorld.storeOne.getBaseRating() + 0.5);
+            store1RatingLabel.setValue("Store 1 Rating: " + String.format("%.1f", SimulationWorld.storeOne.getBaseRating()));
+            // Clear customer ratings when base rating changes
+            if (SimulationWorld.storeUI != null) {
+                SimulationWorld.storeUI.clearRatings(1);
+            }
+        }
+        if (store1RatingDown != null && store1RatingDown.wasClicked()) {
+            SimulationWorld.storeOne.setBaseRating(SimulationWorld.storeOne.getBaseRating() - 0.5);
+            store1RatingLabel.setValue("Store 1 Rating: " + String.format("%.1f", SimulationWorld.storeOne.getBaseRating()));
+            // Clear customer ratings when base rating changes
+            if (SimulationWorld.storeUI != null) {
+                SimulationWorld.storeUI.clearRatings(1);
+            }
+        }
+        
+        // Store 2 discount buttons
+        if (store2DiscountUp != null && store2DiscountUp.wasClicked()) {
+            SimulationWorld.storeTwo.setStoreDiscount(SimulationWorld.storeTwo.getStoreDiscount() + 5);
+            store2DiscountLabel.setValue("Store 2 Discount: " + (int)SimulationWorld.storeTwo.getStoreDiscount() + "%");
+        }
+        if (store2DiscountDown != null && store2DiscountDown.wasClicked()) {
+            SimulationWorld.storeTwo.setStoreDiscount(SimulationWorld.storeTwo.getStoreDiscount() - 5);
+            store2DiscountLabel.setValue("Store 2 Discount: " + (int)SimulationWorld.storeTwo.getStoreDiscount() + "%");
+        }
+        
+        // Store 2 rating buttons
+        if (store2RatingUp != null && store2RatingUp.wasClicked()) {
+            SimulationWorld.storeTwo.setBaseRating(SimulationWorld.storeTwo.getBaseRating() + 0.5);
+            store2RatingLabel.setValue("Store 2 Rating: " + String.format("%.1f", SimulationWorld.storeTwo.getBaseRating()));
+            // Clear customer ratings when base rating changes
+            if (SimulationWorld.storeUI != null) {
+                SimulationWorld.storeUI.clearRatings(2);
+            }
+        }
+        if (store2RatingDown != null && store2RatingDown.wasClicked()) {
+            SimulationWorld.storeTwo.setBaseRating(SimulationWorld.storeTwo.getBaseRating() - 0.5);
+            store2RatingLabel.setValue("Store 2 Rating: " + String.format("%.1f", SimulationWorld.storeTwo.getBaseRating()));
+            // Clear customer ratings when base rating changes
+            if (SimulationWorld.storeUI != null) {
+                SimulationWorld.storeUI.clearRatings(2);
+            }
+        }
     }
 }
 

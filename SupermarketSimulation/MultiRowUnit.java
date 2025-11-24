@@ -83,11 +83,6 @@ public abstract class MultiRowUnit extends DisplayUnit {
                 Product item = stockItemsByRow(r);
 
                 if (item != null) {
-                    // Apply sale discount if this item type is on sale
-                    if (SaleManager.isOnSale(item.getClass()) && !item.isDiscounted()) {
-                        item.applyDiscount(SaleManager.getDiscountPercent());
-                    }
-
                     // Compute the item position inside the unit
                     int itemX = topLeftX + LEFT_PAD + c * COL_GAP + item.getImage().getWidth() / 2;
                     int itemY = topLeftY + TOP_PAD  + r * ROW_GAP + item.getImage().getHeight() / 2;
