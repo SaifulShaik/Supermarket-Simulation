@@ -102,7 +102,9 @@ public abstract class Customer extends SuperSmoothMover
         currentActCycles++;
         
         // animation
-        animateImages();
+        if (!(pauseTimer > 0) || !(!hasCheckedOut && targetCashier == null)) {
+            animateImages();
+        }
         
         // updates visual basket
         updateBasketAndItems(); 
@@ -328,7 +330,7 @@ public abstract class Customer extends SuperSmoothMover
         }
         
         // defaults to first cashier
-        Cashier best = cashiers.get(0);
+        Cashier best = cashiers.get(cashiers.size() - 1);
         
         // loops through cashiers
         for (Cashier c : cashiers) {
