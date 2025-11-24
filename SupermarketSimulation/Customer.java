@@ -36,19 +36,21 @@ public abstract class Customer extends SuperSmoothMover
     protected GreenfootImage leftImages[]={new GreenfootImage("maleShopper/left1.png"),new GreenfootImage("maleShopper/left2.png")};
     protected GreenfootImage upImages[]={new GreenfootImage("maleShopper/up1.png"),new GreenfootImage("maleShopper/up2.png")};
     protected GreenfootImage downImages[]={new GreenfootImage("maleShopper/down1.png"),new GreenfootImage("maleShopper/down2.png")};
-    private int animCounter=0;
-    private int animSpeed=10; //the larger the slower
-    private int animIndex=0;
-    double facingAngle=0; //for correctly display images with right direction
+    protected int animCounter=0;
+    protected int animSpeed=10; //the larger the slower
+    protected int animIndex=0;
+    protected double facingAngle=0; //for correctly display images with right direction
 
+    // ===== Basket system variables =====
+    protected Basket visualBasket; // visual basket
+    protected List<Product> carriedItems;  // visual basket
 
-     //===== Basket system variables =====
-    private Basket visualBasket; //visual basket
-    protected List<Product> carriedItems;  //visual basket
+    // rating related
+    private int originalShoppingListSize = 0;
 
-    //rating related
-    private int originalShoppingListSize=0;
-
+    /**
+     * Default customer constructor
+     */
     public Customer() {
         this(2.0, 100.0, null, 3, 2, 100);
     }
@@ -87,8 +89,6 @@ public abstract class Customer extends SuperSmoothMover
         //initialize visual basket related variables
         visualBasket = null;  //visual basket
         carriedItems = new ArrayList<>();//visual basket
-
-        
     }
     
     /**
@@ -98,9 +98,14 @@ public abstract class Customer extends SuperSmoothMover
      * finally checks out once all products are purchased
      */
     public void act() {
+        // updates act cycles
         currentActCycles++;
+        
+        // animation
         animateImages();
-        updateBasketAndItems(); //visual basket
+        
+        // updates visual basket
+        updateBasketAndItems(); 
         
         // move to target node if already set
         if (targetNode != null) {
@@ -116,14 +121,12 @@ public abstract class Customer extends SuperSmoothMover
         
         // choose store
         if (store == null) {
-            //System.out.println("[Customer] choosing store");
             chooseStore();
             return;
         }
         
         // take items while walking around if shopping list items aren't collected yet
         if (!shoppingList.isEmpty() && currentActCycles < maxActCycles) {
-            //System.out.println("[Customer] walking around");
             retrieveProdcuts(); 
             move(false);
             return;
@@ -133,20 +136,16 @@ public abstract class Customer extends SuperSmoothMover
         if (!hasCheckedOut) {
             // chooses cashier first
             if (targetCashier == null) {
-                //System.out.println("[Customer] choosing cashier");
                 chooseCashier();
             }
             // then moves to cashier
             else {
-                //System.out.println("[Customer] moving to cashier");
                 moveToCashier();
             }
             return;
         }
         
-        
         // leaves the store if everything has been done
-        //System.out.println("[Customer] leaving store");
         leaveStore();
     }
     
@@ -209,7 +208,6 @@ public abstract class Customer extends SuperSmoothMover
 
         // updates store entrance
         targetNode = store.getEntranceNode();
-        //System.out.println("Chose Store");
     }
     
     /**
@@ -257,7 +255,6 @@ public abstract class Customer extends SuperSmoothMover
     
     /**
      * Method for the customer to retrieve products
-
      */
     protected void retrieveProdcuts() {
         if (store == null || currentNode == null || shoppingList == null || shoppingList.isEmpty() || getWorld() == null) return;
@@ -305,9 +302,12 @@ public abstract class Customer extends SuperSmoothMover
                     // adds to cart and removes from shopping list
                     cart.add(retrieved);
                     shoppingList.remove(wantedClass);
-                    pauseTimer = 10 + Greenfoot.getRandomNumber(21); // 10-30 act delay
+                    
+                    // 10-30 act delay after getting an item
+                    pauseTimer = 10 + Greenfoot.getRandomNumber(21); 
+                    
                     //visually add item into basket
-                    addItemToBasket(retrieved); //visual basket
+                    addItemToBasket(retrieved);
 
                     return;
                 }
@@ -351,16 +351,23 @@ public abstract class Customer extends SuperSmoothMover
      * Method to move to cashier
      */
     private void moveToCashier() {
+        // gets cashier node
         Node cashierNode = targetCashier.getCustomerNode();
+        
+        // cannot move to cashier if the cashier does not have an access node
         if (cashierNode == null) return;
 
+        // follows path if it isn't empty
         if (path != null && !path.isEmpty()) {
+            // target node becomes the first node in the path
             targetNode = path.get(0);
     
+            // arrived at the cashier node
             if (targetNode.equals(cashierNode)) {
                 path.remove(0);
                 targetNode = null;
             }
+            // moved to target node
             else if (moveToNode(targetNode, 0, 0)) {
                 path.remove(0);
                 targetNode = null;
@@ -368,56 +375,82 @@ public abstract class Customer extends SuperSmoothMover
             return;
         }
 
+        // ===== has now arrived at cashier =====
+        
+        // adds this customer to queue
         targetCashier.addCustomerToQueue(this);
         
+        // gets position in queue
         int pos = targetCashier.getPositionInQueue(this);
         
+        // calculates spacing depending on store
         int spacing = store == SimulationWorld.storeOne ? -20 : 20;
         
+        // offsets to simulate lining up
         double offsetX = 0;
         double offsetY = spacing * (pos + 1);
         
+        // move to the offset
         boolean atOffset = moveToNode(cashierNode, offsetX, offsetY);
     }
     
+    /**
+     * Method to find a path from the current node to a goal node
+     * Uses BFS (Breadth-First Search) algorithm
+     * 
+     * @param target node
+     * @return a list of nodes representing the path, empty if no path 
+     */
     private List<Node> findPath(Node goal) {
+        // result path
         List<Node> result = new ArrayList<>();
     
+        // return empty path if not reachable
         if (currentNode == null || goal == null) {
             return result;
         }
     
+        // nodes to explore
         Queue<Node> queue = new LinkedList<>();
+        // track previous nodes
         Map<Node, Node> cameFrom = new HashMap<>();
+        // visited nodes
         Set<Node> visited = new HashSet<>();
     
+        // start at the current node
         queue.add(currentNode);
         visited.add(currentNode);
         cameFrom.put(currentNode, null);
     
+        // perform bfs
         while (!queue.isEmpty()) {
             Node node = queue.poll();
     
+            // goal found
             if (node.equals(goal)) {
                 Node cur = node;
                 while (cur != null) {
+                    // adds nodes to list
                     result.add(0, cur); 
                     cur = cameFrom.get(cur);
                 }
                 return result;
             }
     
+            // get neighbour nodes
             List<Node> neighbours = node.getNeighbouringNodes();
             if (neighbours == null) continue;
     
+            // explroe neighbours
             for (Node next : neighbours) {
-                if (visited.contains(next)) continue;
+                if (visited.contains(next)) continue; // skip visited nodes
                 visited.add(next);
-                cameFrom.put(next, node);
-                queue.add(next);
+                cameFrom.put(next, node); // record path
+                queue.add(next); // add for further exploration
             }
         }
     
+        // return empty if no path exists
         return result;
     }
     
@@ -425,16 +458,24 @@ public abstract class Customer extends SuperSmoothMover
      * Method for the customer to leave the store
      */
     public void leaveStore() {
+        // gets exit node
         Node worldExit = SimulationWorld.getExitNode();
         
+        // arrived at exit
         if (currentNode.checkIsEnd()) {
-            removeAllCarriedItems(); //visual basket
-            getWorld().removeObject(this);
-            //calculate rating before leaving the store
+            // removes items in basket
+            removeAllCarriedItems(); 
+            
+            //calculates rating
             calculateRating();
+            
+            // remove from world
+            getWorld().removeObject(this);
+            
             return;
         }
         
+        // move to exit
         move(true);
     }
     
@@ -449,18 +490,6 @@ public abstract class Customer extends SuperSmoothMover
             return;
         }
         
-        /**
-        // DEBUG: print movement state
-        try {
-            String cur = (currentNode == null) ? "null" : currentNode.getX() + "," + currentNode.getY();
-            String prev = (previousNode == null) ? "null" : previousNode.getX() + "," + previousNode.getY();
-            String targ = (targetNode == null) ? "null" : targetNode.getX() + "," + targetNode.getY();
-            System.out.println("[Customer Debug] move() cur=" + cur + " prev=" + prev + " targ=" + targ + " moveToExitNodes=" + moveToExitNodes);
-        } catch (Exception e) {
-            System.out.println("[Customer Debug] move() printing failed: " + e.getMessage());
-        }
-        */
-        
         // no need to reselect a new target node if already moving to one
         if (targetNode != null) {
             moveToNode(targetNode, 0, 0); 
@@ -472,7 +501,6 @@ public abstract class Customer extends SuperSmoothMover
         
         // cannot move if no neighbouring nodes
         if (neighbouringNodes == null || neighbouringNodes.isEmpty()) {
-            //System.out.println("[Customer Debug] neighbouringNodes is null/empty for currentNode=" + (currentNode==null?"null":currentNode.getX()+","+currentNode.getY()));
             return;
         }
         
@@ -481,7 +509,9 @@ public abstract class Customer extends SuperSmoothMover
         
         // loops through all neighbouring nodes
         for (Node n : neighbouringNodes) {
-            if (n.equals(previousNode)) continue;
+            if (n.equals(previousNode)) {
+                continue;
+            }
             // a node is 'available' if it wasn't the previous node (prevent back and forth movement)
             if (moveToExitNodes) {
                 if (n.checkIsExit()) {
@@ -495,28 +525,10 @@ public abstract class Customer extends SuperSmoothMover
         
         // cannot move if no available nodes
         if (availableNodes == null || availableNodes.isEmpty()) {
-            // DEBUG: list neighbouring nodes and their exit flags
-            try {
-                //System.out.print("[Customer Debug] No available nodes. neighbouring: ");
-                for (Node nn : neighbouringNodes) {
-                    //System.out.print("(" + nn.getX() + "," + nn.getY() + ",exit=" + nn.checkIsExit() + ") ");
+            for (Node nn : neighbouringNodes) {
+                if (nn != null) {
+                    availableNodes.add(nn);
                 }
-                //System.out.println();
-            } catch (Exception e) {}
-
-            // Fallback: allow moving back to previous node or any neighbour to avoid deadlock
-            try {
-                for (Node nn : neighbouringNodes) {
-                    if (nn != null) availableNodes.add(nn);
-                }
-                if (!availableNodes.isEmpty()) {
-                    //System.out.println("[Customer Debug] Fallback: using all neighbouring nodes to continue movement.");
-                } else {
-                    //System.out.println("[Customer Debug] Fallback failed: still no neighbouring nodes.");
-                    return;
-                }
-            } catch (Exception e) {
-                return;
             }
         }
         
@@ -550,14 +562,10 @@ public abstract class Customer extends SuperSmoothMover
         double curX = (this instanceof SuperSmoothMover) ? ((SuperSmoothMover)this).getPreciseX() : getX();
         double curY = (this instanceof SuperSmoothMover) ? ((SuperSmoothMover)this).getPreciseY() : getY();
         
+        // calculates change in x and y
         double dx = targetX - curX;
         double dy = targetY - curY;
         double distance = Math.sqrt(dx * dx + dy * dy);
-        
-        // DEBUG: print distance to target
-        try {
-            //System.out.println("[Customer Debug] moveToNode target=" + n.getX() + "," + n.getY() + " current=" + getX() + "," + getY() + " distance=" + distance + " speed=" + movementSpeed);
-        } catch (Exception e) {}
         
         // finishes movement if almost there (1 act cycle would move too much to the distance)
         // snap when within one step (use <= to be robust)
@@ -569,9 +577,7 @@ public abstract class Customer extends SuperSmoothMover
             currentNode = n;
             targetNode = null;
             
-            // DEBUG: arrived at node
-            //System.out.println("[Customer Debug] Arrived at node " + n.getX() + "," + n.getY());
-            // don't move any further
+            // has arrived
             return true;
         }
         
@@ -586,8 +592,7 @@ public abstract class Customer extends SuperSmoothMover
         // updates location
         setLocation(newX, newY);
         
-        // DEBUG: moved to intermediate pos
-        //try { System.out.println("[Customer Debug] Moved to " + newX + "," + newY); } catch (Exception e) {}
+        // has not arrived yet
         return false;
     }
     
@@ -631,31 +636,41 @@ public abstract class Customer extends SuperSmoothMover
     public Store getStore() {
         return store;
     }
+    
+    /**
+     * Method to animate the images
+     */
     private void animateImages()
     {
+        // updates image
         if (animCounter++ >= animSpeed) {
             animCounter = 0;
             animIndex = (animIndex + 1) % 2;
-            //setImage(frames[animIndex]);
         }
                 
+        // gets facing direction
         String dir = getFacingDirection();
         
-        if (dir.equals("RIGHT"))
-        {
-             setImage(rightImages[animIndex]);
-        }else if (dir.equals("LEFT"))
-        { 
+        // changes image based on direction
+        if (dir.equals("RIGHT")) {
+            setImage(rightImages[animIndex]);
+        }
+        else if (dir.equals("LEFT")) { 
             setImage(leftImages[animIndex]);
-        }else if (dir.equals("UP")) 
-        {
+        }
+        else if (dir.equals("UP")) {
             setImage(upImages[animIndex]);
-        }else if (dir.equals("DOWN"))
-        { 
+        }
+        else if (dir.equals("DOWN")) { 
              setImage(downImages[animIndex]);
         }
-        //getImage().scale(30,75);
     }
+    
+    /**
+     * Method to get the customer facing direction
+     * 
+     * @return a string representing the facing direction
+     */
     private String getFacingDirection() 
     {
         double x = Math.cos(facingAngle);
@@ -667,7 +682,7 @@ public abstract class Customer extends SuperSmoothMover
             return y > 0 ? "DOWN" : "UP";
         }
     }
-     // ========== For carrying basket==========//visual basket
+    
     /**
      * Add a retrieved product visually into the customer's basket.
      */
@@ -681,6 +696,7 @@ public abstract class Customer extends SuperSmoothMover
             getWorld().addObject(visualBasket, getX(), getY());
         }
 
+        // add items into currently held itmes
         carriedItems.add(p);
 
         // Add product actor to world if not already there
@@ -759,6 +775,7 @@ public abstract class Customer extends SuperSmoothMover
         }
         carriedItems.clear();
     }
+    
     /**
      * Creates a vertically padded image so the customer's feet align on the node.
      * The padding places the sprite on top of a taller transparent canvas.
@@ -777,7 +794,7 @@ public abstract class Customer extends SuperSmoothMover
         
         return padded;
     }
-    //rating
+    
     /**
      * Calculates a star rating for this customer based on how many items
      * they successfully collected compared to their original shopping list,
@@ -803,21 +820,24 @@ public abstract class Customer extends SuperSmoothMover
             rating=3+Greenfoot.getRandomNumber(3); //3-5
         }
     
-        if (found>originalShoppingListSize)
+        // compares number of items collected
+        if (found > originalShoppingListSize)
         {
-           rating=5;
+           rating = 5;
         }
-        if (found==originalShoppingListSize)
+        else if (found == originalShoppingListSize)
         {
-           rating=3+Greenfoot.getRandomNumber(3);
+           rating = 3 + Greenfoot.getRandomNumber(3);
         }
-        if (found<originalShoppingListSize)
+        else if (found < originalShoppingListSize)
         {
-           rating=1+Greenfoot.getRandomNumber(2);
+           rating = 1 + Greenfoot.getRandomNumber(2);
         }
+        
+        //display rating
+        showText("Rating:"+rating,Color.GREEN,getX(),getY()-100);
+        
         //update rating
         SimulationWorld.storeUI.addStar( rating, store.getStoreNumber());
     }
 }
-
-

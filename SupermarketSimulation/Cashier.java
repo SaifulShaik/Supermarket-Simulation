@@ -2,11 +2,7 @@ import greenfoot.*;
 import java.util.*;
 
 /**
- * BasicCashier
- * Basically an animated objects in the store.
- * It used to images for animation effect
- * By default is uses cashier/cashier1.png and cashier/cashier2.png
- * The subclass can specify alternative by calling the public Cashier(String frame0, String frame1) constructor\
+ * Cashier class that handles customer checkout and store profits
  * 
  * @author Joe Zhuo and Owen Kung
  * @version Nov 4, 2025
@@ -21,8 +17,6 @@ public class Cashier extends Actor
     
     private Queue<Customer> queue;
     private Customer currentCustomer;
-    
-    private double totalEarnings;
     
     private int timer;
     private double serviceSpeed; // final service speed = number of items * service speed
@@ -42,10 +36,16 @@ public class Cashier extends Actor
         frames=new GreenfootImage[]{frame0, frame1};
         setImage(frames[0]);
         
+        // start with an empty queue
         queue = new LinkedList<>();
+        
+        // default service speed
         this.serviceSpeed = 25.0;
     }
     
+    /**
+     * Plays the animation and handles customers inside the queue
+     */
     public void act() 
     {
         // advance frame every `delay` ticks
@@ -56,74 +56,132 @@ public class Cashier extends Actor
             setImage(frames[frame]);
         }
         
-        
+        // start dealing with next customer if there are any in the queue and if not already processing one
         if (currentCustomer == null && !queue.isEmpty()) {
             startNextCustomer();
         }
+        // continue processign current customer
         else {
             processCurrentCustomer();
         } 
         
+        // faster processing when day is nearing the end
         if (TimeOfDayManager.getHour() > 17){
-            this.serviceSpeed = 5.0;
-        } else{
+            this.serviceSpeed = 3.0;
+        } 
+        // use default processing speed
+        else {
             this.serviceSpeed = 25.0;
         }
     }
     
+    /**
+     * Method to start dealing with the next customer
+     */
     private void startNextCustomer() {
+        // takes first customer in queue
         currentCustomer = queue.poll();
+        
+        // counts number of items in their cart and starts the timer
         timer = (int) serviceSpeed * currentCustomer.getCartSize();
     }
     
+    /**
+     * Method to continue dealing with the current customer
+     */
     private void processCurrentCustomer() {
+        // cannot do this if no current customer
         if (currentCustomer == null) return;
         
+        // reduces timer
         timer--;
-        System.out.println("a");
+        
+        // finished processing
         if (timer <= 0) {
-            totalEarnings = currentCustomer.calculatePriceOfCart();
+            // calculates total price
+            double totalEarnings = currentCustomer.calculatePriceOfCart();
             
-            showEarnings();
+            // displays profits
+            showEarnings(totalEarnings);
             
+            // adds profit to store
             currentCustomer.getStore().addProfit(totalEarnings);
             
+            // checks out customer
             currentCustomer.checkOut();
-            currentCustomer = null;
             
-            System.out.println("b");
+            // resets current customer
+            currentCustomer = null;
         }
     }
     
+    /**
+     * Method to add a customer to the cashier's queue
+     * 
+     * @param customer to add to the queue
+     */
     public void addCustomerToQueue(Customer c) {
+        // cannot add if it is already in the queue, if it isn't available, or if it's the current customer
         if (c == null || c == currentCustomer || queue.contains(c)) return;
+        
+        // adds to queue
         queue.offer(c);
     }
     
+    /**
+     * Method to get the customer's position in queue
+     * 
+     * @param customer to get position for
+     * @return position in queue
+     */
     public int getPositionInQueue(Customer c) {
         int index = 0;
+        
+        // loops through queue and checks if it is the requested customer
         for (Customer cur : queue) {
             if (cur == c) { 
                 return index; 
             }
             index++;
         }
+        
+        // not found
         return -1; 
     }
     
+    /**
+     * Method to set the customer node to access the cashier from
+     * 
+     * @param node to access from
+     */
     public void setCustomerNode(Node n) {
         this.customerNode = n;
     }
     
+    /**
+     * Method to get the customer access node of the cashier
+     * 
+     * @return customer access node
+     */
     public Node getCustomerNode() {
         return customerNode;
     }
     
+    /**
+     * Method to get the queue size of the cashier
+     * 
+     * @return queue size
+     */
     public int getQueueSize() {
         return queue.size();
     }
     
-    public void showEarnings() {
+    /**
+     * Displays a floating text representing total earnings
+     * 
+     * @param earnings number
+     */
+    public void showEarnings(double totalEarnings) {
         if (getWorld() == null) return;
         
         int offsetX = Greenfoot.getRandomNumber(40) - 20;

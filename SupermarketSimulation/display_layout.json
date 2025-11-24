@@ -58,5 +58,20 @@
     "displayUnitType": "SnackShelf",
     "x": 1060,
     "y": 460
+  },
+  {
+    "displayUnitType": "LettuceBin",
+    "x": 960,
+    "y": 360
+  },
+  {
+    "displayUnitType": "CarrotBin",
+    "x": 860,
+    "y": 360
+  },
+  {
+    "displayUnitType": "AppleBin",
+    "x": 1040,
+    "y": 360
   }
 ]

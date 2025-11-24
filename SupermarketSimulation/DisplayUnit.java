@@ -31,12 +31,14 @@ public abstract class DisplayUnit extends SuperSmoothMover
     protected List<Node> customerNodes;
     protected Store parentStore;
     protected SaleSign saleSign;   // current sale sign for this unit (if any)
+    
     public DisplayUnit() {
         stockedItems = new ArrayList<>();
         customerNodes = new ArrayList<>();
     }
     
     protected abstract void stock();
+    
     /**
      * Main update loop for a display unit.
      * 

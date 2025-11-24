@@ -37,11 +37,12 @@ public class StoreUI extends Actor
     private Label storeOneRatingLabel;
     private Label storeTwoRatingLabel;
     
+    //Store discount labels
+    private Label storeOneDiscountLabel;
+    private Label storeTwoDiscountLabel;
+    
     //Maxium Money Value
     private final int MAX_MONEY = 500;
-    
-    //debugging
-    //private boolean tested = true;
     
     /**
      * Constructor for StoreUI.
@@ -59,12 +60,13 @@ public class StoreUI extends Actor
     
     /**
      * Main act method for StoreUI.
-     * On the first frame, adds a test rating for each store (for debugging).
-     * On every frame, updates the money bars and profit labels to match
-     * the current store profits.
+     * On every frame, updates the money bars, profit labels, and rating displays
+     * to match the current store profits and ratings.
      */
     public void act(){
         updateDisplay();
+        updateRatingDisplay(1);
+        updateRatingDisplay(2);
     }
     
     /**
@@ -92,26 +94,43 @@ public class StoreUI extends Actor
         }
     }
     
+    public void clearRatings(int store) {
+        if (store == 1) {
+            storeOneRatings.clear();
+            updateRatingDisplay(1);
+        } else if (store == 2) {
+            storeTwoRatings.clear();
+            updateRatingDisplay(2);
+        }
+    }
+    
     /**
-     * Calculates the average rating for a given store and rounds it
-     * to one decimal place.
+     * Calculates the average rating for a given store.
+     * Base rating counts as 10 ratings to give it significant weight.
+     * Customer ratings are then averaged with the base rating.
      *
      * @param store the store number (1 or 2)
-     * @return the average rating for that store, rounded to one decimal place;
-     *         returns 0.0 if the store has no ratings yet
+     * @return the average rating for that store, rounded to one decimal place
      */
     private double getAverageRating(int store) {
         ArrayList<Integer> ratings = (store == 1) ? storeOneRatings : storeTwoRatings;
         
-        if (ratings.isEmpty()) return 0.0;
+        // Get base rating from the store
+        double baseRating = (store == 1) ? SimulationWorld.storeOne.getBaseRating() : SimulationWorld.storeTwo.getBaseRating();
         
-        int sum = 0;
+        // Base rating counts as 10 ratings
+        double totalSum = baseRating * 10;
+        int totalCount = 10;
+        
+        // Add customer ratings
         for (int rating : ratings) {
-            sum += rating;
+            totalSum += rating;
+            totalCount++;
         }
         
-        double average = (double) sum / ratings.size();
-        return Math.round(average * 10.0) / 10.0; // Round to 1 decimal
+        // Calculate weighted average
+        double average = totalSum / totalCount;
+        return Math.round(average * 10.0) / 10.0;
     }
     
     /**
@@ -186,20 +205,38 @@ public class StoreUI extends Actor
         };
         
         // Create rating labels (for displaying average rating)
-        storeOneRatingLabel = new Label("0.0", 24);
+        storeOneRatingLabel = new Label(
+            String.format("%.1f", SimulationWorld.storeOne.getBaseRating()), 
+            24
+        );
         storeOneRatingLabel.setLineColor(Color.YELLOW);
         storeOneRatingLabel.setFillColor(new Color(255, 255, 0, 255));
         
-        storeTwoRatingLabel = new Label("0.0", 24);
+        storeTwoRatingLabel = new Label(
+            String.format("%.1f", SimulationWorld.storeTwo.getBaseRating()), 
+            24
+        );
         storeTwoRatingLabel.setLineColor(Color.YELLOW);
         storeTwoRatingLabel.setFillColor(new Color(255, 255, 0, 255));
         
         // Add star icons and ratings near the money bars
-        w.addObject(storeOneStarIcon, w.getWidth() / 2 - 360, getY());
-        w.addObject(storeOneRatingLabel, w.getWidth() / 2 - 320, getY());
+        w.addObject(storeOneStarIcon, w.getWidth() / 2 - 365, getY());
+        w.addObject(storeOneRatingLabel, w.getWidth() / 2 - 330, getY());
         
         w.addObject(storeTwoStarIcon, w.getWidth() / 2 + 365, getY());
         w.addObject(storeTwoRatingLabel, w.getWidth() / 2 + 400, getY());
+        
+        storeOneDiscountLabel = new Label((int)SimulationWorld.storeOne.getStoreDiscount() + "% OFF", 27);
+        storeOneDiscountLabel.setLineColor(Color.BLACK);
+        storeOneDiscountLabel.setFillColor(new Color(255, 200, 200, 255));
+        w.addObject(storeOneDiscountLabel, w.getWidth() / 2 - 450, getY());  
+        
+        storeTwoDiscountLabel = new Label((int)SimulationWorld.storeTwo.getStoreDiscount() + "% OFF", 27 );
+        storeTwoDiscountLabel.setLineColor(Color.BLACK);
+        storeTwoDiscountLabel.setFillColor(new Color(255, 200, 200, 255));
+        w.addObject(storeTwoDiscountLabel, w.getWidth() / 2 + 480, getY()); 
+
+
     }
     
     /**
@@ -259,6 +296,14 @@ public class StoreUI extends Actor
             // Add labels back second (on top)
             w.addObject(storeOneProfitLabel, w.getWidth() / 2 - 200, getY());
             w.addObject(storeTwoProfitLabel, w.getWidth() / 2 + 250, getY());
+        }
+        
+        // Update discount labels 
+        if (storeOneDiscountLabel != null) {
+            storeOneDiscountLabel.setValue((int)SimulationWorld.storeOne.getStoreDiscount() + "% OFF");
+        }
+        if (storeTwoDiscountLabel != null) {
+            storeTwoDiscountLabel.setValue((int)SimulationWorld.storeTwo.getStoreDiscount() + "% OFF");
         }
     }
     

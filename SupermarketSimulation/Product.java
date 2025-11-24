@@ -1,6 +1,5 @@
 import java.util.LinkedList;
 import java.util.List;
-
 /**
  * Product class
  * represents a purchasable item inside a store
@@ -8,13 +7,10 @@ import java.util.List;
  * @author Joe Zhuo and Owen Kung
  * @version Nov 2025
  */
-
 public abstract class Product extends SuperSmoothMover
 {
-    protected double price;
+    protected double price; // Original price before discount
     protected int stock;
-    
-    protected boolean isDiscounted = false;
     
     protected String name;
     protected Node node;
@@ -36,14 +32,29 @@ public abstract class Product extends SuperSmoothMover
     {
         return name;
     }
-
-    public double getPrice() { 
-        return price; 
-    }
     
-    protected void applyDiscount(double percent) {
-        price *= (1 - (percent / 100));
-        isDiscounted = true;
+    // Returns price with store discount applied dynamically
+    // In Product.java - replace getPrice() method
+    public double getPrice() { 
+        double finalPrice = price; 
+        
+        // Apply store-wide discount first
+        if (parentStore != null && parentStore.getStoreDiscount() > 0) {
+            finalPrice *= (1 - (parentStore.getStoreDiscount() / 100.0));
+        }
+        
+        // Then apply sale discount if this product is on sale
+        if (SaleManager.isOnSale(this.getClass())) {
+            finalPrice *= (1 - (SaleManager.getDiscountPercent() / 100.0));
+        }
+        
+        return finalPrice;
+    }
+
+    public boolean isDiscounted() {
+        boolean storeDiscount = (parentStore != null && parentStore.getStoreDiscount() > 0);
+        boolean saleDiscount = SaleManager.isOnSale(this.getClass());
+        return storeDiscount || saleDiscount;
     }
     
     public int getStock() {
@@ -56,7 +67,6 @@ public abstract class Product extends SuperSmoothMover
     
     public void setDisplayUnit(DisplayUnit unit) {
         this.displayUnit = unit;
-        // Inherit parent store from display unit when assigned
         if (unit != null) {
             this.parentStore = unit.getParentStore();
         }
@@ -79,10 +89,4 @@ public abstract class Product extends SuperSmoothMover
             getWorld().removeObject(this);
         }
     }
-    public boolean isDiscounted() {
-    return isDiscounted;
 }
-
-}
-
-

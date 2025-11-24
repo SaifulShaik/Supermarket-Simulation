@@ -133,17 +133,10 @@ public class SaleManager
      * @param world the current world containing DisplayUnit and Product objects.
      */
     private static void applyDiscountToExistingStock(World world) {
-        if (saleProduct == null || world == null) return;
-
-        for (DisplayUnit du : world.getObjects(DisplayUnit.class)) {
-            for (Product p : du.getStockedItems()) {
-                if (p != null &&
-                    saleProduct.equals(p.getClass()) &&
-                    !p.isDiscounted())
-                {
-                    p.applyDiscount(discountPercent);
-                }
-            }
+        // Products automatically calculate sale discount in getPrice()
+        // No action needed here - just log the sale
+        if (saleProduct != null) {
+            System.out.println("[SALE] All " + saleProduct.getSimpleName() + " items are now on sale at " + discountPercent + "% off!");
         }
     }
 

@@ -115,11 +115,6 @@ public abstract class Bin extends DisplayUnit
     
                 Product item = itemToFill();
 
-                //if it's on sale, apply discount
-                if (item != null && SaleManager.isOnSale(item.getClass()) && !item.isDiscounted()) {
-                    item.applyDiscount(SaleManager.getDiscountPercent());
-                }
-
                 item.setRotation(Greenfoot.getRandomNumber(90) - 40);
                 item.setDisplayUnit(this);
                 stockedItems.add(item);
