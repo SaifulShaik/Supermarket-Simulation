@@ -5,7 +5,7 @@ import java.util.List;
 /**
  * Write a description of class MyWorld here.
  * 
- * @author Saiful Shaik, Owen Kung, Joe Zhuo
+ * @author Saiful Shaik, Owen Kung, Joe Zhuo, Angelina Zhou
  * @version Modified: Nov, 8, 2025
  */
 public class SimulationWorld extends World
@@ -33,6 +33,10 @@ public class SimulationWorld extends World
     private boolean saleChosenToday = false;
     private boolean saleUpdatedToday = false;
     private int lastHour = -1;
+    
+    public int numberOfStorms = 0;
+    
+    GreenfootSound music = new GreenfootSound("tokyo-music-walker-sunset-drive-chosic.com_.mp3");
 
     public SimulationWorld(){
         super(bg.getWidth(), bg.getHeight(), 1);
@@ -119,7 +123,8 @@ public class SimulationWorld extends World
         storeTwo.startNewDay(this);
         saleChosenToday = true;
 
-
+        music.setVolume(30);
+        music.playLoop();
     }
     
     public void act () 
@@ -175,6 +180,7 @@ public class SimulationWorld extends World
                 Storm storm = new Storm();
                 addObject(storm, getWidth() / 2, getHeight() / 2);
                 stormSpawnedToday = true;
+                numberOfStorms++;
             }
         }
     }
@@ -454,6 +460,8 @@ public class SimulationWorld extends World
         
         //stop butcher sound
         SoundManager.stopButcherSound();
+        
+        music.pause(); 
     }
     
     /*
@@ -475,8 +483,10 @@ public class SimulationWorld extends World
         
         //replay butcher sound
         SoundManager.playButcherSound();
+        music.playLoop();
     }
 
+    public int getNumOfStorms(){ return numberOfStorms; }
 }
 
 

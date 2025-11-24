@@ -14,6 +14,8 @@ public class Cutscene extends World
     private boolean walkingDiagonal;
     private boolean walkingForward;
     private Button skipButton = new Button("Skip Cutscene", 200, 30);
+    
+    GreenfootSound music = new GreenfootSound("Sakura-Girl-Stars-chosic.com_.mp3");
     /**
      * Constructor for objects of class Cutscene.
      * 
@@ -35,7 +37,10 @@ public class Cutscene extends World
         
         addObject(skipButton,120,570);
         // Ensure the skip button is drawn on top of other cutscene images
-        setPaintOrder(Button.class, CutsceneImage.class, CutscenePerson.class, SpeechBubble.class);
+        setPaintOrder(Button.class, CutsceneImage.class);
+        
+        music.setVolume(30);
+        music.playLoop();
     }
     
     public void act(){
@@ -121,6 +126,7 @@ public class Cutscene extends World
     }
     
     public void transitionToSimulation(){
+        music.pause(); 
         fadeOutAndTransition(new SettingWorld());
     }
     
@@ -135,6 +141,14 @@ public class Cutscene extends World
         Greenfoot.delay(5);
         
         Greenfoot.setWorld(nextWorld);
+    }
+    
+    public void started() {
+        music.playLoop();
+    }
+
+    public void stopped() {
+        music.pause(); 
     }
     
 }

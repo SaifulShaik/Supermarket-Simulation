@@ -17,6 +17,15 @@ public class Store {
     
     private double profit;
     
+    private int numOfBargainShoppers = 0;
+    private int numOfBulkShoppers = 0;
+    private int numOfImpulseShoppers = 0;
+    private int numOfRegularShoppers = 0;
+    private int numOfProductsSold = 0;
+    private int numOfZombies = 0;
+    private int numOfFires = 0;
+    private int numOfStorms = 0;
+    
     /**
      * Store constructor
      * 
@@ -381,5 +390,22 @@ public class Store {
         return -1;
     }
 
+    public int getNumOfBargainShoppers(){ return numOfBargainShoppers; };
+    public int getNumOfBulkShoppers(){ return numOfBulkShoppers; };
+    public int getNumOfImpulseShoppers(){ return numOfImpulseShoppers; };
+    public int getNumOfRegularShoppers(){ return numOfRegularShoppers; };
+    public int getNumOfProductsSold(){ return numOfProductsSold; };
+    public int getNumOfZombies(){ return numOfZombies; };
+    public int getNumOfFires(){ return numOfFires; };
+    public int getNumOfStorms(){ return numOfStorms; };
+    
+    public void increaseCountNumOfBargainShoppers(){ numOfBargainShoppers++; };
+    public void increaseCountNumOfBulkShoppers(){ numOfBulkShoppers++; };
+    public void increaseCountNumOfImpulseShoppers(){ numOfImpulseShoppers++; };
+    public void increaseCountNumOfRegularShoppers(){ numOfRegularShoppers++; };
+    public void increaseCountNumOfProductsSold(){ numOfProductsSold++; };
+    public void increaseCountNumOfZombies(){ numOfZombies++; };
+    public void increaseCountNumOfFires(){ numOfFires++; };
+    public void increaseCountNumOfStorms(){ numOfStorms++; };
 }
 

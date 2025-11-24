@@ -94,12 +94,14 @@ public class CustomerSpawner extends Actor
                     //rating                    
                     SimulationWorld.storeUI.addStar( 1, 1);
                     SimulationWorld.storeUI.addStar( 1, 1);
+                    SimulationWorld.storeOne.increaseCountNumOfZombies();
                 } else {
                     // Spawn in Store 2
                     spawnNode = SimulationWorld.storeTwo.getEntranceNode();
                     //rating                    
                     SimulationWorld.storeUI.addStar( 1, 2);
                     SimulationWorld.storeUI.addStar( 1, 2);
+                    SimulationWorld.storeTwo.increaseCountNumOfZombies();
                 }
                 getWorld().addObject(new Zombie(spawnNode), spawnNode.getX(), spawnNode.getY());
                 return;
