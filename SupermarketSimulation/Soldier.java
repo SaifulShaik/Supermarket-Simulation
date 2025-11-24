@@ -1,10 +1,13 @@
 import greenfoot.*;
 import java.util.ArrayList;
 /**
- * Soldier that enters a store, kills all zombies, and leaves
+ * Special customer unit that enters a store to eliminate all zombies and then leaves.
+ * Soldiers spawn at the road, navigate to their assigned store's entrance, systematically
+ * shoot all zombies within that store, and exit once the mission is complete.
+ * Unlike regular customers, soldiers do not shop and are immune to zombie infection.
  * 
- * @author Joe
- * @version November 2025
+ * @author Owen
+ * @version Nov 2025
  */
 public class Soldier extends Customer {
     private boolean flipped = false;
@@ -13,8 +16,12 @@ public class Soldier extends Customer {
     private boolean missionComplete = false;
     
     /**
-     * Constructor that assigns soldier to a specific store
-     * Soldier spawns at the road node and navigates to assigned store
+     * Constructs a soldier assigned to eliminate zombies in a specific store.
+     * The soldier spawns at the specified road node and automatically navigates
+     * to the entrance of the assigned store.
+     * 
+     * @param startNode the node where the soldier spawns (typically on the road)
+     * @param assignedStore the store that this soldier is tasked to protect
      */
     public Soldier(Node startNode, Store assignedStore) {
         super(3, 0, startNode, 0, 0, 10000);
@@ -34,6 +41,15 @@ public class Soldier extends Customer {
         System.out.println("[Soldier] Created, assigned to " + assignedStore.name + ", spawning from road");
     }
     
+    /**
+     * Main action method called on each game cycle. Handles the soldier's behavior
+     * through three phases:
+     * <ol>
+     *   <li>Navigation from road to store entrance</li>
+     *   <li>Combat phase - eliminates all zombies in the assigned store</li>
+     *   <li>Exit phase - leaves the store after mission completion</li>
+     * </ol>
+     */
     @Override
     public void act() {
         if (getWorld() == null) return;
@@ -101,6 +117,13 @@ public class Soldier extends Customer {
         }
     }
     
+     /**
+     * Finds the zombie closest to the soldier from a given list.
+     * Uses Euclidean distance to determine proximity.
+     * 
+     * @param zombies the list of zombies to search through
+     * @return the nearest zombie, or null if the list is empty
+     */
     private Zombie getNearestZombie(ArrayList<Zombie> zombies) {
         if (zombies.isEmpty()) return null;
         
@@ -117,18 +140,35 @@ public class Soldier extends Customer {
         return nearest;
     }
     
+    /**
+     * Calculates the Euclidean distance between the soldier and another actor.
+     * 
+     * @param other the actor to measure distance to
+     * @return the distance in pixels
+     */
     private double getDistanceTo(Actor other) {
         int dx = other.getX() - getX();
         int dy = other.getY() - getY();
         return Math.sqrt(dx * dx + dy * dy);
     }
     
+    /**
+     * Flips the soldier's image horizontally to face the opposite direction.
+     * Used in combination with the flipped flag to ensure the soldier faces
+     * toward the zombie they're targeting.
+     */
     private void flipImage() {
         GreenfootImage img = getImage();
         img.mirrorHorizontally();
         setImage(img);
     }
     
+    /**
+     * Orients the soldier to face the specified zombie by flipping the image
+     * horizontally as needed. Ensures the soldier is visually aiming at their target.
+     * 
+     * @param zombie the zombie to face toward
+     */
     private void faceZombie(Zombie zombie) {
         if (zombie.getX() < getX() && !flipped) {
             flipImage();
@@ -139,6 +179,13 @@ public class Soldier extends Customer {
         }
     }
     
+    /**
+     * Creates and fires a bullet at the specified zombie target.
+     * The bullet is spawned slightly above the soldier's position and
+     * automatically tracks the target zombie.
+     * 
+     * @param zombie the zombie to shoot at
+     */
     private void shootBullet(Zombie zombie) {
         getWorld().addObject(new Bullet(zombie), getX(), getY() - 20);
     }

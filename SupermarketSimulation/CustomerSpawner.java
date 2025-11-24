@@ -84,7 +84,7 @@ public class CustomerSpawner extends Actor
         
         if (Greenfoot.getRandomNumber(spawnRate) == 0 && customers.size() <= 10 && spawn) {
             //chance for zombie
-            int zombie = Greenfoot.getRandomNumber(10);
+            int zombie = Greenfoot.getRandomNumber(15);
             if (zombie == 0){
                 int storeChoice = Greenfoot.getRandomNumber(2);
                 Node spawnNode;

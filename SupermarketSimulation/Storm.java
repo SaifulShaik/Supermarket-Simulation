@@ -2,9 +2,16 @@ import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 import java.util.ArrayList;
 
 /**
- * Storm effect with lightning that can start fires
- * By: Owen L
+ * Storm effect with lightning that can start fires in stores.
+ * The storm appears as a moving gray cloud formation that periodically generates
+ * lightning strikes. Lightning bolts can spawn fire objects when they strike within
+ * store boundaries. The storm moves back and forth across the screen, lasts for
+ * approximately 10 seconds, then fades out over 2 seconds.
+ * 
+ * @author Owen L
+ * @version Nov 2025
  */
+
 public class Storm extends Effect {
     private boolean firstAct;
     private int position, direction, duration;
@@ -19,7 +26,11 @@ public class Storm extends Effect {
     private int flashDuration;
     private ArrayList<LightningBolt> lightningBolts;
     
-    // Track lightning strike positions for fire spawning
+    /**
+     * Inner class representing a single lightning bolt strike.
+     * Tracks the start position, end position, and target height of each bolt.
+     * Used for both rendering the lightning and determining fire spawn locations.
+     */
     private class LightningBolt {
         int startX;
         int startY;
@@ -37,6 +48,11 @@ public class Storm extends Effect {
         }
     }
     
+    /**
+     * Constructs a new storm effect with default settings.
+     * The storm is initialized with a 10-second duration, 2-second fade time,
+     * and randomized lightning timing. The cloud moves back and forth at 1.5 pixels per act.
+     */
     public Storm() {
         drawimage();
         actCount = 600;  // Storm lasts 600 acts before fading (about 10 seconds)
@@ -55,6 +71,12 @@ public class Storm extends Effect {
         lightningBolts = new ArrayList<LightningBolt>();
     }
     
+    /**
+     * Main action method called each game cycle.
+     * Handles storm movement, lightning timing, flash effects, and fire spawning.
+     * The storm moves back and forth, periodically triggers lightning strikes,
+     * and fades out when its duration expires.
+     */
     public void act() {
         if (getWorld() == null) {
             return;
@@ -103,6 +125,11 @@ public class Storm extends Effect {
         }
     }
     
+    /**
+     * Draws the base storm cloud image without lightning.
+     * Creates a semi-transparent gray cloud effect using randomly placed
+     * oval shapes to simulate smoke blobs. The image is 1600x600 pixels.
+     */
     private void drawimage() {
         image = new GreenfootImage(1600, 600);
         image.setColor(new Color(80, 80, 80, 100)); // gray background
@@ -121,7 +148,11 @@ public class Storm extends Effect {
         setImage(image);
     }
     
-    // Trigger lightning strike
+    /**
+     * Triggers a lightning strike event.
+     * Generates 1-3 random lightning bolts at different horizontal positions
+     * and initiates the flash display for 5 frames. Clears any previous lightning bolts.
+     */
     private void triggerLightning() {
         showLightning = true;
         flashDuration = 5; // Lightning visible for 5 frames
@@ -139,7 +170,11 @@ public class Storm extends Effect {
         drawLightning();
     }
     
-    // Draw the lightning effect
+    /**
+     * Draws the complete lightning effect including flash overlay.
+     * Redraws the base storm image with a bright white flash overlay,
+     * lighter-tinted smoke, and all active lightning bolts with glow effects.
+     */
     private void drawLightning() {
         // Redraw base image first
         drawimage();
@@ -165,7 +200,14 @@ public class Storm extends Effect {
         setImage(image);
     }
     
-    // Draw individual lightning bolt and track where it hits
+    /**
+     * Draws an individual lightning bolt with jagged segments and glow effect.
+     * The bolt is drawn in white with random horizontal variations creating a
+     * natural lightning appearance. Includes random branching effects and tracks
+     * the final strike position for fire spawning.
+     * 
+     * @param bolt the LightningBolt object containing position and height data
+     */
     private void drawLightningBolt(LightningBolt bolt) {
         int x = bolt.startX;
         int y = bolt.startY;
@@ -231,7 +273,16 @@ public class Storm extends Effect {
         }
     }
     
-    // Helper to draw thick lines
+    /**
+     * Helper method to draw lines with variable thickness.
+     * Creates thick lines by drawing multiple parallel lines offset from the center.
+     * 
+     * @param x1 starting X coordinate
+     * @param y1 starting Y coordinate
+     * @param x2 ending X coordinate
+     * @param y2 ending Y coordinate
+     * @param thickness the thickness of the line in pixels
+     */
     private void drawThickLine(int x1, int y1, int x2, int y2, int thickness) {
         for (int i = -thickness/2; i <= thickness/2; i++) {
             for (int j = -thickness/2; j <= thickness/2; j++) {
@@ -240,7 +291,12 @@ public class Storm extends Effect {
         }
     }
     
-    // Spawn fire where lightning struck
+    /**
+     * Spawns fire objects at lightning strike locations within store boundaries.
+     * Each lightning bolt has a 70% chance of starting a fire. Lightning strikes
+     * are only converted to fires if they land within the boundaries of Store 1
+     * (x: 25-475) or Store 2 (x: 725-1095). Logs strike information to console.
+     */
     private void spawnFireAtLightningStrike() {
         if (getWorld() == null) return;
         
