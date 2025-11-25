@@ -11,7 +11,7 @@ import java.util.ArrayList;
  * - Star ratings (average of all ratings) for each store
  * - Whole store discounts
  * 
- * @author Saiful Shaik, Joe and Owen L
+ * @author Joe and Owen L
  * @version November 11, 2025
  */
 public class StoreUI extends Actor
