@@ -14,12 +14,17 @@ public class EndScreen extends World
     private GreenfootImage saiful = new GreenfootImage("Cutscene/Saiful/Saiful Think.PNG");
     private GreenfootImage endImage;
     
+    private boolean receiptOnScreen = false;
+    
+    private GreenfootImage background = new GreenfootImage("End Screen.PNG");
+    private GreenfootImage receiptImage = new GreenfootImage("Statistics Receipt.PNG");
+    private GreenfootImage currentBackground = new GreenfootImage("End Screen.PNG");
+    
     public EndScreen(int endType)
     {    
         // Create a new world with 1200x600 cells with a cell size of 1x1 pixels.
         super(1200, 600, 1);
-        setBackground(new GreenfootImage("End Screen.PNG"));
-        addObject(showStatisticsButton, 125, 575);
+        setPaintOrder(Button.class, CutsceneImage.class);
         
         if (endType==0){
             endText="End 1: Supermarket wins!\n Saiful chose to shop there";
@@ -31,10 +36,17 @@ public class EndScreen extends World
         }
         
         GreenfootImage text = new GreenfootImage(endText, 30, Color.BLACK, new Color(0,0,0,0));
-        getBackground().drawImage(text,725,200);
+        background.drawImage(text,725,200);
         saiful.scale(1200,600);
-        getBackground().drawImage(saiful,550,70);
-        getBackground().drawImage(endImage,0,0);
+        background.drawImage(saiful,550,70);
+        background.drawImage(endImage,0,0);
+        
+        currentBackground.drawImage(background,0,0);
+        setBackground(currentBackground);
+        addObject(showStatisticsButton, 125, 575);
+        
+        createReceipt();
+        
     }
     
     public void act(){
@@ -43,14 +55,27 @@ public class EndScreen extends World
         {
             if (showStatisticsButton.containsPoint(mouse.getX(), mouse.getY()))
             {
-                showReceipt();
+                if(!receiptOnScreen){
+                    receiptOnScreen=true;
+                    showReceipt();
+                }
+                else{
+                    receiptOnScreen=false;
+                    hideReceipt();
+                }
             }
         }
-    }
+        }
     
     private void showReceipt(){
-        getBackground().drawImage(new GreenfootImage("Statistics Receipt.PNG"),0,0);
-        
+        getBackground().drawImage(receiptImage,0,0);
+    }
+    
+    private void hideReceipt(){
+        getBackground().drawImage(background,0,0);
+    }
+    
+    private void createReceipt(){
         int supermarketTotalCustomers = Customer.supermarketTotalBargainShoppers 
                                     + Customer.supermarketTotalBulkShoppers 
                                     + Customer.supermarketTotalImpulseShoppers 
@@ -72,8 +97,6 @@ public class EndScreen extends World
             + "\n\n" 
             + Zombie.supermarketTotalZombies + " Zombies\n";
             
-        System.out.println(supermarketReceipt);
-            
         String butcherReceipt = 
             Customer.butcherTotalBargainShoppers + " Bargain Shoppers\n" 
             + Customer.butcherTotalBulkShoppers + " Bulk Shoppers\n" 
@@ -82,14 +105,12 @@ public class EndScreen extends World
             + "Total Customers: " + butcherTotalCustomers
             + "\n\n" + Customer.butcherTotalProductsSold + " total items sold" + "\n\n" 
             + Zombie.butcherTotalZombies + " Zombies\n";
-            
-        System.out.println(butcherReceipt);
         
         GreenfootImage receipt = new GreenfootImage(supermarketReceipt, 20, Color.BLACK, new Color(0,0,0,0));
-        getBackground().drawImage(receipt,405,200);
+        receiptImage.drawImage(receipt,405,200);
         
         GreenfootImage receipt2 = new GreenfootImage(butcherReceipt, 20, Color.BLACK, new Color(0,0,0,0));
-        getBackground().drawImage(receipt2,610,200);
+        receiptImage.drawImage(receipt2,610,200);
         
         double storeOneProfit = SimulationWorld.storeOne.getProfit();
         storeOneProfit = Math.round(storeOneProfit * 100.0) / 100.0;
@@ -100,9 +121,9 @@ public class EndScreen extends World
         String butcherTotalProfit= String.valueOf(storeTwoProfit);
         
         GreenfootImage total1 = new GreenfootImage(supermarketTotalProfit, 20, Color.BLACK, new Color(0,0,0,0));
-        getBackground().drawImage(total1,720,540);
+        receiptImage.drawImage(total1,720,540);
         
         GreenfootImage total2 = new GreenfootImage(butcherTotalProfit, 20, Color.BLACK, new Color(0,0,0,0));
-        getBackground().drawImage(total2,515,540);
+        receiptImage.drawImage(total2,515,540);
     }
 }
