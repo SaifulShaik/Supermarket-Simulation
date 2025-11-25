@@ -137,6 +137,11 @@ public class Zombie extends Customer
         }
     }
     
+    /**
+     * Used to track stats for each class to be displayed at the end
+     * 
+     * @return type of object
+     */
     protected int getType(){
         return 4;
     }

@@ -181,7 +181,11 @@ public class Soldier extends Customer {
         getWorld().addObject(new Bullet(zombie), getX(), getY() - 20);
     }
     
-    @Override
+    /**
+     * Used to track stats for each class to be displayed at the end
+     * 
+     * @return type of object
+     */
     protected int getType(){
         return 5;
     }

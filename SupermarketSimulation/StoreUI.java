@@ -92,6 +92,11 @@ public class StoreUI extends Actor
         }
     }
     
+    /**
+     * Clears the ratings for a specified store
+     *
+     * @param store the store number (1 or 2)
+     */
     public void clearRatings(int store) {
         if (store == 1) {
             storeOneRatings.clear();
