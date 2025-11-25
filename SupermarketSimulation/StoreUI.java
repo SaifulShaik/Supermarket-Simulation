@@ -142,7 +142,7 @@ public class StoreUI extends Actor
         if (storeOneProfitLabel != null) return;
         
         // Create money tracker bars (green filled, red background)
-        storeOneMoneyBar = new SuperStatBar(MAX_MONEY,0,null,180,30,0, Color.GREEN,Color.RED, false,Color.WHITE,2);
+        storeOneMoneyBar = new SuperStatBar(MAX_MONEY,0, null,180,30,0, Color.GREEN, Color.RED, false, Color.WHITE, 2);
         storeTwoMoneyBar = new SuperStatBar(MAX_MONEY, 0, null, 180, 30, 0,Color.GREEN, Color.RED, false, Color.WHITE, 2);
         
         // Add money bars first (so they are behind labels)
@@ -150,11 +150,11 @@ public class StoreUI extends Actor
         w.addObject(storeTwoMoneyBar, w.getWidth() / 2 + 250, getY());
         
         // Create profit labels
-        storeOneProfitLabel = new Label("Profit: $" + String.format("%.2f", SimulationWorld.storeOne.getProfit()),2);
+        storeOneProfitLabel = new Label("Profit: $" + String.format("%.2f", SimulationWorld.storeOne.getProfit()),27);
         storeOneProfitLabel.setLineColor(Color.BLACK);
         storeOneProfitLabel.setFillColor(new Color(255, 255, 255, 255));
         
-        storeTwoProfitLabel = new Label("Profit: $" + String.format("%.2f", SimulationWorld.storeTwo.getProfit()),2);
+        storeTwoProfitLabel = new Label("Profit: $" + String.format("%.2f", SimulationWorld.storeTwo.getProfit()),27);
         storeTwoProfitLabel.setLineColor(Color.BLACK);
         storeTwoProfitLabel.setFillColor(new Color(255, 255, 255, 255));
         
@@ -178,11 +178,11 @@ public class StoreUI extends Actor
         };
         
         // Create rating labels (for displaying average rating)
-        storeOneRatingLabel = new Label(String.format("%.1f", SimulationWorld.storeOne.getBaseRating()), 2);
+        storeOneRatingLabel = new Label(String.format("%.1f", SimulationWorld.storeOne.getBaseRating()), 27);
         storeOneRatingLabel.setLineColor(Color.YELLOW);
         storeOneRatingLabel.setFillColor(new Color(255, 255, 0, 255));
         
-        storeTwoRatingLabel = new Label(String.format("%.1f", SimulationWorld.storeTwo.getBaseRating()), 2);
+        storeTwoRatingLabel = new Label(String.format("%.1f", SimulationWorld.storeTwo.getBaseRating()), 27);
         storeTwoRatingLabel.setLineColor(Color.YELLOW);
         storeTwoRatingLabel.setFillColor(new Color(255, 255, 0, 255));
         
@@ -222,12 +222,8 @@ public class StoreUI extends Actor
         if (storeOneProfitLabel == null || storeTwoProfitLabel == null) return;
         
         // Update label text
-        storeOneProfitLabel.setValue(
-            "Profit: $" + String.format("%.2f", SimulationWorld.storeOne.getProfit())
-        );
-        storeTwoProfitLabel.setValue(
-            "Profit: $" + String.format("%.2f", SimulationWorld.storeTwo.getProfit())
-        );
+        storeOneProfitLabel.setValue("Profit: $" + String.format("%.2f", SimulationWorld.storeOne.getProfit()));
+        storeTwoProfitLabel.setValue("Profit: $" + String.format("%.2f", SimulationWorld.storeTwo.getProfit()));
         
         // Remove old bars and labels from world
         World w = getWorld();
