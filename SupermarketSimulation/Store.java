@@ -1,8 +1,13 @@
 import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 import java.util.*;
 /**
- * @author Joe and Saiful
- * @version nov 11, 2025
+ * Represents the stores in the simulation with nodes for customer navigation,
+ * display units for products, and cashiers for checkout. 
+ * Tracks profit, customer statistics, and handles store settings like discounts and ratings.
+ * Manages both stores
+ * 
+ * @author Joe, Saiful, and Owen Lee
+ * @version November 11, 2025
  */
 public class Store {
     String name;
@@ -344,6 +349,7 @@ public class Store {
         }
         return false;
     }
+    
     /**
      * Prepares the store for a new day of operation.
      * 
@@ -368,6 +374,7 @@ public class Store {
         // Pass the world reference to the SaleManager
         SaleManager.chooseRandomSale(allTypes, world);
     }
+    
     /**
      * Returns the store number based on this store's name.
      * For example, "Store 1" returns 1 and "Store 2" returns 2.
@@ -383,33 +390,68 @@ public class Store {
         return -1;
     }
     
-    // Add these getter/setter methods at the very end of the class
+    public void increaseCountNumOfBargainShoppers(){ numOfBargainShoppers++; };
+    public void increaseCountNumOfBulkShoppers(){ numOfBulkShoppers++; };
+    public void increaseCountNumOfImpulseShoppers(){ numOfImpulseShoppers++; };
+    public void increaseCountNumOfRegularShoppers(){ numOfRegularShoppers++; };
+    public void increaseCountNumOfProductsSold(){ numOfProductsSold++; };
+    public void increaseCountNumOfZombies(){ numOfZombies++; };
+    public void increaseCountNumOfFires(){ numOfFires++; };
+    public void increaseCountNumOfStorms(){ numOfStorms++; };
+    
+    
+    /**
+     * Gets the current store discount percentage.
+     * 
+     * @return the discount percentage
+     */
     public double getStoreDiscount() {
         return storeDiscount;
     }
     
+    /**
+     * Sets the store discount percentage.
+     * Value is between 0 and 100.
+     * 
+     * @param discount the discount percentage to set
+     */
     public void setStoreDiscount(double discount) {
         this.storeDiscount = Math.max(0, Math.min(100, discount));
     }
     
+    /**
+     * Gets the base rating for the store.
+     * 
+     * @return the base rating (1.0-5.0)
+     */
     public double getBaseRating() {
         return baseRating;
     }
     
+    /**
+     * Sets the base rating for the store.
+     * Value is between 1.0 and 5.0.
+     * 
+     * @param rating the base rating to set
+     */
     public void setBaseRating(double rating) {
         this.baseRating = Math.max(1.0, Math.min(5.0, rating));
     }
     
     /**
-     * Reset store to initial state - clears profit, resets discount and rating,
-     * clears product types and display units, but keeps nodes and cashiers
+     * Resets all store statistics and profit to their initial values.
+     * Should be called when restarting the simulation.
      */
     public void resetStore() {
-        this.profit = 0;
-        this.storeDiscount = 0.0;
-        this.baseRating = 3.0;
-        this.availableProductTypes.clear();
-        this.availableDisplayUnits.clear();
+        this.profit = 0.0;
+        this.numOfBargainShoppers = 0;
+        this.numOfBulkShoppers = 0;
+        this.numOfImpulseShoppers = 0;
+        this.numOfRegularShoppers = 0;
+        this.numOfProductsSold = 0;
+        this.numOfZombies = 0;
+        this.numOfFires = 0;
+        this.numOfStorms = 0;
     }
 }
 

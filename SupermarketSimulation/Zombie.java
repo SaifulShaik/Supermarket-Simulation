@@ -1,8 +1,8 @@
 import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 /**
  * Zombie customer that wanders stores and converts regular customers into zombies.
- * Zombies are special customer entities that do not shop or check out. Instead, they
- * continuously wander through stores, converting any regular customers they touch.
+ * Zombies are special customer entities that do not shop or check out. 
+ * Walk around store until killed by soldiers.
  * Each zombie conversion and presence negatively impacts store ratings.
  * Zombies cannot convert soldiers or customers who have already checked out.
  * 
@@ -19,8 +19,7 @@ public class Zombie extends Customer
     /**
      * Constructs a zombie at the specified node location.
      * The zombie inherits movement capabilities from Customer but has all
-     * shopping behaviors disabled. The sprite is scaled to 25% size and
-     * padded vertically for proper visual alignment.
+     * shopping behaviors disabled. 
      * 
      * @param n the starting node where the zombie spawns
      */
@@ -48,8 +47,7 @@ public class Zombie extends Customer
     /**
      * Main action method called on each game cycle.
      * Zombies continuously wander through stores using the node navigation system.
-     * Unlike regular customers, zombies never attempt to check out or exit.
-     * Each act cycle includes collision checking to detect and convert nearby customers.
+     * Collision checking to detect and convert nearby customers.
      */
     @Override
     public void act()
@@ -67,14 +65,8 @@ public class Zombie extends Customer
     /**
      * Checks for collisions with regular customers and converts them into zombies.
      * Only customers who are currently in a store and have not checked out can be converted.
-     * Soldiers are immune to zombie infection. When a customer is converted:
-     * <ul>
-     *   <li>A death animation appears at the collision location</li>
-     *   <li>A zombie sound effect plays</li>
-     *   <li>The victim's carried items and basket are removed</li>
-     *   <li>A new zombie spawns at the victim's location</li>
-     *   <li>The store's rating decreases</li>
-     * </ul>
+     * Soldiers are immune to zombie infection. 
+     * When a customer is converted a sound and animation plays
      */
     public void checkCollision()
     {
@@ -111,8 +103,6 @@ public class Zombie extends Customer
             
             // Remove the customer and it's carriedItems
             victim.removeAllCarriedItems();
-            // Remove the victim's basket and carried items first
-            victim.removeAllCarriedItems();
             
             // Remove the customer
             getWorld().removeObject(victim);
@@ -134,10 +124,7 @@ public class Zombie extends Customer
     
     /**
      * Calculates and applies rating penalties when a zombie exits a store.
-     * Overrides the parent Customer's rating calculation to apply negative
-     * rating changes instead of positive ones. Each zombie that leaves
-     * reduces the store's rating, reflecting customer dissatisfaction
-     * with the zombie presence.
+     * Customers are scared of zombies so they give a negative review.
      */
     @Override
     protected void calculateRating()
