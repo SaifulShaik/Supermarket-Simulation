@@ -5,15 +5,11 @@ import java.util.List;
 /**
  * Write a description of class MyWorld here.
  * 
- * @author Saiful Shaik, Owen Kung, Joe Zhuo, Angelina Zhou
+ * @author Saiful Shaik, Owen Kung, Joe Zhuo, Angelina Zhou, Owen Lee
  * @version Modified: Nov, 8, 2025
  */
 public class SimulationWorld extends World
 {
-    
-    //for spawning truck
-    private int truckDelay;
-    
     // Grid settings
     public static final int GRID_CELL_SIZE = 20; // pixels per cell
     public static final int GRID_START_Y = 100;  // Grid starts at y=100
@@ -40,7 +36,12 @@ public class SimulationWorld extends World
         super(bg.getWidth(), bg.getHeight(), 1);
         setBackground(bg); 
 
+        storeOne.resetStore();
+        storeTwo.resetStore();
+        storeUI.clearRatings(1);
+        storeUI.clearRatings(2);
         roadNodes = new ArrayList<>();
+        
         
         //drawStoreBoundaries();
         
@@ -166,6 +167,11 @@ public class SimulationWorld extends World
         bg.drawString("Store 2", 1080, 180);
     }
     
+    /**
+     * Handles daily storm spawning with random timing.
+     * Storms can spawn once per day between 8 AM and 6 PM with a small random chance.
+     * The spawn flag resets at midnight. Increments the storm counter when spawned.
+     */
     private void handleStorms() {
         int hour = TimeOfDayManager.getHour();
         
@@ -446,6 +452,7 @@ public class SimulationWorld extends World
             saleChosenToday = true;
         }
     }
+    
    /*
      * Try to stop all the long sound effect
      * Sometimes it still does not work when pause is pressed

@@ -1,7 +1,10 @@
 import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 import java.util.ArrayList;
 /**
- * Spawns customers into the road 
+ * Spawns customers into the road at regular intervals.
+ * Handles customer spawning during store hours (8 AM - 5 PM) and deploys soldiers
+ * at 5 PM to stores with zombie 
+ * Different customer types spawn randomly.
  * 
  * @author Joe & Owen Lee
  * @version November 2025
@@ -14,10 +17,18 @@ public class CustomerSpawner extends Actor
     private int lastSoldierSpawnDay = -1;  // Track which day soldiers were spawned
     private boolean zombieAdded = false;
     
+    /**
+     * Constructs a CustomerSpawner with no visible image.
+     */
     public CustomerSpawner() {
         setImage((GreenfootImage) null);
     }
     
+    /**
+     * Main act method that controls spawning timing.
+     * Spawns soldiers at 5 PM if zombies are present, spawns regular customers
+     * between 8 AM and 5 PM. Prevents duplicate soldier spawns on the same day.
+     */
     public void act() {
         int currentDay = TimeOfDayManager.getDaysPassed();  // Get current day from TimeOfDayManager
         
@@ -38,7 +49,8 @@ public class CustomerSpawner extends Actor
     }
     
     /**
-     * Spawns soldiers only to stores that have zombies
+     * Spawns soldiers to stores that currently have zombies.
+     * Checks both stores for zombie presence and spawns one soldier per infected store.
      */
     private void spawnSoldiersIfNeeded() {
         Node startNode = SimulationWorld.getStartNode();
@@ -76,6 +88,12 @@ public class CustomerSpawner extends Actor
         }
     }
     
+    /**
+     * Spawns customers randomly during store hours.
+     * Has a small chance each frame to spawn a zombie  or
+     * a regular customer type (RegularShopper, BulkShopper, BargainShopper, ImpulseShopper).
+     * Limits total customers to 10 at a time.
+     */
     private void spawnCustomers() {
         Node startNode = SimulationWorld.getStartNode();
         
@@ -84,7 +102,7 @@ public class CustomerSpawner extends Actor
         
         if (Greenfoot.getRandomNumber(spawnRate) == 0 && customers.size() <= 10 && spawn) {
             //chance for zombie
-            int zombie = Greenfoot.getRandomNumber(15);
+            int zombie = Greenfoot.getRandomNumber(20);
             if (zombie == 0){
                 int storeChoice = Greenfoot.getRandomNumber(2);
                 Node spawnNode;

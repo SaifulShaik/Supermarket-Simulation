@@ -3,6 +3,9 @@ import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 /**
  * The effect superclass provides the functionality of fading away and removing effects
  * This code was inspired from the lesson in class
+ * 
+ * @author Owen Lee
+ * @version Nov 2025
  */
 public class Effect extends SuperSmoothMover
 {
@@ -32,7 +35,6 @@ public class Effect extends SuperSmoothMover
     {
         actCount--;
         fadeOut(actCount, fadeTime);
-        // System.out.println(getX()); // for testing
         if (actCount == 0){
             getWorld().removeObject(this);
             return;
