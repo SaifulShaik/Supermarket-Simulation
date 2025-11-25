@@ -254,6 +254,7 @@ public class SettingWorld extends World
 
         int x = mouse.getX();
         int y = mouse.getY();
+        
         if (gridMode) {
             x = (x / GRID_SIZE) * GRID_SIZE;
             y = (y / GRID_SIZE) * GRID_SIZE;
@@ -790,7 +791,7 @@ public class SettingWorld extends World
         int x = mouse.getX();
         
         // Check if click is on any button or label area
-        return y < 80 || y > getHeight() - 200; // Changed from 100 to 200
+        return y < 80 || (x < getWidth()/2 + 150 && x > getWidth()/2 - 100); // Changed from 100 to 200
     }
     
     /**
