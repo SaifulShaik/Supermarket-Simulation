@@ -69,6 +69,17 @@ import java.util.List;
  * time-based events. Includes dynamic display unit placement and saving/loading of store layouts. 
  * Implements Z-sort for proper visual layering, inspired by Mr. Cohen's Vehicle Simulation depth-sorting.</p>
  * 
+ * <Credits>
+ * Graphics sources
+ * https://www.artstation.com/limezu
+ * https://www.canva.com/templates
+ * https://liberatedpixelcup.github.io/Universal-LPC-Spritesheet-Character-Generator/?authuser=0#sex=male&body=Body_color_light&head=Human_male_light&expression=Neutral_light
+ * https://chatgpt.com/
+ * https://www.remove.bg/
+ * Sound source
+ * https://pixabay.com/sound-effects/
+ * 
+ * 
  * @author Saiful Shaik, Owen Kung, Joe Zhuo, Angelina Zhou, Owen Lee
  * @version November 24, 2025
 */
