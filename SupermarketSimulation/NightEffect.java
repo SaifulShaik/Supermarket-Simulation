@@ -59,15 +59,14 @@ public class NightEffect extends Effect
      */
     public void act()
     {
-        
-  if(TimeOfDayManager.getHour()==22 && TimeOfDayManager.getMinute()==45)
-        {  
-            timer=0;
-            isDayTime=false;
-            hasResetTime=false;
-            
-            SoundManager.stopAmbienceSound();
-        }
+        if(TimeOfDayManager.getHour()==22 && TimeOfDayManager.getMinute()==45)
+            {  
+                timer=0;
+                isDayTime=false;
+                hasResetTime=false;
+                
+                SoundManager.stopAmbienceSound();
+            }
         //if it's still night time, let the darkening mechanism work till completion
         if (!isDayTime && timer <= totalDuration)
         {
@@ -76,6 +75,7 @@ public class NightEffect extends Effect
         }
         cleanUp();
     }
+    
     /**
      * Runs a single step of the night cycle.
      *
@@ -114,8 +114,7 @@ public class NightEffect extends Effect
             gettingBrighter=BRIGHTER_LENGTH;
             moonProgress = 0.0;
 
-        } 
-
+        }
     }
     
     /**

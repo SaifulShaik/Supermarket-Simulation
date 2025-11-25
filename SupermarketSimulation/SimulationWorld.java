@@ -2,23 +2,101 @@ import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Write a description of class MyWorld here.
- * 
- * @author Saiful Shaik, Owen Kung, Joe Zhuo, Angelina Zhou
- * @version Modified: Nov, 8, 2025
+/*
+ * Supermarket Simulation - SimulationWorld
+ *
+ * Top-level overview
+ * ------------------
+ * This file contains the main world for the Supermarket Simulation game. The
+ * simulation models two competing stores in a single world. Customers spawn,
+ * navigate to display units, pick products, and queue at cashiers. The world
+ * also drives environmental events (storms), day/night changes, restocking
+ * trucks and sale selection.
+ *
+ * High-level components
+ * - Store: Manages nodes, cashiers and the set of available product types.
+ * - DisplayUnit / DisplayUnitData: Physical shelving/fridges/bins which hold
+ *   Product instances. These are loaded from a saved layout or created with
+ *   a default layout and then stocked.
+ * - Customer / CustomerSpawner: Spawns customers and controls their behaviour
+ *   via a Node graph and store-provided product information.
+ * - Cashier: Checkout points customers queue at; stores register cashiers so
+ *   customers can find them.
+ * - TimeOfDayManager / ClockDisplay: Advances in-game time and triggers time
+ *   based events (sale updates, truck arrivals, day/night swaps).
+ * - SoundManager: Central control for ambience and effect sounds.
+ *
+ * Sub-customer types (behavioural variants)
+ * -----------------------------------------
+ * The simulation includes multiple customer subclasses that alter shopping
+ * behaviour (found as separate classes in the project):
+ * - `BargainShopper`: Prioritises sale items and looks for cheapest options.
+ * - `BulkShopper`: Buys larger quantities and prefers bulk-sized display units.
+ * - `ImpulseShopper`: Makes spontaneous purchases of nearby, attention-grabbing
+ *   items (e.g. endcaps, snack shelves).
+ * - Other variants: Additional specialised shoppers may exist; each subclass
+ *   overrides selection and movement logic to produce distinct gameplay.
+ *
+ * Zombies (special actors / adversarial customers)
+ * -------------------------------------------------
+ * The project contains a 'zombie' style actor concept (if present) used to
+ * create unusual or adversarial behaviour patterns. Zombies differ from
+ * normal customers by ignoring normal shopping rules (they may wander,
+ * pursue specific targets, or interact differently with display units). Use
+ * them to test resilience of store layout or as a gameplay hazard. If a
+ * `Zombie` class isn't present in the codebase, any similarly-named actor
+ * implements the same pattern: alternate movement and different interaction
+ * handlers compared to normal customers.
+ *
+ * Global vs Local effects
+ * ------------------------
+ * - Global effects: These impact the whole world and are managed by the
+ *   `SimulationWorld` or central subsystems. Examples include:
+ *   - Storm events: Spawned by `handleStorms()` and visually represented by
+ *     a `Storm` actor that affects the entire world (visibility, spawning).
+ *   - Day/night cycle: Managed by `TimeOfDayManager` and `NightEffect`, and
+ *     switch ambient sound and visual tone for the whole world.
+ *   - Restocking trucks: Arrive at fixed times and affect store-wide stock.
+ *
+ * - Local effects: These are targeted to specific actors/areas and do not
+ *   affect the whole world. Examples include:
+ *   - `SaleSign`: A local visual indicator above a display unit or aisle.
+ *   - Single-display animations/effects (e.g., `Explosion`, `Fire`) that
+ *     affect nearby customers or a single display unit.
+ *   - NodeMarkers or UI floating text attached to single display units.
+ *
+ * Sound management
+ * ----------------
+ * Sounds are centrally managed via `SoundManager`. Responsibilities include:
+ * - Starting/stopping ambience sounds for day/night modes (`startAmbienceSound`,
+ *   `startNightSound`, `stopAmbienceSound`, `stopNightSound`).
+ * - Playing one-off effect sounds (butcher, truck, etc.).
+ * - Handling paused/resumed state: `stopped()` and `started()` attempt to
+ *   suspend or resume long-running sounds so the audio state matches the
+ *   simulation pause state. Consider moving to a small audio subsystem if
+ *   finer-grained control (volume per-channel, muting, or layering) is
+ *   required.
+ *
+ * Maintainer notes
+ * ----------------
+ * - Display units are registered with nearby stores so each store can derive
+ *   what product types it offers. This is done during `loadDisplayUnits()` or
+ *   `createDefaultLayout()`.
+ * - Debug prints were removed from this file; use a logging facility or a
+ *   configurable debug flag if you need diagnostic output later.
+ * - Paint order is explicitly set using `setPaintOrder(...)` so visual layers
+ *   render consistently.
+ *
+ * @authors Saiful Shaik, Owen Kung, Joe Zhuo, Angelina Zhou, Owen Lee
+ * @version Nov, 8, 2025
  */
 public class SimulationWorld extends World
 {
-    
-    //for spawning truck
-    private int truckDelay;
-    
     // Grid settings
     public static final int GRID_CELL_SIZE = 20; // pixels per cell
     public static final int GRID_START_Y = 100;  // Grid starts at y=100
     
-    private static final GreenfootImage bg = new GreenfootImage("background.png");
+   private static final GreenfootImage bg = new GreenfootImage("background.png");
     
     public static Store storeOne = new Store("Store 1"); 
     public static Store storeTwo = new Store("Store 2");
@@ -35,14 +113,17 @@ public class SimulationWorld extends World
     private int lastHour = -1;
     
     public int numberOfStorms = 0;
-    
-    GreenfootSound music = new GreenfootSound("tokyo-music-walker-sunset-drive-chosic.com_.mp3");
 
     public SimulationWorld(){
         super(bg.getWidth(), bg.getHeight(), 1);
         setBackground(bg); 
 
+        storeOne.resetStore();
+        storeTwo.resetStore();
+        storeUI.clearRatings(1);
+        storeUI.clearRatings(2);
         roadNodes = new ArrayList<>();
+        
         
         //drawStoreBoundaries();
         
@@ -125,8 +206,9 @@ public class SimulationWorld extends World
         storeTwo.startNewDay(this);
         saleChosenToday = true;
 
-        music.setVolume(30);
-        music.playLoop();
+       SoundManager.startAmbienceSound();
+       // music.setVolume(30);
+        //music.playLoop();
     }
     
     public void act () 
@@ -167,6 +249,11 @@ public class SimulationWorld extends World
         bg.drawString("Store 2", 1080, 180);
     }
     
+    /**
+     * Handles daily storm spawning with random timing.
+     * Storms can spawn once per day between 8 AM and 6 PM with a small random chance.
+     * The spawn flag resets at midnight. Increments the storm counter when spawned.
+     */
     private void handleStorms() {
         int hour = TimeOfDayManager.getHour();
         
@@ -234,7 +321,7 @@ public class SimulationWorld extends World
                         try { 
                             unit.stock(); 
                         } catch (Exception stockEx) {
-                            System.err.println("Error stocking " + unit.getClass().getSimpleName() + ": " + stockEx.getMessage());
+                            // Failed to stock this unit during load; continue without printing.
                         }
                         
                         if (parent != null) {
@@ -246,13 +333,12 @@ public class SimulationWorld extends World
                             if (!provided.isEmpty()) {
                                 for (Class<? extends Product> pc : provided) parent.addAvailableProductTypes(pc);
                             }
-                            System.out.println("Added " + unit.getClass().getSimpleName() + " to " + (parent == storeOne ? "Store 1" : "Store 2") + " -> products: " + (provided.isEmpty() ? "<none yet>" : provided));
+                            // Registered display unit with parent store (no debug print).
                         } else {
-                            System.out.println("Added " + unit.getClass().getSimpleName() + " at (" + data.getX() + "," + data.getY() + ") but could not assign to a store");
+                            // Could not assign this display unit to any nearby store.
                         }
                     } catch (Exception e) {
-                        System.err.println("Error registering display unit: " + e.getMessage());
-                        e.printStackTrace();
+                        // Error during display unit registration; swallowed to avoid noisy output.
                     }
                 }
             }
@@ -307,12 +393,12 @@ public class SimulationWorld extends World
                     if (!provided.isEmpty()) {
                         for (Class<? extends Product> pc : provided) parent.addAvailableProductTypes(pc);
                     }
-                    System.out.println("Added " + unit.getClass().getSimpleName() + " to " + (parent == storeOne ? "Store 1" : "Store 2") + " -> products: " + (provided.isEmpty() ? "<none yet>" : provided));
+                    // Registered default display unit with parent store (no debug print).
                 } else {
-                    System.out.println("Added " + unit.getClass().getSimpleName() + " at (" + ux + "," + uy + ") but could not assign to a store");
+                    // Could not assign this default display unit to any nearby store.
                 }
             } catch (Exception e) {
-                System.err.println("Error registering default display unit: " + e.getMessage());
+                // Error registering default display unit; swallowed to avoid noisy output.
             }
         }
     }
@@ -447,6 +533,7 @@ public class SimulationWorld extends World
             saleChosenToday = true;
         }
     }
+    
    /*
      * Try to stop all the long sound effect
      * Sometimes it still does not work when pause is pressed
@@ -462,8 +549,7 @@ public class SimulationWorld extends World
         
         //stop butcher sound
         SoundManager.stopButcherSound();
-        
-        music.pause(); 
+
     }
     
     /*
@@ -485,11 +571,12 @@ public class SimulationWorld extends World
         
         //replay butcher sound
         SoundManager.playButcherSound();
-        music.playLoop();
     }
 
     public int getNumOfStorms(){ return numberOfStorms; }
 }
+
+
 
 
 

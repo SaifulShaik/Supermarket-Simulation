@@ -2,15 +2,14 @@ import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 import java.util.ArrayList;
 
 /**
- * StoreUI is responsible for displaying the main UI elements
- * that compare the performance of two stores in the simulation.
+ * StoreUI is responsible for displaying the main UI elements of the simulation
+ * that compare the performance of two stores
  *
  * It shows:
  * - Profit labels for each store
  * - Money bars that fill based on store profit
  * - Star ratings (average of all ratings) for each store
- * 
- * The StoreUI actor itself has no image; it just manages other UI objects.
+ * - Whole store discounts
  * 
  * @author Joe and Owen L
  * @version November 11, 2025
@@ -42,15 +41,15 @@ public class StoreUI extends Actor
     private Label storeTwoDiscountLabel;
     
     //Maxium Money Value
-    private final int MAX_MONEY = 500;
+    private final int MAX_MONEY = 1000;
     
     /**
      * Constructor for StoreUI.
-     * Initializes the rating lists for each store and removes the main actor image,
+     * Initializes the rating lists
      * since this class only manages other UI objects.
      */
     public StoreUI() {
-        // No main image – UI is made from separate Label and SuperStatBar objects.
+        // no image
         setImage((GreenfootImage) null);
 
         // Initialize rating arrays
@@ -59,7 +58,6 @@ public class StoreUI extends Actor
     }
     
     /**
-     * Main act method for StoreUI.
      * On every frame, updates the money bars, profit labels, and rating displays
      * to match the current store profits and ratings.
      */
@@ -73,7 +71,7 @@ public class StoreUI extends Actor
      * Adds a star rating (1–5) to a specific store.
      *
      * @param rating the rating value (must be between 1 and 5, inclusive)
-     * @param store  the store number to rate: 1 for Store 1, 2 for Store 2
+     * @param store  the store number to rate (1 or 2)
      */
     public void addStar(int rating, int store) {
         // Validate rating is between 1–5
@@ -89,7 +87,7 @@ public class StoreUI extends Actor
                 updateRatingDisplay(2);
                 break;
             default:
-                // Invalid store index; do nothing
+                // Invalid store index
                 break;
         }
     }
@@ -128,17 +126,14 @@ public class StoreUI extends Actor
             totalCount++;
         }
         
-        // Calculate weighted average
+        // Calculate average
         double average = totalSum / totalCount;
         return Math.round(average * 10.0) / 10.0;
     }
     
     /**
      * Creates and positions all UI elements (money bars, profit labels,
-     * star icons, rating labels) in the given world.
-     *
-     * This method should only be called once. If the UI has already been
-     * created, the method returns immediately.
+     * star icons, rating labels, store discount indicatior) in the SimulationWorld.
      *
      * @param w the world in which the UI components are added
      */
@@ -146,42 +141,20 @@ public class StoreUI extends Actor
         // Only create if not already created
         if (storeOneProfitLabel != null) return;
         
-        // Create money tracker bars (green filled, red missing, with border)
-        storeOneMoneyBar = new SuperStatBar(
-            MAX_MONEY,      // maxVal
-            0,              // start at 0
-            null,           // owner (null = do not follow any actor)
-            180,            // width
-            30,             // height
-            0,              // offset
-            Color.GREEN,    // filled color
-            Color.RED,      // missing color
-            false,          // hideAtMax
-            Color.WHITE,    // border color
-            2               // border thickness
-        );
-        
-        storeTwoMoneyBar = new SuperStatBar(
-            MAX_MONEY, 0, null, 180, 30, 0,
-            Color.GREEN, Color.RED, false, Color.WHITE, 2
-        );
+        // Create money tracker bars (green filled, red background)
+        storeOneMoneyBar = new SuperStatBar(MAX_MONEY,0, null,180,30,0, Color.GREEN, Color.RED, false, Color.WHITE, 2);
+        storeTwoMoneyBar = new SuperStatBar(MAX_MONEY, 0, null, 180, 30, 0,Color.GREEN, Color.RED, false, Color.WHITE, 2);
         
         // Add money bars first (so they are behind labels)
         w.addObject(storeOneMoneyBar, w.getWidth() / 2 - 200, getY());
         w.addObject(storeTwoMoneyBar, w.getWidth() / 2 + 250, getY());
         
         // Create profit labels
-        storeOneProfitLabel = new Label(
-            "Profit: $" + String.format("%.2f", SimulationWorld.storeOne.getProfit()),
-            27
-        );
+        storeOneProfitLabel = new Label("Profit: $" + String.format("%.2f", SimulationWorld.storeOne.getProfit()),27);
         storeOneProfitLabel.setLineColor(Color.BLACK);
         storeOneProfitLabel.setFillColor(new Color(255, 255, 255, 255));
         
-        storeTwoProfitLabel = new Label(
-            "Profit: $" + String.format("%.2f", SimulationWorld.storeTwo.getProfit()),
-            27
-        );
+        storeTwoProfitLabel = new Label("Profit: $" + String.format("%.2f", SimulationWorld.storeTwo.getProfit()),27);
         storeTwoProfitLabel.setLineColor(Color.BLACK);
         storeTwoProfitLabel.setFillColor(new Color(255, 255, 255, 255));
         
@@ -189,7 +162,7 @@ public class StoreUI extends Actor
         w.addObject(storeOneProfitLabel, w.getWidth() / 2 - 200, getY());
         w.addObject(storeTwoProfitLabel, w.getWidth() / 2 + 250, getY());
         
-        // Create star icons
+        // Create star icons as new actors so we dont create too many classes
         storeOneStarIcon = new Actor() {
             {
                 setImage("star.png");
@@ -205,17 +178,11 @@ public class StoreUI extends Actor
         };
         
         // Create rating labels (for displaying average rating)
-        storeOneRatingLabel = new Label(
-            String.format("%.1f", SimulationWorld.storeOne.getBaseRating()), 
-            24
-        );
+        storeOneRatingLabel = new Label(String.format("%.1f", SimulationWorld.storeOne.getBaseRating()), 27);
         storeOneRatingLabel.setLineColor(Color.YELLOW);
         storeOneRatingLabel.setFillColor(new Color(255, 255, 0, 255));
         
-        storeTwoRatingLabel = new Label(
-            String.format("%.1f", SimulationWorld.storeTwo.getBaseRating()), 
-            24
-        );
+        storeTwoRatingLabel = new Label(String.format("%.1f", SimulationWorld.storeTwo.getBaseRating()), 27);
         storeTwoRatingLabel.setLineColor(Color.YELLOW);
         storeTwoRatingLabel.setFillColor(new Color(255, 255, 0, 255));
         
@@ -235,12 +202,10 @@ public class StoreUI extends Actor
         storeTwoDiscountLabel.setLineColor(Color.BLACK);
         storeTwoDiscountLabel.setFillColor(new Color(255, 200, 200, 255));
         w.addObject(storeTwoDiscountLabel, w.getWidth() / 2 + 480, getY()); 
-
-
     }
     
     /**
-     * Called automatically when this StoreUI object is added to a world.
+     * Called automatically when this StoreUI  is added to a world.
      * Ensures that the display is created once the actor appears in the world.
      *
      * @param world the world that this actor was added to
@@ -252,19 +217,13 @@ public class StoreUI extends Actor
     
     /**
      * Updates the money bars and profit labels to match the current store profits.
-     * The bars are capped at MAX_MONEY and re-added to keep them visually on top
-     * in the correct order.
      */
     private void updateDisplay() {
         if (storeOneProfitLabel == null || storeTwoProfitLabel == null) return;
         
         // Update label text
-        storeOneProfitLabel.setValue(
-            "Profit: $" + String.format("%.2f", SimulationWorld.storeOne.getProfit())
-        );
-        storeTwoProfitLabel.setValue(
-            "Profit: $" + String.format("%.2f", SimulationWorld.storeTwo.getProfit())
-        );
+        storeOneProfitLabel.setValue("Profit: $" + String.format("%.2f", SimulationWorld.storeOne.getProfit()));
+        storeTwoProfitLabel.setValue("Profit: $" + String.format("%.2f", SimulationWorld.storeTwo.getProfit()));
         
         // Remove old bars and labels from world
         World w = getWorld();

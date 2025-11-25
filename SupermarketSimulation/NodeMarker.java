@@ -4,6 +4,8 @@ import greenfoot.*;
  * A small visual marker that follows a DisplayUnit to show the node in front
  * of the unit. It's lightweight and simply positions itself on top of the
  * target DisplayUnit each act cycle.
+ * 
+ * @author Saiful Shaik
  */
 public class NodeMarker extends Actor {
     private DisplayUnit targetUnit;

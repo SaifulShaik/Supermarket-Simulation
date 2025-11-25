@@ -1,46 +1,8 @@
 import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 import java.util.Arrays;
 /**
- * <p>New and Improved Stat Bar (Formerly Health Bar). This stat bar can be set to follow
- * an Actor or stay in one place (see constructors). This stat bar may have customized colors,
- * can hide when at full, and can have a customized border. This class aims to be as flexible
- * as possible, allowing it to be simple to use for beginners (easy 0 or 2 parameter constructor)
- * while also highly flexible for those who want to provide more specific parameters (multiple bars
- * in custom colours and sizes with custom offsets and borders).</p>
- * 
- * <p>Instructions:</p>
- * <ol>
- *  <li>Choose a constructor. They range from super-simple to ultra-customizable. 
- *  Each one has a set of Parameters for which you must set values. 
- *  These may be integers (like maximum hit points) or Colors. In order to follow another
- *  Actor around, msot constructors require a Target, which can be any Actor. If you don't want
- *  the bar to follow anything, use null for this parameter and the bar will stay wherever you place it</li>
- *  <li>Declare the SuperStatBar in your class variable section. This may be done in your World or in the Actor.</li>
- *  <li>Initialize the statBar.
- *   <ul>
- *    <li>If you're placing the bar inside the Actor, be sure to use <code>this</code></li> for the Target, 
- *       for example:<br><code>statBar = new StatBar (100, player);</code></li>
- *    <li>If you're placing this in the World, then pass it the reference to the Actor, 
- *       for example <br><code>statBar = new StatBar (100, player)</code>;</li>
- *   </ul> 
- *  </li>
- *  <li> </li>
- * </ol>
- * <p>
- * Implementation - If using multiple bars, all arrays must be the same size. To 
- * optimize the appearance choose a height such that:
- * <p><code> (height - (borderThickness * 2)) % numBars == 0  </code></p>
- * <p>In other words, after factoring out the border, the size should be evenly divisible by 
- * the number of bars, so that all bars end up the same size.</p>
- * <p><b>Version Notes:</b></p>
- * <ul>
- * <li>Now has a boolean to determine whether it will hide itself when Val is full.</li>
- * <li>Now has a set of constructors to allow simple and complex implementation.</li>
- * <li>2.1.0 --> Added a border feature, allows customization of thickness and colour</li>
- * <li>2.1.2 --> Improved naming of some variables, improved efficiency of update</li>
- * <li>2.2.0 --> Better control of hideAtMax, now with default constant, accessor and mutator</li>
- * </ul>
- * 
+ * SuperStatBar was taken from the bug simulation and it allows for the 
+ * easy creation of a bar that tracks progress (such as profit)
  * @author Jordan Cohen
  * @version 2.2.0 - Jan 2023
  */

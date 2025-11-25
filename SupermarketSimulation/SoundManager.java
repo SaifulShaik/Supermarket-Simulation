@@ -34,6 +34,7 @@ public class SoundManager
 
     //super market ambience
     private static GreenfootSound ambience = new GreenfootSound("supermarketAmbience.mp3");
+    //private static GreenfootSound ambience = new GreenfootSound("tokyo-music-walker-sunset-drive-chosic.com_.mp3"); //fade in too long
     private static GreenfootSound ambienceNight = new GreenfootSound("midnight.mp3");
     
     //butcher sound effect
@@ -191,7 +192,7 @@ public class SoundManager
      */
     public static void startAmbienceSound()
     {
-        ambience.setVolume(30);
+        ambience.setVolume(25);
         ambience.playLoop(); 
     }
     /**
@@ -267,7 +268,7 @@ public class SoundManager
      */
     public static void playBulletSound()
     {
-        bulletSounds[bulletSoundIndex].setVolume(30);
+        bulletSounds[bulletSoundIndex].setVolume(25);
         bulletSounds[bulletSoundIndex].play();    
         bulletSoundIndex++; 
         if(bulletSoundIndex==bulletSounds.length)
@@ -277,6 +278,8 @@ public class SoundManager
     }
 
 }
+
+
 
 
 

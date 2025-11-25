@@ -76,7 +76,20 @@ public class SettingWorld extends World
     private static final int accessRadius = 100;
     
     /**
-     * Constructor for objects of class SettingWorld.
+     * Constructs the SettingWorld editor for placing and arranging display units.
+     * Initializes the editor with the following setup:
+     * <ul>
+     *   <li>Sets the background image and disables display unit stocking</li>
+     *   <li>Defines restricted areas where units cannot be placed (cashier zones, borders, walls)</li>
+     *   <li>Loads original layout for potential reversion if user cancels</li>
+     *   <li>Populates forbidden nodes from both stores to prevent placement conflicts</li>
+     *   <li>Adds visual node markers so editor users can see restricted node locations</li>
+     *   <li>Sets up all UI components (buttons, labels, controls)</li>
+     *   <li>Creates placement preview actor for visual feedback during placement</li>
+     *   <li>Loads existing display unit layout from saved file if available</li>
+     *   <li>Resets store discounts to 0% and base ratings to 3.0</li>
+     * </ul>
+     * The editor is ready for immediate use after construction with grid mode enabled by default.
      */
     public SettingWorld()
     {    
@@ -154,8 +167,10 @@ public class SettingWorld extends World
     }
     
     /**
-     * Set up all UI components
-     */
+ * Sets up all UI components for the editor interface.
+ * Creates buttons for saving, navigation, grid mode toggle, unit selection,
+ * and store settings controls. Adds cashier zone markers and sets paint order.
+ */
     private void setupUI() {
         // Save and Back buttons
         saveButton = new Button("SAVE", 120, 45);
@@ -318,6 +333,13 @@ public class SettingWorld extends World
         }
     }
     
+    /**
+     * Main action method called every frame in the editor.
+     * Coordinates all editor functionality including dialog handling, store settings,
+     * unit selection, grid mode toggling, placement preview, unit placement and dragging,
+     * unit deletion, and save/back button actions. If a dialog is active, only dialog
+     * responses are processed
+     */
     public void act() {
         if (activeDialog != null) {
             handleDialogResponse();
@@ -778,7 +800,9 @@ public class SettingWorld extends World
     }
     
     /**
-     * Handle store discount and rating button clicks
+     * Handles store discount and base rating adjustments through UI buttons.
+     * Processes increment/decrement clicks for both stores, updating discounts (5% steps)
+     * and ratings (0.5 steps). Clears customer ratings when base rating changes.
      */
     private void handleStoreSettings() {
         // Store 1 discount buttons

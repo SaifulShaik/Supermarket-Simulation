@@ -6,7 +6,7 @@ import java.util.*;
  * represents one tile that is part of a path
  * has a link to the previous nodes of the path
  * 
- * @author Joe Zhuo
+ * @author Saiful Shaik & Joe Zhuo
  * @version November 2025
  */
 public class Node

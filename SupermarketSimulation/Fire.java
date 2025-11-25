@@ -1,7 +1,12 @@
 import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 /**
-* Fire animation with burnout
-*/
+ * Animated fire effect that displays flickering flames and gradually burns out over time.
+ * Each fire instance has a random size and duration and shrinks to indicate it is dissapearing
+ * 
+ * @author Owen L
+ * @version Nov 2025
+ */
+
 public class Fire extends Actor
 {
     private GreenfootImage[] fireFrames = new GreenfootImage[11];
@@ -14,6 +19,11 @@ public class Fire extends Actor
     private int burnoutTimer;
     private int maxBurnTime;
     
+    /**
+     * Constructs a new fire object with random size and burnout duration.
+     * Loads and scales all animation frames
+     * Sets up a burnout timer between 120-300 act cycles 
+     */
     public Fire() {
         // creates random sized fire 
         for (int i = 0; i < fireFrames.length; i++) {
@@ -37,12 +47,19 @@ public class Fire extends Actor
         burnoutTimer = maxBurnTime;
     }
     
+    /**
+     * Main act loop for the fire.
+     * Animates the fire by cycling through frames and handles the burnout process,
+     */
     public void act() {
         animateFire();
         burnOut();
     }
     
-    //runs through array of images to produce a animation effect
+    /**
+     * Cycles through the fire animation frames to create a animation.
+     * Changes to the next frame based on animation speed and cycles through the images
+     */
     private void animateFire() {
         animationCounter++;
         if (animationCounter >= ANIMATION_SPEED) {
@@ -52,7 +69,10 @@ public class Fire extends Actor
         }
     }
     
-    // Fire gets smaller and disappears over time
+    /**
+     * Manages the fire's lifecycle as it burns out over time.
+     * The fire shrinks and fades until it is removed
+     */
     private void burnOut() {
         burnoutTimer--;
         
@@ -78,7 +98,13 @@ public class Fire extends Actor
         }
     }
     
-    // Shrink all fire frames
+    /**
+     * Scales all fire animation frames by the specified factor.
+     * Used during the burnout process to make the fire appear smaller.
+     * Updates the current displayed image after scaling all frames.
+     * 
+     * @param scale the scaling factor (ex. 0.7 means 70% of original size)
+     */
     private void shrinkFire(double scale) {
         for (int i = 0; i < fireFrames.length; i++) {
             int newWidth = (int)(fireFrames[i].getWidth() * scale);

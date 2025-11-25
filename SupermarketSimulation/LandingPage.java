@@ -1,10 +1,11 @@
 import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 
 /**
- * Write a description of class MyWorld here.
+ * The initial world the user finds themselves in
+ * From this page, they are able to click buttons that direct them to different worlds
  * 
- * @author (your name) 
- * @version (a version number or a date)
+ * @author Saiful Shaik
+ * @version 1
  */
 public class LandingPage extends World
 {
