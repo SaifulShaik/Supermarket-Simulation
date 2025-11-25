@@ -11,7 +11,7 @@ import java.util.ArrayList;
  */
 public class CustomerSpawner extends Actor
 {
-    private final static int spawnRate = 150;
+    private final static int spawnRate = 130;
     private int actCount = 0;
     private boolean spawn = true;
     private int lastSoldierSpawnDay = -1;  // Track which day soldiers were spawned
@@ -44,8 +44,6 @@ public class CustomerSpawner extends Actor
         } else{
             spawnCustomers();
         }
-        
-        
     }
     
     /**
