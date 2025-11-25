@@ -41,7 +41,7 @@ public class StoreUI extends Actor
     private Label storeTwoDiscountLabel;
     
     //Maxium Money Value
-    private final int MAX_MONEY = 1000;
+    private final int MAX_MONEY = 500;
     
     /**
      * Constructor for StoreUI.
