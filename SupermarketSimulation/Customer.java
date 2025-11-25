@@ -15,7 +15,7 @@ import java.util.*;
  * - handles animations in four directions
  * - pauses when collecting items and waiting in queue
  *
- * @author Joe Zhuo
+ * @author Saiful Shaik and Joe Zhuo
  * @version November 2025
  */
 

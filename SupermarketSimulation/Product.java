@@ -14,7 +14,7 @@ import java.util.List;
  *
  * Touching fire removes this product from the world.
  *
- * @author  Joe Zhuo and Owen Kung
+ * @author Saiful Shaik, Joe Zhuo, and Owen Kung
  * @version Nov 2025
  */
 public abstract class Product extends SuperSmoothMover

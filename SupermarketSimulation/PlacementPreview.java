@@ -4,6 +4,8 @@ import greenfoot.*;
  * PlacementPreview - shows a translucent preview image of the display unit
  * under the cursor while placing. It can tint the preview green (valid)
  * or red (invalid).
+ * 
+ * @author Saiful Shaik
  */
 public class PlacementPreview extends Actor {
     private GreenfootImage baseImage = null;

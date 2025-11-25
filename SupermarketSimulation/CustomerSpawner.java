@@ -6,7 +6,7 @@ import java.util.ArrayList;
  * at 5 PM to stores with zombie 
  * Different customer types spawn randomly.
  * 
- * @author Joe & Owen Lee
+ * @author Saiful Shaik, Joe, & Owen Lee
  * @version November 2025
  */
 public class CustomerSpawner extends Actor

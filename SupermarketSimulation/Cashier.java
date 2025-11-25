@@ -4,7 +4,7 @@ import java.util.*;
 /**
  * Cashier class that handles customer checkout and store profits
  * 
- * @author Joe Zhuo and Owen Kung
+ * @author Saiful Shaik, Joe Zhuo, and Owen Kung
  * @version Nov 4, 2025
  */
 public class Cashier extends Actor

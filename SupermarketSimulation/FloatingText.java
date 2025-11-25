@@ -5,7 +5,7 @@ import greenfoot.*;
  * 
  * This is particularly helpful to display the status of a player and create visual effects
  * 
- * @author: Owen Kung (edited by Joe)
+ * @author: Saiful Shaik (edited by Joe and Owen Kung)
  * @version: Oct 2025  //reused from vehicle simulation
  */
 public class FloatingText extends Actor

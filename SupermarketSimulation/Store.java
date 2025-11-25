@@ -6,7 +6,7 @@ import java.util.*;
  * Tracks profit, customer statistics, and handles store settings like discounts and ratings.
  * Manages both stores
  * 
- * @author Joe, Saiful, and Owen Lee
+ * @author Joe, Saiful Shaik, and Owen Lee
  * @version November 11, 2025
  */
 public class Store {

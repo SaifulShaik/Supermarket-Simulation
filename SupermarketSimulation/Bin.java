@@ -16,7 +16,7 @@ import java.util.ArrayList;
  * Adjustable layout fields:
  * COLS, ROWS, LAYERS, LEFT_PAD, TOP_PAD, COL_GAP, ROW_GAP.
  * 
- * @author Owen Kung
+ * @author Owen Kung (Edited by Saiful Shaik)
  * @version Nov 6 2025
  */
 public abstract class Bin extends DisplayUnit

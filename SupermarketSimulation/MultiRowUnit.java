@@ -14,7 +14,7 @@ import java.util.ArrayList;
  * Subclasses must decide which product to place on each row by
  * implementing the stockItemsByRow method.
  * 
- * @author Owen Kung
+ * @author Owen Kung (Edited by Saiful Shaik)
  * @version Nov 2025
  */
 public abstract class MultiRowUnit extends DisplayUnit {
