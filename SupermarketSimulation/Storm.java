@@ -270,9 +270,9 @@ public class Storm extends Effect {
                     getWorld().addObject(fire, worldX, worldY);
                     
                     String storeName = inStore1 ? "Store 1" : "Store 2";
-                    System.out.println("[Storm] Lightning struck in " + storeName + " at (" + worldX + ", " + worldY + ") - Fire started!");
+                    //System.out.println("[Storm] Lightning struck in " + storeName + " at (" + worldX + ", " + worldY + ") - Fire started!");
                 } else {
-                    System.out.println("[Storm] Lightning struck outside stores at (" + worldX + ", " + worldY + ") - No fire");
+                    //System.out.println("[Storm] Lightning struck outside stores at (" + worldX + ", " + worldY + ") - No fire");
                 }
             }
         }

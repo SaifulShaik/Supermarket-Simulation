@@ -71,14 +71,14 @@ import java.util.List;
  * 
  * @author Saiful Shaik, Owen Kung, Joe Zhuo, Angelina Zhou, Owen Lee
  * @version November 24, 2025
- */
+*/
 public class SimulationWorld extends World
 {
     // Grid settings
     public static final int GRID_CELL_SIZE = 20; // pixels per cell
     public static final int GRID_START_Y = 100;  // Grid starts at y=100
     
-   private static final GreenfootImage bg = new GreenfootImage("background.png");
+    private static final GreenfootImage bg = new GreenfootImage("background.png");
     
     public static Store storeOne = new Store("Store 1"); 
     public static Store storeTwo = new Store("Store 2");
@@ -516,7 +516,7 @@ public class SimulationWorld extends World
         }
     }
     
-   /*
+    /*
      * Try to stop all the long sound effect
      * Sometimes it still does not work when pause is pressed
      */

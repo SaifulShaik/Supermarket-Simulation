@@ -12,7 +12,7 @@ public class Store {
     private List<Cashier> cashiers;
     
     private List<Node> nodes;
-    private boolean nodesVisible = true;
+    private boolean nodesVisible = false;
     private List<NodeMarker> nodeMarkers = new ArrayList<>();
     
     private double profit;
