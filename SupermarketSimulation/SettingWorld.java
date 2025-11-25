@@ -749,7 +749,7 @@ public class SettingWorld extends World
         }
         placedUnits.clear();
         
-        Greenfoot.setWorld(new LandingPage());
+        Greenfoot.setWorld(new SimulationWorld());
     }
     
     /**

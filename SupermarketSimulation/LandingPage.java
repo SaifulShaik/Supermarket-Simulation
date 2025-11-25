@@ -55,7 +55,7 @@ public class LandingPage extends World
         
         if (playButton != null && playButton.wasClicked())
         {
-            transitionToSimulation();
+            transitionToCutscene();
         }
         
         if (settingsButton != null && settingsButton.wasClicked())
@@ -86,19 +86,21 @@ public class LandingPage extends World
                                 new Color(34, 200, 170), 
                                 new Color(50, 205, 50), 
                                 Color.WHITE, 30);
-        addObject(playButton, 600, 340);
+        addObject(playButton, 900, 300);
         
+        // Options button hidden
         settingsButton = new Button("OPTIONS", 180, 55,
                                     new Color(70, 70, 70),
                                     new Color(100, 100, 100),
                                     Color.WHITE, 24);
-        addObject(settingsButton, 600, 430);
+        // addObject(settingsButton, 600, 430);
         
         creditsButton = new Button("CREDITS", 180, 55,
                                    new Color(50, 50, 50),
                                    new Color(80, 80, 80),
                                    Color.WHITE, 24);
-        addObject(creditsButton, 600, 520);
+        //addObject(creditsButton, 600, 520);
+        addObject(creditsButton, 900, 400);
     }
 
     private void createBackground()
