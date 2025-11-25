@@ -390,16 +390,6 @@ public class Store {
         return -1;
     }
     
-    public void increaseCountNumOfBargainShoppers(){ numOfBargainShoppers++; };
-    public void increaseCountNumOfBulkShoppers(){ numOfBulkShoppers++; };
-    public void increaseCountNumOfImpulseShoppers(){ numOfImpulseShoppers++; };
-    public void increaseCountNumOfRegularShoppers(){ numOfRegularShoppers++; };
-    public void increaseCountNumOfProductsSold(){ numOfProductsSold++; };
-    public void increaseCountNumOfZombies(){ numOfZombies++; };
-    public void increaseCountNumOfFires(){ numOfFires++; };
-    public void increaseCountNumOfStorms(){ numOfStorms++; };
-    
-    
     /**
      * Gets the current store discount percentage.
      * 
@@ -436,22 +426,6 @@ public class Store {
      */
     public void setBaseRating(double rating) {
         this.baseRating = Math.max(1.0, Math.min(5.0, rating));
-    }
-    
-    /**
-     * Resets all store statistics and profit to their initial values.
-     * Should be called when restarting the simulation.
-     */
-    public void resetStore() {
-        this.profit = 0.0;
-        this.numOfBargainShoppers = 0;
-        this.numOfBulkShoppers = 0;
-        this.numOfImpulseShoppers = 0;
-        this.numOfRegularShoppers = 0;
-        this.numOfProductsSold = 0;
-        this.numOfZombies = 0;
-        this.numOfFires = 0;
-        this.numOfStorms = 0;
     }
 }
 

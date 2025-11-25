@@ -111,8 +111,6 @@ public class SimulationWorld extends World
         super(bg.getWidth(), bg.getHeight(), 1);
         setBackground(bg); 
 
-        storeOne.resetStore();
-        storeTwo.resetStore();
         SaleManager.reset();
         storeUI.clearRatings(1);
         storeUI.clearRatings(2);
@@ -219,7 +217,7 @@ public class SimulationWorld extends World
         }
         updateSaleItem();
         
-        if (this.storeOne.getProfit() > 500){
+        if (this.storeOne.getProfit() > storeUI.MAX_MONEY){
             fadeOutAndTransition(new EndScreen(0));
         }
         else if (this.storeTwo.getProfit() > storeUI.MAX_MONEY){

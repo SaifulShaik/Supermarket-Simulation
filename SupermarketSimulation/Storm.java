@@ -22,6 +22,7 @@ public class Storm extends Effect {
     private boolean showLightning;
     private int flashDuration;
     private ArrayList<LightningBolt> lightningBolts;
+    private int numberOfFires;
     
     /**
      * Class representing a single lightning bolt strike.

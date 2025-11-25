@@ -38,7 +38,7 @@ public class Soldier extends Customer {
         this.store = assignedStore;
         this.targetNode = assignedStore.getEntranceNode();
         
-        System.out.println("[Soldier] Created, assigned to " + assignedStore.name + ", spawning from road");
+        //System.out.println("[Soldier] Created, assigned to " + assignedStore.name + ", spawning from road");
     }
     
     /**
@@ -179,5 +179,10 @@ public class Soldier extends Customer {
      */
     private void shootBullet(Zombie zombie) {
         getWorld().addObject(new Bullet(zombie), getX(), getY() - 20);
+    }
+    
+    @Override
+    protected int getType(){
+        return 5;
     }
 }

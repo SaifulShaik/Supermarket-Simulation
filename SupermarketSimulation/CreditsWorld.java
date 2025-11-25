@@ -3,7 +3,7 @@ import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 /**
  * This world showcases the people who worked on the project
  * 
- * @author Saiful Shaik 
+ * @author Saiful Shaik (Background by Angelina)
  */
 public class CreditsWorld extends World
 {
