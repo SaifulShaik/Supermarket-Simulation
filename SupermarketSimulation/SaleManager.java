@@ -38,13 +38,6 @@ public class SaleManager
      */
     public static void setSaleProduct(Class<? extends Product> productType) {
         saleProduct = productType;
-
-        if (productType == null) {
-            System.out.println("[SALE] No sale today.");
-        } else {
-            System.out.println("[SALE] " + productType.getSimpleName() +
-                               " is " + discountPercent + "% off!");
-        }
     }
 
     /**
@@ -134,10 +127,7 @@ public class SaleManager
      */
     private static void applyDiscountToExistingStock(World world) {
         // Products automatically calculate sale discount in getPrice()
-        // No action needed here - just log the sale
-        if (saleProduct != null) {
-            System.out.println("[SALE] All " + saleProduct.getSimpleName() + " items are now on sale at " + discountPercent + "% off!");
-        }
+        // No action needed here
     }
 
     /**
@@ -147,7 +137,6 @@ public class SaleManager
      */
     public static void resetSale() {
         saleProduct = null;
-        System.out.println("[SALE] Sale reset at midnight.");
     }
 }
 

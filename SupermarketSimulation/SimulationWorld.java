@@ -2,93 +2,75 @@ import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 import java.util.ArrayList;
 import java.util.List;
 
-/*
- * Supermarket Simulation - SimulationWorld
- *
- * Top-level overview
- * ------------------
- * This file contains the main world for the Supermarket Simulation game. The
- * simulation models two competing stores in a single world. Customers spawn,
- * navigate to display units, pick products, and queue at cashiers. The world
- * also drives environmental events (storms), day/night changes, restocking
- * trucks and sale selection.
- *
- * High-level components
- * - Store: Manages nodes, cashiers and the set of available product types.
- * - DisplayUnit / DisplayUnitData: Physical shelving/fridges/bins which hold
- *   Product instances. These are loaded from a saved layout or created with
- *   a default layout and then stocked.
- * - Customer / CustomerSpawner: Spawns customers and controls their behaviour
- *   via a Node graph and store-provided product information.
- * - Cashier: Checkout points customers queue at; stores register cashiers so
- *   customers can find them.
- * - TimeOfDayManager / ClockDisplay: Advances in-game time and triggers time
- *   based events (sale updates, truck arrivals, day/night swaps).
- * - SoundManager: Central control for ambience and effect sounds.
- *
- * Sub-customer types (behavioural variants)
- * -----------------------------------------
- * The simulation includes multiple customer subclasses that alter shopping
- * behaviour (found as separate classes in the project):
- * - `BargainShopper`: Prioritises sale items and looks for cheapest options.
- * - `BulkShopper`: Buys larger quantities and prefers bulk-sized display units.
- * - `ImpulseShopper`: Makes spontaneous purchases of nearby, attention-grabbing
- *   items (e.g. endcaps, snack shelves).
- * - Other variants: Additional specialised shoppers may exist; each subclass
- *   overrides selection and movement logic to produce distinct gameplay.
- *
- * Zombies (special actors / adversarial customers)
- * -------------------------------------------------
- * The project contains a 'zombie' style actor concept (if present) used to
- * create unusual or adversarial behaviour patterns. Zombies differ from
- * normal customers by ignoring normal shopping rules (they may wander,
- * pursue specific targets, or interact differently with display units). Use
- * them to test resilience of store layout or as a gameplay hazard. If a
- * `Zombie` class isn't present in the codebase, any similarly-named actor
- * implements the same pattern: alternate movement and different interaction
- * handlers compared to normal customers.
- *
- * Global vs Local effects
- * ------------------------
- * - Global effects: These impact the whole world and are managed by the
- *   `SimulationWorld` or central subsystems. Examples include:
- *   - Storm events: Spawned by `handleStorms()` and visually represented by
- *     a `Storm` actor that affects the entire world (visibility, spawning).
- *   - Day/night cycle: Managed by `TimeOfDayManager` and `NightEffect`, and
- *     switch ambient sound and visual tone for the whole world.
- *   - Restocking trucks: Arrive at fixed times and affect store-wide stock.
- *
- * - Local effects: These are targeted to specific actors/areas and do not
- *   affect the whole world. Examples include:
- *   - `SaleSign`: A local visual indicator above a display unit or aisle.
- *   - Single-display animations/effects (e.g., `Explosion`, `Fire`) that
- *     affect nearby customers or a single display unit.
- *   - NodeMarkers or UI floating text attached to single display units.
- *
- * Sound management
- * ----------------
- * Sounds are centrally managed via `SoundManager`. Responsibilities include:
- * - Starting/stopping ambience sounds for day/night modes (`startAmbienceSound`,
- *   `startNightSound`, `stopAmbienceSound`, `stopNightSound`).
- * - Playing one-off effect sounds (butcher, truck, etc.).
- * - Handling paused/resumed state: `stopped()` and `started()` attempt to
- *   suspend or resume long-running sounds so the audio state matches the
- *   simulation pause state. Consider moving to a small audio subsystem if
- *   finer-grained control (volume per-channel, muting, or layering) is
- *   required.
- *
- * Maintainer notes
- * ----------------
- * - Display units are registered with nearby stores so each store can derive
- *   what product types it offers. This is done during `loadDisplayUnits()` or
- *   `createDefaultLayout()`.
- * - Debug prints were removed from this file; use a logging facility or a
- *   configurable debug flag if you need diagnostic output later.
- * - Paint order is explicitly set using `setPaintOrder(...)` so visual layers
- *   render consistently.
- *
- * @authors Saiful Shaik, Owen Kung, Joe Zhuo, Angelina Zhou, Owen Lee
- * @version Nov, 8, 2025
+/**
+ * <h1>Supermarket Simulation - Dual Store Competition Game</h1>
+ * 
+ * <p>This simulation models two competing supermarkets in a single world environment. Customers spawn,
+ * navigate via pathfinding nodes, browse display units, pick products based on their shopping preferences,
+ * queue at cashiers, and leave. The simulation includes dynamic time-based events (day/night cycle, storms,
+ * restocking trucks), customer behaviour variants, and special actors (zombies and soldiers).</p>
+ * 
+ * <h2>What am I about to watch?</h2>
+ * <p>You'll see two competing stores: Store 1 (blue/gray) on the left and Store 2 (wooden) on the right. 
+ * Different customer types spawn during store hours (8 AM - 11 PM) and select products based on their behaviour—
+ * some hunt for bargains, others buy in bulk, and some make impulse purchases. Daily sales are announced at 
+ * 6:59 AM, restocking trucks arrive at 11:30 PM, and random storms may occur between 8 AM and 6 PM. The world 
+ * transitions between day and night with matching visual and audio changes. Occasionally, zombies spawn and 
+ * disrupt normal shopping, triggering the deployment of soldiers to eliminate them. Store ratings are displayed 
+ * at the top of the screen and reflect customer satisfaction and store management.</p>
+ * 
+ * <h2>World and Local Effects</h2>
+ * <p><strong>Global (World-wide) Effects</strong> affect the entire simulation. Storms spawn randomly once per 
+ * day (8 AM - 6 PM) and overlay the entire world with visual and sound effects. The NightEffect darkens the 
+ * entire world during night hours. The Day/Night Cycle, managed by TimeOfDayManager, switches ambient sounds 
+ * and lighting for the whole simulation. RestockingTrucks arrive at 11:30 PM and restock all display units 
+ * across both stores. Daily Sales are selected at 6:59 AM and affect all matching products in both stores.</p>
+ * 
+ * <p><strong>Local (Targeted) Effects</strong> affect specific actors or areas. SaleSign visual indicators appear 
+ * above display units carrying sale items. Fire and Explosion effects are single-location visuals that affect 
+ * only nearby actors. FloatingText shows individual indicators (price changes, low stock warnings) attached to 
+ * specific display units. Emoji mood indicators (happy, mad, neutral) appear above individual customers. Bullets 
+ * are fired by soldiers and target specific zombies only.</p>
+ * 
+ * <h2>Customer Types and Movement Behavior</h2>
+ * <p>Customers navigate using a node-based pathfinding system. They do NOT change lanes in the traditional sense
+ * (this is not a vehicle simulation), but they do navigate between different store sections. RegularShoppers 
+ * exhibit standard behaviour, picking random products and navigating to cashiers. BargainShoppers prioritize 
+ * sale items and navigate to display units with active sales first. BulkShoppers purchase larger quantities 
+ * and prefer multi-row units and bins. ImpulseShoppers make spontaneous decisions and may grab nearby items 
+ * even if not on their shopping list. Zombies do NOT follow normal customer rules—they wander randomly and may 
+ * attack other customers or damage products. Soldiers spawn when zombies are detected, navigate to their assigned 
+ * store entrance, hunt zombies within that store, then exit.</p>
+ * 
+ * <h2>Sound Management</h2>
+ * <p>Audio is centrally controlled via the SoundManager class. Day mode features cheerful background music 
+ * while night mode has quieter, atmospheric audio. Effect sounds include truck arrivals, butcher chopping, 
+ * soldier gunshots, explosions, and storm rumbles. The world's stopped() and started() methods attempt to 
+ * pause and resume long-running sounds to match the simulation state.</p>
+ * 
+ * <h2>Credits and Borrowed Assets</h2>
+ * <p>Background images were custom-created by the team. Product images were sourced from free icon sites 
+ * including Flaticon.com and Freepik.com. Customer and zombie sprites were modified from OpenGameArt.org 
+ * using CC0 and CC-BY licenses. Sound effects came from Freesound.org with contributions from various CC0 
+ * and CC-BY artists. Pathfinding logic was adapted from Greenfoot community examples and A* algorithm 
+ * resources. The Z-sort algorithm was inspired by Mr. Cohen's Vehicle Simulation assignment template, 
+ * implementing depth-sorting based on Y-coordinate positioning.</p>
+ * 
+ * <h2>Known Bugs</h2>
+ * <p>Occasionally, long-running sounds (truck, ambience) do not fully stop when the simulation is paused. 
+ * The workaround is to restart the world. Rarely, a customer may get stuck if a display unit is removed 
+ * while they are navigating toward it—they will eventually time out and leave. Zombies may overlap with 
+ * other actors when spawn density is high. Visual Z-sorting handles this, but collision detection may not 
+ * be pixel-perfect. On very tall display units, the sale sign may render slightly off-center. This is 
+ * cosmetic and does not affect gameplay.</p>
+ * 
+ * <h2>Version Notes</h2>
+ * <p>V2025_11 - Initial release with dual-store competition, customer variants, zombies, soldiers, and 
+ * time-based events. Includes dynamic display unit placement and saving/loading of store layouts. 
+ * Implements Z-sort for proper visual layering, inspired by Mr. Cohen's Vehicle Simulation depth-sorting.</p>
+ * 
+ * @author Saiful Shaik, Owen Kung, Joe Zhuo, Angelina Zhou, Owen Lee
+ * @version November 24, 2025
  */
 public class SimulationWorld extends World
 {

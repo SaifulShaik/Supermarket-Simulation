@@ -95,7 +95,7 @@ public class DisplayUnitData {
             
             return parseJSON(jsonContent.toString());
         } catch (IOException e) {
-            System.err.println("Error loading layout: " + e.getMessage());
+            // Error loading layout; return empty list
             return new ArrayList<>();
         }
     }
@@ -180,7 +180,7 @@ public class DisplayUnitData {
             return (DisplayUnit) clazz.getDeclaredConstructor().newInstance();
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | 
                  NoSuchMethodException | java.lang.reflect.InvocationTargetException e) {
-            System.err.println("Error creating display unit: " + displayUnitType + " - " + e.getMessage());
+            // Error creating display unit; return null
             return null;
         }
     }

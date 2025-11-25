@@ -73,18 +73,12 @@ public class CustomerSpawner extends Actor
         if (store1HasZombies) {
             Soldier soldier1 = new Soldier(startNode, SimulationWorld.storeOne);
             getWorld().addObject(soldier1, startNode.getX(), startNode.getY());
-            System.out.println("[CustomerSpawner] Spawned soldier for Store 1 (has zombies)");
         }
         
         // Spawn soldier for Store 2 if it has zombies
         if (store2HasZombies) {
             Soldier soldier2 = new Soldier(startNode, SimulationWorld.storeTwo);
             getWorld().addObject(soldier2, startNode.getX(), startNode.getY());
-            System.out.println("[CustomerSpawner] Spawned soldier for Store 2 (has zombies)");
-        }
-        
-        if (!store1HasZombies && !store2HasZombies) {
-            System.out.println("[CustomerSpawner] No zombies detected, no soldiers spawned");
         }
     }
     

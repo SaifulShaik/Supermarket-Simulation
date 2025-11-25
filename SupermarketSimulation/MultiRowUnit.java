@@ -95,10 +95,6 @@ public abstract class MultiRowUnit extends DisplayUnit {
         }
 
         stocked = true;
-        System.out.println("[MultiRowUnit] " + getClass().getSimpleName()
-                           + " stocked " + stockedItems.size()
-                           + " items, parent store: "
-                           + (parentStore == null ? "<null>" : parentStore.name));
     }
 
     /**

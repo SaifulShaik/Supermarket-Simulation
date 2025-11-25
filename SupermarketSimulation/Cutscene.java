@@ -107,7 +107,6 @@ public class Cutscene extends World
         {
             if (skipButton.containsPoint(mouse.getX(), mouse.getY()))
             {
-                System.out.println("skipped");
                 transitionToSimulation();
                 return;
             }

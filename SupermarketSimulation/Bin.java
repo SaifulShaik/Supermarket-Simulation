@@ -123,9 +123,5 @@ public abstract class Bin extends DisplayUnit
         }
         
         stocked = true;
-        System.out.println("[Bin] " + getClass().getSimpleName()
-                           + " stocked " + stockedItems.size()
-                           + " items, parent store: "
-                           + (parentStore == null ? "<null>" : parentStore.name));
     }  
 }
