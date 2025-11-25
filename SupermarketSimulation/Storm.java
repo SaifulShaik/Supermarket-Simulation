@@ -19,6 +19,8 @@ public class Storm extends Effect {
     private int flashDuration;
     private ArrayList<LightningBolt> lightningBolts;
     
+    public static int numberOfFires = 0;
+    
     // Track lightning strike positions for fire spawning
     private class LightningBolt {
         int startX;
@@ -96,6 +98,7 @@ public class Storm extends Effect {
                 if (flashDuration <= 0) {
                     showLightning = false;
                     spawnFireAtLightningStrike();
+                    numberOfFires++;
                     drawimage(); // Redraw without lightning
                     lightningCooldown = 30;
                 }

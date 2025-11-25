@@ -122,6 +122,10 @@ public class BulkShopper extends Customer
             }
         }
     }
+    
+    protected int getType(){
+        return 1;
+    }
 }
 
 

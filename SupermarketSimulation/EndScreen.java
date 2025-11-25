@@ -11,6 +11,8 @@ public class EndScreen extends World
     private Button showStatisticsButton = new Button("Show receipt", 150, 35);
     private String endText;
     
+    private GreenfootImage saiful = new GreenfootImage("Cutscene/Saiful/Saiful Think.PNG");
+    
     public EndScreen(int endType)
     {    
         // Create a new world with 1200x600 cells with a cell size of 1x1 pixels.
@@ -27,6 +29,8 @@ public class EndScreen extends World
         
         GreenfootImage text = new GreenfootImage(endText, 30, Color.BLACK, new Color(0,0,0,0));
         getBackground().drawImage(text,725,200);
+        saiful.scale(1200,600);
+        getBackground().drawImage(saiful,550,70);
     }
     
     public void act(){
@@ -43,15 +47,39 @@ public class EndScreen extends World
     private void showReceipt(){
         getBackground().drawImage(new GreenfootImage("Statistics Receipt.PNG"),0,0);
         
-        String num = "(#)";
+        int supermarketTotalCustomers = Customer.supermarketTotalBargainShoppers 
+                                    + Customer.supermarketTotalBulkShoppers 
+                                    + Customer.supermarketTotalImpulseShoppers 
+                                    + Customer.supermarketTotalRegularShoppers;
         
-        String supermarketReceipt= num + " Bargain Shoppers\n" + num + " Bulk Shoppers\n" + num +
-            " Impulse Shoppers\n" + num + " Regular Shoppers\n" + "Total Customers: " + num
-            + "\n\n" + num + " total items sold" + "\n\n" + SimulationWorld.storeOne.getNumOfZombies() + " Zombies\n" + num + " Fires\n" + SimulationWorld.storeOne.getNumOfStorms() + " Storms";
+        int butcherTotalCustomers = Customer.butcherTotalBargainShoppers 
+                                    + Customer.butcherTotalBulkShoppers 
+                                    + Customer.butcherTotalImpulseShoppers 
+                                    + Customer.butcherTotalRegularShoppers;
+        
+        String supermarketReceipt = 
+            Customer.supermarketTotalBargainShoppers + " Bargain Shoppers\n" 
+            + Customer.supermarketTotalBulkShoppers + " Bulk Shoppers\n" 
+            + Customer.supermarketTotalImpulseShoppers + " Impulse Shoppers\n" 
+            + Customer.supermarketTotalRegularShoppers + " Regular Shoppers\n" 
+            + "Total Customers: " + supermarketTotalCustomers
+            + "\n\n" 
+            + Customer.supermarketTotalProductsSold + " total items sold" 
+            + "\n\n" 
+            + Zombie.supermarketTotalZombies + " Zombies\n";
             
-        String butcherReceipt= num + " Bargain Shoppers\n" + num + " Bulk Shoppers\n" + num +
-            " Impulse Shoppers\n" + num + " Regular Shoppers\n" + "Total Customers: " + num
-            + "\n\n" + num + " total items sold" + "\n\n" + SimulationWorld.storeTwo.getNumOfZombies() + " Zombies\n" + num + " Fires\n" + SimulationWorld.storeTwo.getNumOfStorms() + " Storms";
+        System.out.println(supermarketReceipt);
+            
+        String butcherReceipt = 
+            Customer.butcherTotalBargainShoppers + " Bargain Shoppers\n" 
+            + Customer.butcherTotalBulkShoppers + " Bulk Shoppers\n" 
+            + Customer.butcherTotalImpulseShoppers + " Impulse Shoppers\n" 
+            + Customer.butcherTotalRegularShoppers + " Regular Shoppers\n"
+            + "Total Customers: " + butcherTotalCustomers
+            + "\n\n" + Customer.butcherTotalProductsSold + " total items sold" + "\n\n" 
+            + Zombie.butcherTotalZombies + " Zombies\n";
+            
+        System.out.println(butcherReceipt);
         
         GreenfootImage receipt = new GreenfootImage(supermarketReceipt, 20, Color.BLACK, new Color(0,0,0,0));
         getBackground().drawImage(receipt,405,200);

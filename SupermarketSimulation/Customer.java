@@ -47,6 +47,19 @@ public abstract class Customer extends SuperSmoothMover
 
     // rating related
     private int originalShoppingListSize = 0;
+    
+    public static int supermarketTotalProductsSold = 0;
+    public static int butcherTotalProductsSold = 0;
+    
+    public static int supermarketTotalBargainShoppers = 0;
+    public static int supermarketTotalBulkShoppers = 0;
+    public static int supermarketTotalImpulseShoppers = 0;
+    public static int supermarketTotalRegularShoppers = 0;
+    
+    public static int butcherTotalBargainShoppers = 0;
+    public static int butcherTotalBulkShoppers = 0;
+    public static int butcherTotalImpulseShoppers = 0;
+    public static int butcherTotalRegularShoppers = 0;
 
     /**
      * Default customer constructor
@@ -600,6 +613,21 @@ public abstract class Customer extends SuperSmoothMover
      * Method to set the customer's check out flag to true
      */
     public void checkOut() {
+        if (this.getStore() == SimulationWorld.storeOne){
+            supermarketTotalProductsSold += this.getCartSize();
+            if (this.getType() == 0){ supermarketTotalBargainShoppers++; }
+            else if (this.getType() == 1){ supermarketTotalBulkShoppers++; }
+            else if (this.getType() == 2){ supermarketTotalImpulseShoppers++; }
+            else if (this.getType() == 3){ supermarketTotalRegularShoppers++; }
+        }
+        else{
+            butcherTotalProductsSold += this.getCartSize();
+            if (this.getType() == 0){ butcherTotalBargainShoppers++; }
+            else if (this.getType() == 1){ butcherTotalBulkShoppers++; }
+            else if (this.getType() == 2){ butcherTotalImpulseShoppers++; }
+            else if (this.getType() == 3){ butcherTotalRegularShoppers++; }
+        }
+    
         this.hasCheckedOut = true;
         SoundManager.playCashierSound();
     }
@@ -840,4 +868,6 @@ public abstract class Customer extends SuperSmoothMover
         //update rating
         SimulationWorld.storeUI.addStar( rating, store.getStoreNumber());
     }
+    
+    protected abstract int getType();
 }

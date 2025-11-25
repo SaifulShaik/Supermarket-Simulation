@@ -9,6 +9,9 @@ public class Zombie extends Customer
 {
     GreenfootImage shopper = new GreenfootImage("Zombie.png");
     
+    public static int supermarketTotalZombies = 0;
+    public static int butcherTotalZombies = 0;
+    
     public Zombie(Node n)
     {
         super(1, 0, n, 0, 0, 700);
@@ -18,6 +21,9 @@ public class Zombie extends Customer
         GreenfootImage padded = new GreenfootImage(w, h * 2);
         padded.drawImage(shopper, 0, 0);
         setImage(padded);
+        
+        if (this.getStore()==SimulationWorld.storeOne){ supermarketTotalZombies++; }
+        else{ butcherTotalZombies++; }
         
         // Clear inherited customer state to prevent checkout behavior
         this.hasCheckedOut = false;
@@ -108,5 +114,9 @@ public class Zombie extends Customer
         if (SimulationWorld.storeTwo.isInStore(getX(), getY())) {
             SimulationWorld.storeUI.addStar( 0, 2);
         }
+    }
+    
+    protected int getType(){
+        return 4;
     }
 }

@@ -115,4 +115,8 @@ public class ImpulseShopper extends Customer
             break;
         }
     }
+    
+    protected int getType(){
+        return 2;
+    }
 }

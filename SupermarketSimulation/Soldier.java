@@ -142,4 +142,8 @@ public class Soldier extends Customer {
     private void shootBullet(Zombie zombie) {
         getWorld().addObject(new Bullet(zombie), getX(), getY() - 20);
     }
+    
+    protected int getType(){
+        return 5;
+    }
 }

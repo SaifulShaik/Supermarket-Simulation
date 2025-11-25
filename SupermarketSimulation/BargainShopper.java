@@ -85,5 +85,9 @@ public class BargainShopper extends Customer
         super.leaveStore();
        
     }
+    
+    protected int getType(){
+        return 0;
+    }
 
 }

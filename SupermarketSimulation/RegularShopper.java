@@ -30,6 +30,10 @@ public class RegularShopper extends Customer
             padImage(new GreenfootImage("regularShopper/down2.png"))
         };
     }
+    
+    protected int getType(){
+        return 3;
+    }
 }
 
 
