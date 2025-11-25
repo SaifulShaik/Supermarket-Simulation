@@ -21,10 +21,10 @@ public class EndScreen extends World
         addObject(showStatisticsButton, 125, 575);
         
         if (endType==0){
-            endText="End 1: Supermarket wins!\nSaiful chose to shop there";
+            endText="End 1: Supermarket wins!\n Saiful chose to shop there";
         }
         else if (endType==1){
-            endText="End 2: Butcher wins!\nSaiful chose to shop there";
+            endText="End 2: Butcher wins!\n Saiful chose to shop there";
         }
         
         GreenfootImage text = new GreenfootImage(endText, 30, Color.BLACK, new Color(0,0,0,0));

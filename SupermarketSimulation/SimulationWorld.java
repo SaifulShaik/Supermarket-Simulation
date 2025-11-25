@@ -206,7 +206,13 @@ public class SimulationWorld extends World
           addObject(new RestockingTruck(),600,200);       
         }
         updateSaleItem();
-
+        
+        if (this.storeOne.getProfit() > 500){
+            fadeOutAndTransition(new EndScreen(0));
+        }
+        else if (this.storeTwo.getProfit() > 500){
+            fadeOutAndTransition(new EndScreen(1));
+        }
     }
     
     /**
@@ -553,6 +559,19 @@ public class SimulationWorld extends World
         
         //replay butcher sound
         SoundManager.playButcherSound();
+    }
+    
+    private void fadeOutAndTransition(World nextWorld)
+    {
+        GreenfootImage overlay = new GreenfootImage(getWidth(), getHeight());
+        overlay.setColor(new Color(0, 0, 0, 50));
+        overlay.fill();
+        
+        GreenfootImage bg = getBackground();
+        bg.drawImage(overlay, 0, 0);
+        Greenfoot.delay(5);
+        
+        Greenfoot.setWorld(nextWorld);
     }
 
     public int getNumOfStorms(){ return numberOfStorms; }
