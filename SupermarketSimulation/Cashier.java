@@ -187,6 +187,6 @@ public class Cashier extends Actor
         int offsetX = Greenfoot.getRandomNumber(40) - 20;
         int offsetY = Greenfoot.getRandomNumber(40) - 20;
   
-        getWorld().addObject(new FloatingText("$: " + totalEarnings, Color.GREEN), getX() + offsetX, getY() + offsetY);
+        getWorld().addObject(new FloatingText("$: " + ((int) totalEarnings * 100) / 100.0, Color.GREEN), getX() + offsetX, getY() + offsetY);
     }
 }

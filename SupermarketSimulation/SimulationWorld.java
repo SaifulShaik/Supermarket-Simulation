@@ -100,8 +100,8 @@ public class SimulationWorld extends World
         super(bg.getWidth(), bg.getHeight(), 1);
         setBackground(bg); 
 
-        storeOne.resetStore();
-        storeTwo.resetStore();
+        //storeOne.resetStore();
+        //storeTwo.resetStore();
         storeUI.clearRatings(1);
         storeUI.clearRatings(2);
         roadNodes = new ArrayList<>();
