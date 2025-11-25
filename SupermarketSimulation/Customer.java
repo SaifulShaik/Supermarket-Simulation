@@ -187,9 +187,6 @@ public abstract class Customer extends SuperSmoothMover
         double scoreOne = calculateStoreScore(storeOne);
         double scoreTwo = calculateStoreScore(storeTwo);
         
-        System.out.println(scoreOne + " 1 ");
-        System.out.println(scoreTwo + " 2");
-        
         // Choose the store with higher score
         if (scoreOne > scoreTwo) {
             store = storeOne;

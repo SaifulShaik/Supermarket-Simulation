@@ -111,8 +111,9 @@ public class SimulationWorld extends World
         super(bg.getWidth(), bg.getHeight(), 1);
         setBackground(bg); 
 
-        //storeOne.resetStore();
-        //storeTwo.resetStore();
+        storeOne.resetStore();
+        storeTwo.resetStore();
+        SaleManager.reset();
         storeUI.clearRatings(1);
         storeUI.clearRatings(2);
         roadNodes = new ArrayList<>();
@@ -193,7 +194,7 @@ public class SimulationWorld extends World
 
                 
         //starts the day with 8:00 AM
-        TimeOfDayManager.setSecond(8 * 3600); 
+        TimeOfDayManager.reset(); 
         //pick today's sale immediately
         storeOne.startNewDay(this);
         storeTwo.startNewDay(this);
@@ -221,7 +222,7 @@ public class SimulationWorld extends World
         if (this.storeOne.getProfit() > 500){
             fadeOutAndTransition(new EndScreen(0));
         }
-        else if (this.storeTwo.getProfit() > 500){
+        else if (this.storeTwo.getProfit() > storeUI.MAX_MONEY){
             fadeOutAndTransition(new EndScreen(1));
         }
     }

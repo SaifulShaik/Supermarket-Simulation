@@ -83,6 +83,14 @@ public class TimeOfDayManager
     }
     
     /**
+     * Reset time and day counter to initial state (8:00 AM, Day 1)
+     */
+    public static void reset() {
+        seconds = 8 * 3600;  // 8:00 AM
+        days = 1;
+    }
+    
+    /**
      * Returns the current time as a {"HH:MM:SS"} string
      * in 24-hour format (e.g. "17:35:09").
      *

@@ -138,5 +138,13 @@ public class SaleManager
     public static void resetSale() {
         saleProduct = null;
     }
+    
+    /**
+     * Reset the sale system to initial state - clears sale product and used products list
+     */
+    public static void reset() {
+        saleProduct = null;
+        usedProducts.clear();
+    }
 }
 
