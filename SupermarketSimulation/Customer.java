@@ -167,61 +167,79 @@ public abstract class Customer extends SuperSmoothMover
      * Method to choose a store to go into
      */
     protected void chooseStore() {
-        // initializes shopping lists
-        List<Class<? extends Product>> storeOneShoppingList = new ArrayList<>();
-        List<Class<? extends Product>> storeTwoShoppingList = new ArrayList<>();
+        Store storeOne = SimulationWorld.storeOne;
+        Store storeTwo = SimulationWorld.storeTwo;
         
-        // checks if product is in store one or store two
-        for (Class<? extends Product> productClass : shoppingList) {
-            boolean inStoreOne = false;
-            
-            // checks if the product class belongs in the store one's available products
-            for (Class<? extends Product> c : SimulationWorld.storeOne.getAvailableProducts()) {
-                if (c == productClass) {
-                    inStoreOne = true;
-                    break;
-                }
+        // calculate scores
+        double scoreOne = calculateStoreScore(storeOne);
+        double scoreTwo = calculateStoreScore(storeTwo);
+        
+        System.out.println(scoreOne + " 1 ");
+        System.out.println(scoreTwo + " 2");
+        
+        // Choose the store with higher score
+        if (scoreOne > scoreTwo) {
+            store = storeOne;
+            // update shopping list to only items available in chosen store
+            shoppingList.retainAll(storeOne.getAvailableProducts());
+        } else if (scoreTwo > scoreOne) {
+            store = storeTwo;
+            shoppingList.retainAll(storeTwo.getAvailableProducts());
+        } else {
+            // tie-breaker
+            if (Greenfoot.getRandomNumber(2) == 0) {
+                store = storeOne;
+                shoppingList.retainAll(storeOne.getAvailableProducts());
+            } else {
+                store = storeTwo;
+                shoppingList.retainAll(storeTwo.getAvailableProducts());
             }
-            
-            // then checks if the product class belongs in the store two's available products
-            boolean inStoreTwo = false;
-            for (Class<? extends Product> p : SimulationWorld.storeTwo.getAvailableProducts()) {
-                if (p == productClass) {
-                    inStoreTwo = true;
-                    break;
-                }
-            }
+        }
+        
+        // set entrance node
+        targetNode = store.getEntranceNode();
+    }
     
-            // adds the product to the store based shopping lists
-            if (inStoreOne) storeOneShoppingList.add(productClass);
-            if (inStoreTwo) storeTwoShoppingList.add(productClass);
-        }
+    /**
+     * Helper method to calculated the weighted score for a store
+     * 
+     * @param s - store to calculate for
+     * @return double representing the weighted score
+     */
+    private double calculateStoreScore(Store s) {
+        double weightAvailability = 0.5;
+        double weightRating = 0.3;
+        double weightDiscount = 0.2;
         
-        // compares store based shopping lists and goes to the store with more available items
-        if (storeOneShoppingList.size() > storeTwoShoppingList.size()) {
-            store = SimulationWorld.storeOne;
-            shoppingList = storeOneShoppingList;
-        }
-        else if (storeOneShoppingList.size() < storeTwoShoppingList.size()){
-            store = SimulationWorld.storeTwo;
-            shoppingList = storeTwoShoppingList;
-        }
-        // if both lists are the same size or are both empty
-        else {
-            // both lists are empty
-            if (storeOneShoppingList.isEmpty() && storeTwoShoppingList.isEmpty()) {
-                store = SimulationWorld.storeOne; // defaults to store one 
-            } 
-            // both lists are the same size
-            else {
-                int chosenStore = Greenfoot.getRandomNumber(2);
-                store = (chosenStore == 0) ? SimulationWorld.storeOne : SimulationWorld.storeTwo;
-                shoppingList = store == SimulationWorld.storeOne ? storeOneShoppingList : storeTwoShoppingList;
+        List<Class<? extends Product>> availableItems = new ArrayList<>();
+        
+        int foundCount = 0;
+
+        for (Class<? extends Product> productClass : shoppingList) {
+            boolean available = false;
+            for (Class<? extends Product> p : s.getAvailableProducts()) {
+                if (p == productClass) {
+                    available = true;
+                    break;
+                }
+            }
+            if (available) {
+                availableItems.add(productClass);
+                foundCount++;
             }
         }
 
-        // updates store entrance
-        targetNode = store.getEntranceNode();
+        double availabilityScore = (double) foundCount / shoppingList.size(); // 0 - 1
+        double ratingScore = SimulationWorld.storeUI.getAverageRating(s.getStoreNumber()) / 5.0; // normalize 0-1
+        double discountScore = s.getStoreDiscount() / 100.0; // 0-1
+
+        // small random factor to simulate variability
+        double randomness = Greenfoot.getRandomNumber(10) / 100.0;
+
+        return weightAvailability * availabilityScore +
+               weightRating * ratingScore +
+               weightDiscount * discountScore +
+               randomness;
     }
     
     /**

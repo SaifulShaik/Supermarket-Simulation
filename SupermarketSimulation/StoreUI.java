@@ -110,7 +110,7 @@ public class StoreUI extends Actor
      * @param store the store number (1 or 2)
      * @return the average rating for that store, rounded to one decimal place
      */
-    private double getAverageRating(int store) {
+    public double getAverageRating(int store) {
         ArrayList<Integer> ratings = (store == 1) ? storeOneRatings : storeTwoRatings;
         
         // Get base rating from the store
