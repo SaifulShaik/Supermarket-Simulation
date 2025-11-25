@@ -1,13 +1,8 @@
 import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 import java.util.*;
 /**
- * Represents the stores in the simulation with nodes for customer navigation,
- * display units for products, and cashiers for checkout. 
- * Tracks profit, customer statistics, and handles store settings like discounts and ratings.
- * Manages both stores
- * 
- * @author Joe, Saiful Shaik, and Owen Lee
- * @version November 11, 2025
+ * @author Joe and Saiful
+ * @version nov 11, 2025
  */
 public class Store {
     String name;
@@ -23,15 +18,6 @@ public class Store {
     private double profit;
     private double storeDiscount = 0.0; // Percentage discount (0-100)
     private double baseRating = 3.0; // Starting rating (1.0-5.0)
-    
-    private int numOfBargainShoppers = 0;
-    private int numOfBulkShoppers = 0;
-    private int numOfImpulseShoppers = 0;
-    private int numOfRegularShoppers = 0;
-    private int numOfProductsSold = 0;
-    private int numOfZombies = 0;
-    private int numOfFires = 0;
-    private int numOfStorms = 0;
     
     /**
      * Store constructor
@@ -358,7 +344,6 @@ public class Store {
         }
         return false;
     }
-    
     /**
      * Prepares the store for a new day of operation.
      * 
@@ -383,7 +368,6 @@ public class Store {
         // Pass the world reference to the SaleManager
         SaleManager.chooseRandomSale(allTypes, world);
     }
-    
     /**
      * Returns the store number based on this store's name.
      * For example, "Store 1" returns 1 and "Store 2" returns 2.
@@ -398,78 +382,22 @@ public class Store {
         }
         return -1;
     }
-
-    public int getNumOfBargainShoppers(){ return numOfBargainShoppers; };
-    public int getNumOfBulkShoppers(){ return numOfBulkShoppers; };
-    public int getNumOfImpulseShoppers(){ return numOfImpulseShoppers; };
-    public int getNumOfRegularShoppers(){ return numOfRegularShoppers; };
-    public int getNumOfProductsSold(){ return numOfProductsSold; };
-    public int getNumOfZombies(){ return numOfZombies; };
-    public int getNumOfFires(){ return numOfFires; };
-    public int getNumOfStorms(){ return numOfStorms; };
     
-    public void increaseCountNumOfBargainShoppers(){ numOfBargainShoppers++; };
-    public void increaseCountNumOfBulkShoppers(){ numOfBulkShoppers++; };
-    public void increaseCountNumOfImpulseShoppers(){ numOfImpulseShoppers++; };
-    public void increaseCountNumOfRegularShoppers(){ numOfRegularShoppers++; };
-    public void increaseCountNumOfProductsSold(){ numOfProductsSold++; };
-    public void increaseCountNumOfZombies(){ numOfZombies++; };
-    public void increaseCountNumOfFires(){ numOfFires++; };
-    public void increaseCountNumOfStorms(){ numOfStorms++; };
-    
-    
-    /**
-     * Gets the current store discount percentage.
-     * 
-     * @return the discount percentage
-     */
+    // Add these getter/setter methods at the very end of the class
     public double getStoreDiscount() {
         return storeDiscount;
     }
     
-    /**
-     * Sets the store discount percentage.
-     * Value is between 0 and 100.
-     * 
-     * @param discount the discount percentage to set
-     */
     public void setStoreDiscount(double discount) {
         this.storeDiscount = Math.max(0, Math.min(100, discount));
     }
     
-    /**
-     * Gets the base rating for the store.
-     * 
-     * @return the base rating (1.0-5.0)
-     */
     public double getBaseRating() {
         return baseRating;
     }
     
-    /**
-     * Sets the base rating for the store.
-     * Value is between 1.0 and 5.0.
-     * 
-     * @param rating the base rating to set
-     */
     public void setBaseRating(double rating) {
         this.baseRating = Math.max(1.0, Math.min(5.0, rating));
-    }
-    
-    /**
-     * Resets all store statistics and profit to their initial values.
-     * Should be called when restarting the simulation.
-     */
-    public void resetStore() {
-        this.profit = 0.0;
-        this.numOfBargainShoppers = 0;
-        this.numOfBulkShoppers = 0;
-        this.numOfImpulseShoppers = 0;
-        this.numOfRegularShoppers = 0;
-        this.numOfProductsSold = 0;
-        this.numOfZombies = 0;
-        this.numOfFires = 0;
-        this.numOfStorms = 0;
     }
 }
 

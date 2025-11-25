@@ -1,25 +1,17 @@
 import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 /**
- * Zombie customer that wanders stores and converts regular customers into zombies.
- * Zombies are special customer entities that do not shop or check out. 
- * Walk around store until killed by soldiers.
- * Each zombie conversion and presence negatively impacts store ratings.
- * Zombies cannot convert soldiers or customers who have already checked out.
+ * Zombie customer that wanders stores and converts regular customers.
  * 
- * @author Owen Lee
- * @version Nov 2025
+ * By Owen Lee
+ * @version (a version number or a date)
  */
 public class Zombie extends Customer
 {
     GreenfootImage shopper = new GreenfootImage("Zombie.png");
     
-    /**
-     * Constructs a zombie at the specified node location.
-     * The zombie inherits movement capabilities from Customer but has all
-     * shopping behaviors disabled. 
-     * 
-     * @param n the starting node where the zombie spawns
-     */
+    public static int supermarketTotalZombies = 0;
+    public static int butcherTotalZombies = 0;
+    
     public Zombie(Node n)
     {
         super(1, 0, n, 0, 0, 700);
@@ -30,6 +22,9 @@ public class Zombie extends Customer
         padded.drawImage(shopper, 0, 0);
         setImage(padded);
         
+        if (this.getStore()==SimulationWorld.storeOne){ supermarketTotalZombies++; }
+        else{ butcherTotalZombies++; }
+        
         // Clear inherited customer state to prevent checkout behavior
         this.hasCheckedOut = false;
         this.targetCashier = null;
@@ -38,11 +33,6 @@ public class Zombie extends Customer
         this.cart.clear();
     }
     
-    /**
-     * Main action method called on each game cycle.
-     * Zombies continuously wander through stores using the node navigation system.
-     * Collision checking to detect and convert nearby customers.
-     */
     @Override
     public void act()
     {
@@ -56,12 +46,6 @@ public class Zombie extends Customer
         checkCollision(); // Check for customers to convert
     }
     
-    /**
-     * Checks for collisions with regular customers and converts them into zombies.
-     * Only customers who are currently in a store and have not checked out can be converted.
-     * Soldiers are immune to zombie infection. 
-     * When a customer is converted a sound and animation plays
-     */
     public void checkCollision()
     {
         Customer victim = (Customer) getOneIntersectingObject(Customer.class);
@@ -97,6 +81,8 @@ public class Zombie extends Customer
             
             // Remove the customer and it's carriedItems
             victim.removeAllCarriedItems();
+            // Remove the victim's basket and carried items first
+            victim.removeAllCarriedItems();
             
             // Remove the customer
             getWorld().removeObject(victim);
@@ -116,9 +102,8 @@ public class Zombie extends Customer
         }
     }
     
-    /**
-     * Calculates and applies rating penalties when a zombie exits a store.
-     * Customers are scared of zombies so they give a negative review.
+    /*
+     * When zombie leave the store, reduce more rating
      */
     @Override
     protected void calculateRating()
@@ -129,5 +114,9 @@ public class Zombie extends Customer
         if (SimulationWorld.storeTwo.isInStore(getX(), getY())) {
             SimulationWorld.storeUI.addStar( 0, 2);
         }
+    }
+    
+    protected int getType(){
+        return 4;
     }
 }

@@ -1,7 +1,8 @@
 import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 
 /**
- * Write a description of class MyWorld here.
+ * The initial world the user finds themselves in
+ * From this page, they are able to click buttons that direct them to different worlds
  * 
  * @author Saiful Shaik
  * @version 1

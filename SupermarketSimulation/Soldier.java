@@ -37,8 +37,6 @@ public class Soldier extends Customer {
         // Pre-assign the store instead of choosing randomly
         this.store = assignedStore;
         this.targetNode = assignedStore.getEntranceNode();
-        
-        System.out.println("[Soldier] Created, assigned to " + assignedStore.name + ", spawning from road");
     }
     
     /**
@@ -179,5 +177,9 @@ public class Soldier extends Customer {
      */
     private void shootBullet(Zombie zombie) {
         getWorld().addObject(new Bullet(zombie), getX(), getY() - 20);
+    }
+    
+    protected int getType(){
+        return 5;
     }
 }

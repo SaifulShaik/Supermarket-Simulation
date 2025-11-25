@@ -109,10 +109,7 @@ public class SettingWorld extends World
             if (SimulationWorld.storeOne.getNodes() != null) forbiddenNodes.addAll(SimulationWorld.storeOne.getNodes());
             if (SimulationWorld.storeTwo.getNodes() != null) forbiddenNodes.addAll(SimulationWorld.storeTwo.getNodes());
         } catch (Exception e) {
-            System.err.println("Error initializing store nodes for editor: " + e.getMessage());
-        }
-        if (forbiddenNodes.isEmpty()) {
-            System.out.println("Warning: no forbidden store nodes loaded into editor (forbiddenNodes is empty)");
+            // Error initializing store nodes; continue without printing
         }
         // Add visual markers so the editor user can see forbidden node locations
         for (Node n : forbiddenNodes) {
@@ -448,14 +445,12 @@ public class SettingWorld extends World
 
             // Check if placement would overlap with cashier zones - silently block without popup
             if (isOnCashier(x, y, 50)) {
-                System.out.println("Placement blocked: cashier zone");
                 return; // Don't place, just return silently
             }
 
             // Use bounding-box test so the entire image does not intersect any node
             GreenfootImage uimg = unit.getImage();
             if (doesImageIntersectAnyNodeWithImage(x, y, uimg)) {
-                System.out.println("Placement blocked: image at (" + x + "," + y + ") would intersect a node");
                 return;
             }
 
@@ -486,7 +481,7 @@ public class SettingWorld extends World
 
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException |
                  NoSuchMethodException | java.lang.reflect.InvocationTargetException e) {
-            System.err.println("Error placing unit: " + e.getMessage());
+            // Error placing unit; swallowed to avoid noisy output
         }
     }
     
@@ -688,7 +683,6 @@ public class SettingWorld extends World
                         draggedUnit.setParentStore(null);
                     }
 
-                    //System.out.println("Moved DisplayUnit " + draggedUnit.getClass().getSimpleName() + " to (" + newX + "," + newY + ")");
                     hasUnsavedChanges = true;
                 }
             }
@@ -773,7 +767,7 @@ public class SettingWorld extends World
             hasUnsavedChanges = false;
             originalLayout = new ArrayList<>(layoutData); // Update original
         } catch (IOException e) {
-            System.err.println("Error saving layout: " + e.getMessage());
+            // Error saving layout; swallowed to avoid noisy output
         }
     }
     
@@ -784,7 +778,7 @@ public class SettingWorld extends World
         try {
             DisplayUnitData.saveLayout(originalLayout);
         } catch (IOException e) {
-            System.err.println("Error reverting layout: " + e.getMessage());
+            // Error reverting layout; swallowed to avoid noisy output
         }
     }
     
