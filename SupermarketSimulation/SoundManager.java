@@ -37,8 +37,20 @@ public class SoundManager
     //private static GreenfootSound ambience = new GreenfootSound("tokyo-music-walker-sunset-drive-chosic.com_.mp3"); //fade in too long
     private static GreenfootSound ambienceNight = new GreenfootSound("midnight.mp3");
     
-    //butcher sound effect
-    private static GreenfootSound butcherSound = new GreenfootSound("choppingMeat.mp3");
+    //butcher sound effect - wrapped in try-catch due to potential MP3 corruption
+    private static GreenfootSound butcherSound = initButcherSound();
+    
+    /**
+     * Initialize butcher sound with error handling for corrupted MP3
+     */
+    private static GreenfootSound initButcherSound() {
+        try {
+            return new GreenfootSound("choppingMeat.mp3");
+        } catch (Exception e) {
+            // Return null if sound file is corrupted
+            return null;
+        }
+    }
     
     //zombie sound
     private static int zombieSoundIndex;
@@ -67,24 +79,36 @@ public class SoundManager
     private static void playOnce(GreenfootSound s, int volume)
     {
         if (s == null) return;
-        s.setVolume(volume);
-        s.play();
+        try {
+            s.setVolume(volume);
+            s.play();
+        } catch (Exception e) {
+            // Silently ignore sound playback errors
+        }
     }
      //Helper methods inside SoundManager
     private static void playLoop(GreenfootSound s, int volume)
     {
         if (s == null) return;
-        s.setVolume(volume);
-        if (!s.isPlaying()) {
-            s.playLoop();
+        try {
+            s.setVolume(volume);
+            if (!s.isPlaying()) {
+                s.playLoop();
+            }
+        } catch (Exception e) {
+            // Silently ignore sound playback errors (e.g., corrupted MP3 files)
         }
     }
     //Helper methods inside SoundManager
     private static void stop(GreenfootSound s)
     {
         if (s == null) return;
-        if (s.isPlaying()) {
-            s.stop();
+        try {
+            if (s.isPlaying()) {
+                s.stop();
+            }
+        } catch (Exception e) {
+            // Silently ignore sound stop errors
         }
     }
     

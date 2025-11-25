@@ -106,14 +106,6 @@ public class LandingPage extends World
         setBackground(new GreenfootImage("Landing Background.PNG"));
     }
     
-    private void addCloudEffect(GreenfootImage bg)
-    {
-    }
-    
-    private void addLightingEffect(GreenfootImage bg)
-    {
-    }
-    
     // Fade in and Slide the Title
     private void animateTitle()
     {
@@ -158,7 +150,6 @@ public class LandingPage extends World
         
         // Smooth transition
         fadeOutAndTransition(new SimulationWorld());
-        
     }
     
     private void transitionToSettings()
