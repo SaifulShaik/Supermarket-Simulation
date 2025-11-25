@@ -12,6 +12,7 @@ public class EndScreen extends World
     private String endText;
     
     private GreenfootImage saiful = new GreenfootImage("Cutscene/Saiful/Saiful Think.PNG");
+    private GreenfootImage endImage;
     
     public EndScreen(int endType)
     {    
@@ -22,15 +23,18 @@ public class EndScreen extends World
         
         if (endType==0){
             endText="End 1: Supermarket wins!\n Saiful chose to shop there";
+            endImage=new GreenfootImage("Supermarket End.PNG");
         }
         else if (endType==1){
             endText="End 2: Butcher wins!\n Saiful chose to shop there";
+            endImage=new GreenfootImage("Butcher End.PNG");
         }
         
         GreenfootImage text = new GreenfootImage(endText, 30, Color.BLACK, new Color(0,0,0,0));
         getBackground().drawImage(text,725,200);
         saiful.scale(1200,600);
         getBackground().drawImage(saiful,550,70);
+        getBackground().drawImage(endImage,0,0);
     }
     
     public void act(){
@@ -87,8 +91,13 @@ public class EndScreen extends World
         GreenfootImage receipt2 = new GreenfootImage(butcherReceipt, 20, Color.BLACK, new Color(0,0,0,0));
         getBackground().drawImage(receipt2,610,200);
         
-        String supermarketTotalProfit= String.valueOf(SimulationWorld.storeOne.getProfit());
-        String butcherTotalProfit= String.valueOf(SimulationWorld.storeTwo.getProfit());
+        double storeOneProfit = SimulationWorld.storeOne.getProfit();
+        storeOneProfit = Math.round(storeOneProfit * 100.0) / 100.0;
+        double storeTwoProfit = SimulationWorld.storeTwo.getProfit();
+        storeTwoProfit = Math.round(storeTwoProfit * 100.0) / 100.0;
+        
+        String supermarketTotalProfit= String.valueOf(storeOneProfit);
+        String butcherTotalProfit= String.valueOf(storeTwoProfit);
         
         GreenfootImage total1 = new GreenfootImage(supermarketTotalProfit, 20, Color.BLACK, new Color(0,0,0,0));
         getBackground().drawImage(total1,720,540);
