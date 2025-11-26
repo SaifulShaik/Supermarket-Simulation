@@ -34,23 +34,13 @@ public class SoundManager
 
     //super market ambience
     private static GreenfootSound ambience = new GreenfootSound("supermarketAmbience.mp3");
-    //private static GreenfootSound ambience = new GreenfootSound("tokyo-music-walker-sunset-drive-chosic.com_.mp3"); //fade in too long
+    //private static GreenfootSound ambience = new GreenfootSound("tokyo-music-walker-sunset-drive-chosic.com_.mp3"); 
     private static GreenfootSound ambienceNight = new GreenfootSound("midnight.mp3");
     
-    //butcher sound effect - wrapped in try-catch due to potential MP3 corruption
-    private static GreenfootSound butcherSound = initButcherSound();
-    
-    /**
-     * Initialize butcher sound with error handling for corrupted MP3
-     */
-    private static GreenfootSound initButcherSound() {
-        try {
-            return new GreenfootSound("choppingMeat.mp3");
-        } catch (Exception e) {
-            // Return null if sound file is corrupted
-            return null;
-        }
-    }
+    //butcher sound effect
+    //private static GreenfootSound butcherSound = new GreenfootSound("choppingMeat.mp3");
+    //butcher sound has problem
+    private static GreenfootSound butcherSound=null;
     
     //zombie sound
     private static int zombieSoundIndex;
@@ -79,36 +69,24 @@ public class SoundManager
     private static void playOnce(GreenfootSound s, int volume)
     {
         if (s == null) return;
-        try {
-            s.setVolume(volume);
-            s.play();
-        } catch (Exception e) {
-            // Silently ignore sound playback errors
-        }
+        s.setVolume(volume);
+        s.play();
     }
      //Helper methods inside SoundManager
     private static void playLoop(GreenfootSound s, int volume)
     {
         if (s == null) return;
-        try {
-            s.setVolume(volume);
-            if (!s.isPlaying()) {
-                s.playLoop();
-            }
-        } catch (Exception e) {
-            // Silently ignore sound playback errors (e.g., corrupted MP3 files)
+        s.setVolume(volume);
+        if (!s.isPlaying()) {
+            s.playLoop();
         }
     }
     //Helper methods inside SoundManager
     private static void stop(GreenfootSound s)
     {
         if (s == null) return;
-        try {
-            if (s.isPlaying()) {
-                s.stop();
-            }
-        } catch (Exception e) {
-            // Silently ignore sound stop errors
+        if (s.isPlaying()) {
+            s.stop();
         }
     }
     
@@ -192,10 +170,6 @@ public class SoundManager
      */
     public static void playFootsteps()
     {
-//        walkingSounds[walkingIndex].setVolume(20);
-//        walkingSounds[walkingIndex].play();    
-//        walkingIndex++; 
-//        if(walkingIndex==walkingSounds.length)
         {
             walkingIndex=0;
         }
@@ -205,8 +179,8 @@ public class SoundManager
      */
     public static void stopFootsteps()
     {
-        walkingIndex--;
- //       walkingSounds[walkingIndex].stop();
+        //walkingIndex--;
+         //walkingSounds[walkingIndex].stop();
     }
     // --------------------------------------------------------
     // Ambience sounds
@@ -216,8 +190,7 @@ public class SoundManager
      */
     public static void startAmbienceSound()
     {
-        ambience.setVolume(25);
-        ambience.playLoop(); 
+        playLoop(ambience,30);
     }
     /**
      * Stops the daytime ambience sound.
@@ -292,7 +265,7 @@ public class SoundManager
      */
     public static void playBulletSound()
     {
-        bulletSounds[bulletSoundIndex].setVolume(25);
+        bulletSounds[bulletSoundIndex].setVolume(20);
         bulletSounds[bulletSoundIndex].play();    
         bulletSoundIndex++; 
         if(bulletSoundIndex==bulletSounds.length)

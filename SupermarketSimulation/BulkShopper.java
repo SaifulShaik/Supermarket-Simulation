@@ -18,7 +18,7 @@ import java.util.*;
  */
 public class BulkShopper extends Customer
 {
-    private static int BULK_AMOuNT=5;
+    private static int BULK_AMOUNT=5;
     private int bulkAmount;
     
     public BulkShopper(Node n)
@@ -26,7 +26,7 @@ public class BulkShopper extends Customer
         // movementSpeed, budget, startingNode, minList, maxExtraList, maxActCycles
         super(2.0, 200.0, n, 3, 2, 900);
 
-        this.bulkAmount = Math.max(1, BULK_AMOuNT);
+        this.bulkAmount = Math.max(1, BULK_AMOUNT);
         
         rightImages = new GreenfootImage[] {
             padImage(new GreenfootImage("bulkShopper/right1.png")),

@@ -197,10 +197,6 @@ public class SimulationWorld extends World
         storeOne.startNewDay(this);
         storeTwo.startNewDay(this);
         saleChosenToday = true;
-
-       SoundManager.startAmbienceSound();
-       // music.setVolume(30);
-        //music.playLoop();
     }
     
     public void act () 
