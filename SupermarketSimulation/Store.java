@@ -429,13 +429,11 @@ public class Store {
     }
     
     /**
-     * Reset store to initial state - clears profit, resets discount and rating,
-     * clears product types and display units
+     * Reset store to initial state - clears profit, product types and display units
+     * Does NOT reset discount and rating as those are configured in the editor
      */
     public void resetStore() {
         this.profit = 0;
-        this.storeDiscount = 0.0;
-        this.baseRating = 3.0;
         this.availableProductTypes.clear();
         this.availableDisplayUnits.clear();
     }
