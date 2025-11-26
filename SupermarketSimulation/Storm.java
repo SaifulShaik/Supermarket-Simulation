@@ -36,7 +36,7 @@ public class Storm extends Effect {
         private int endY;
         private int targetHeight; //how far down the screen the lightning goes
         
-        LightningBolt(int startX, int startY) {
+        public LightningBolt(int startX, int startY) {
             this.startX = startX;
             this.startY = startY;
             this.endX = startX;
