@@ -30,11 +30,11 @@ public class Storm extends Effect {
      * Used to make lightning and determine location of strike spot (for fire)
      */
     private class LightningBolt {
-        int startX;
-        int startY;
-        int endX;
-        int endY;
-        int targetHeight; //(how far down the screen the lightning goes)
+        private int startX;
+        private int startY;
+        private int endX;
+        private int endY;
+        private int targetHeight; //how far down the screen the lightning goes
         
         LightningBolt(int startX, int startY) {
             this.startX = startX;
