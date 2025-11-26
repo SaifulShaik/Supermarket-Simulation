@@ -68,7 +68,7 @@ public class Zombie extends Customer
      * Soldiers are immune to zombie infection. 
      * When a customer is converted a sound and animation plays
      */
-    public void checkCollision()
+    private void checkCollision()
     {
         Customer victim = (Customer) getOneIntersectingObject(Customer.class);
         
