@@ -427,5 +427,17 @@ public class Store {
     public void setBaseRating(double rating) {
         this.baseRating = Math.max(1.0, Math.min(5.0, rating));
     }
+    
+    /**
+     * Reset store to initial state - clears profit, resets discount and rating,
+     * clears product types and display units
+     */
+    public void resetStore() {
+        this.profit = 0;
+        this.storeDiscount = 0.0;
+        this.baseRating = 3.0;
+        this.availableProductTypes.clear();
+        this.availableDisplayUnits.clear();
+    }
 }
 

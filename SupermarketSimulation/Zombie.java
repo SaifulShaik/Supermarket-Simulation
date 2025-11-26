@@ -145,4 +145,12 @@ public class Zombie extends Customer
     protected int getType(){
         return 4;
     }
+    
+    /**
+     * Reset all static zombie counters to initial state
+     */
+    public static void resetCounters() {
+        supermarketTotalZombies = 0;
+        butcherTotalZombies = 0;
+    }
 }

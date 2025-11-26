@@ -111,7 +111,13 @@ public class SimulationWorld extends World
         super(bg.getWidth(), bg.getHeight(), 1);
         setBackground(bg); 
 
+        // Reset all static counters and managers
+        storeOne.resetStore();
+        storeTwo.resetStore();
         SaleManager.reset();
+        Customer.resetCounters();
+        Zombie.resetCounters();
+        TimeOfDayManager.reset();
         storeUI.clearRatings(1);
         storeUI.clearRatings(2);
         roadNodes = new ArrayList<>();

@@ -898,5 +898,21 @@ public abstract class Customer extends SuperSmoothMover
         SimulationWorld.storeUI.addStar( rating, store.getStoreNumber());
     }
     
+    /**
+     * Reset all static counters to initial state
+     */
+    public static void resetCounters() {
+        supermarketTotalProductsSold = 0;
+        butcherTotalProductsSold = 0;
+        supermarketTotalBargainShoppers = 0;
+        supermarketTotalBulkShoppers = 0;
+        supermarketTotalImpulseShoppers = 0;
+        supermarketTotalRegularShoppers = 0;
+        butcherTotalBargainShoppers = 0;
+        butcherTotalBulkShoppers = 0;
+        butcherTotalImpulseShoppers = 0;
+        butcherTotalRegularShoppers = 0;
+    }
+    
     protected abstract int getType();
 }
