@@ -554,7 +554,7 @@ public class SimulationWorld extends World
     
     /*
     * 
-    * Tf program is paused, try to resume some of the sound effects
+    * If program is paused, try to resume some of the sound effects
     */
     public void started()
     {
@@ -568,6 +568,11 @@ public class SimulationWorld extends World
              SoundManager.startNightSound();
         }
        
+        //resume truck sound if there are any trucks active
+        if (!getObjects(RestockingTruck.class).isEmpty())
+        {
+            SoundManager.playTruckSound();
+        }
         
         //replay butcher sound
         SoundManager.playButcherSound();

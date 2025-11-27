@@ -26,6 +26,12 @@ public class EndScreen extends World
         super(1200, 600, 1);
         setPaintOrder(Button.class, CutsceneImage.class);
         
+        // Stop all sounds from the simulation
+        SoundManager.stopAmbienceSound();
+        SoundManager.stopNightSound();
+        SoundManager.stopTruckSound();
+        SoundManager.stopButcherSound();
+        
         if (endType==0){
             endText="End 1: Supermarket wins!\n Saiful chose to shop there";
             endImage=new GreenfootImage("Supermarket End.PNG");
